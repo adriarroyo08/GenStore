@@ -1,0 +1,88 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # ==========================================
+  # PM2 Application Logs (Frontend + API)
+  # ==========================================
+  - job_name: pm2-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: genstore
+          __path__: /var/log/pm2/*.log
+
+    pipeline_stages:
+      # Detect which app the log comes from based on filename
+      - match:
+          selector: '{job="genstore"}'
+          stages:
+            - regex:
+                source: filename
+                expression: '(?P<app>genstore-(?:web|api))'
+            - labels:
+                app:
+
+      # Parse API JSON logs (Hono logger output)
+      - match:
+          selector: '{app="genstore-api"}'
+          stages:
+            - regex:
+                expression: '(?P<method>GET|POST|PUT|DELETE|PATCH)\s+(?P<path>/\S+)\s+(?P<status>\d{3})\s+(?P<duration>\d+)ms'
+            - labels:
+                method:
+                status:
+            - metrics:
+                http_request_duration_ms:
+                  type: Histogram
+                  description: "HTTP request duration in ms"
+                  source: duration
+                  config:
+                    buckets: [10, 50, 100, 250, 500, 1000, 2500, 5000]
+
+      # Detect error level
+      - match:
+          selector: '{job="genstore"}'
+          stages:
+            - regex:
+                expression: '(?i)(?P<level>error|warn|info|debug)'
+            - labels:
+                level:
+
+  # ==========================================
+  # System logs (nginx, syslog)
+  # ==========================================
+  - job_name: system-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: system
+          __path__: /var/log/host/syslog
+
+  # Nginx access logs (if present)
+  - job_name: nginx-access
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          type: access
+          __path__: /var/log/host/nginx/access.log
+
+  - job_name: nginx-error
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          type: error
+          __path__: /var/log/host/nginx/error.log

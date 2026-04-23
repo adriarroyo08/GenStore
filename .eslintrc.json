@@ -1,0 +1,56 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "react", "react-hooks"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "react/prop-types": "off",
+    "react-hooks/set-state-in-effect": "warn",
+    "react-hooks/set-state-in-render": "warn",
+    "react-hooks/purity": "warn",
+    "react-hooks/preserve-manual-memoization": "warn",
+    "react-hooks/immutability": "warn",
+    "react-hooks/globals": "warn",
+    "react-hooks/refs": "warn",
+    "react-hooks/error-boundaries": "warn",
+    "react-hooks/static-components": "warn",
+    "react-hooks/use-memo": "warn",
+    "react-hooks/component-hook-factories": "warn",
+    "react-hooks/config": "warn",
+    "react-hooks/gating": "warn",
+    "@typescript-eslint/no-empty-object-type": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "warn"
+      }
+    }
+  ],
+  "ignorePatterns": ["dist/", "build/", "node_modules/", "functions/", "src/views/", "src/api.js", "src/router.js"]
+}

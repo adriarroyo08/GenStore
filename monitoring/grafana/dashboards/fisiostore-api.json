@@ -1,0 +1,113 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "API Logs en Tiempo Real",
+      "type": "logs",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "expr": "{app=\"genstore-api\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "showCommonLabels": false,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "enableLogDetails": true,
+        "dedupStrategy": "none",
+        "sortOrder": "Descending"
+      }
+    },
+    {
+      "title": "Errores API (ultimas 24h)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "expr": "count_over_time({app=\"genstore-api\"} |~ \"(?i)error\" [5m])",
+          "legendFormat": "Errores",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "red" },
+          "custom": { "fillOpacity": 20 }
+        }
+      }
+    },
+    {
+      "title": "Requests por Status Code",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "expr": "count_over_time({app=\"genstore-api\"} |~ \"200\" [5m])",
+          "legendFormat": "200 OK",
+          "refId": "A"
+        },
+        {
+          "expr": "count_over_time({app=\"genstore-api\"} |~ \"4\\\\d{2}\" [5m])",
+          "legendFormat": "4xx Errors",
+          "refId": "B"
+        },
+        {
+          "expr": "count_over_time({app=\"genstore-api\"} |~ \"5\\\\d{2}\" [5m])",
+          "legendFormat": "5xx Errors",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "title": "Frontend Logs",
+      "type": "logs",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 18 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "expr": "{app=\"genstore-web\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending"
+      }
+    },
+    {
+      "title": "Errores Recientes (tabla)",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 26 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        {
+          "expr": "{app=\"genstore-api\"} |~ \"(?i)(error|exception|failed|crash)\"",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Time", "desc": true }]
+      }
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["genstore", "api", "logs"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "GenStore - API & Logs",
+  "uid": "genstore-api-logs",
+  "version": 1
+}

@@ -1,0 +1,95 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Detect environment
+        id: env
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "app_env=production" >> "$GITHUB_OUTPUT"
+            echo "branch=main" >> "$GITHUB_OUTPUT"
+            echo "stripe_secret=${{ secrets.STRIPE_SECRET_KEY_LIVE || secrets.STRIPE_SECRET_KEY }}" >> "$GITHUB_OUTPUT"
+            echo "stripe_webhook=${{ secrets.STRIPE_WEBHOOK_SECRET_LIVE || secrets.STRIPE_WEBHOOK_SECRET }}" >> "$GITHUB_OUTPUT"
+            echo "stripe_pub=${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY_LIVE || secrets.VITE_STRIPE_PUBLISHABLE_KEY }}" >> "$GITHUB_OUTPUT"
+            echo "paypal_id=${{ secrets.PAYPAL_CLIENT_ID_LIVE || secrets.PAYPAL_CLIENT_ID }}" >> "$GITHUB_OUTPUT"
+            echo "paypal_secret=${{ secrets.PAYPAL_CLIENT_SECRET_LIVE || secrets.PAYPAL_CLIENT_SECRET }}" >> "$GITHUB_OUTPUT"
+            echo "paypal_mode=live" >> "$GITHUB_OUTPUT"
+          else
+            echo "app_env=development" >> "$GITHUB_OUTPUT"
+            echo "branch=develop" >> "$GITHUB_OUTPUT"
+            echo "stripe_secret=${{ secrets.STRIPE_SECRET_KEY_TEST || secrets.STRIPE_SECRET_KEY }}" >> "$GITHUB_OUTPUT"
+            echo "stripe_webhook=${{ secrets.STRIPE_WEBHOOK_SECRET_TEST || secrets.STRIPE_WEBHOOK_SECRET }}" >> "$GITHUB_OUTPUT"
+            echo "stripe_pub=${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY_TEST || secrets.VITE_STRIPE_PUBLISHABLE_KEY }}" >> "$GITHUB_OUTPUT"
+            echo "paypal_id=${{ secrets.PAYPAL_CLIENT_ID_TEST || secrets.PAYPAL_CLIENT_ID }}" >> "$GITHUB_OUTPUT"
+            echo "paypal_secret=${{ secrets.PAYPAL_CLIENT_SECRET_TEST || secrets.PAYPAL_CLIENT_SECRET }}" >> "$GITHUB_OUTPUT"
+            echo "paypal_mode=sandbox" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.IP }}
+          username: ${{ vars.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /home/ubuntu/GenStore
+            git fetch origin
+            git checkout ${{ steps.env.outputs.branch }}
+            git reset --hard origin/${{ steps.env.outputs.branch }}
+
+            # Generate .env from GitHub Secrets
+            cat > .env << 'ENVEOF'
+            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+            SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+            VITE_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            VITE_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+            API_PORT=3002
+            NODE_ENV=production
+            APP_ENV=${{ steps.env.outputs.app_env }}
+            STRIPE_SECRET_KEY=${{ steps.env.outputs.stripe_secret }}
+            STRIPE_WEBHOOK_SECRET=${{ steps.env.outputs.stripe_webhook }}
+            VITE_STRIPE_PUBLISHABLE_KEY=${{ steps.env.outputs.stripe_pub }}
+            PAYPAL_CLIENT_ID=${{ steps.env.outputs.paypal_id }}
+            PAYPAL_CLIENT_SECRET=${{ steps.env.outputs.paypal_secret }}
+            PAYPAL_MODE=${{ steps.env.outputs.paypal_mode }}
+            VITE_PAYPAL_CLIENT_ID=${{ steps.env.outputs.paypal_id }}
+            VITE_APP_ENV=${{ steps.env.outputs.app_env }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            EMAIL_FROM=${{ vars.EMAIL_FROM }}
+            STOCK_ALERT_ADMIN_EMAIL=${{ vars.STOCK_ALERT_ADMIN_EMAIL }}
+            STOCK_ALERT_CRON_SECRET=${{ secrets.STOCK_ALERT_CRON_SECRET }}
+            BUSINESS_NAME=${{ vars.BUSINESS_NAME }}
+            BUSINESS_NIF=${{ vars.BUSINESS_NIF }}
+            BUSINESS_ADDRESS=${{ vars.BUSINESS_ADDRESS }}
+            BUSINESS_EMAIL=${{ vars.BUSINESS_EMAIL }}
+            BUSINESS_PHONE=${{ vars.BUSINESS_PHONE }}
+            SHIPPING_SYNC_CRON_SECRET=${{ secrets.SHIPPING_SYNC_CRON_SECRET }}
+            ENVEOF
+
+            # Remove leading whitespace from heredoc
+            sed -i 's/^            //' .env
+
+            # Build frontend
+            npm ci
+            npm run build
+
+            # Build server
+            cd server
+            npm ci --include=dev
+            npm run build
+            cd /home/ubuntu/GenStore
+
+            # Restart services
+            ~/.npm-global/bin/pm2 startOrRestart ecosystem.config.cjs --env production

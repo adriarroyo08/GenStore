@@ -1,0 +1,111 @@
+version: "3.8"
+
+# GenStore Monitoring Stack
+# Grafana + Loki + Promtail + Prometheus + Node Exporter
+# Deploy on Oracle Cloud instance alongside PM2 apps
+
+services:
+  # ===========================================
+  # GRAFANA - Dashboards & Alerting (port 3003)
+  # ===========================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: genstore-grafana
+    restart: unless-stopped
+    ports:
+      - "3003:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-GenStore2026!}
+      - GF_SERVER_ROOT_URL=http://localhost:3003
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_LOG_LEVEL=warn
+    networks:
+      - monitoring
+
+  # ===========================================
+  # LOKI - Log aggregation (port 3100)
+  # ===========================================
+  loki:
+    image: grafana/loki:latest
+    container_name: genstore-loki
+    restart: unless-stopped
+    expose:
+      - "3100"
+    volumes:
+      - ./loki/config.yml:/etc/loki/config.yml
+      - loki-data:/loki
+    command: -config.file=/etc/loki/config.yml
+    networks:
+      - monitoring
+
+  # ===========================================
+  # PROMTAIL - Log shipper (reads PM2 logs)
+  # ===========================================
+  promtail:
+    image: grafana/promtail:latest
+    container_name: genstore-promtail
+    restart: unless-stopped
+    volumes:
+      - ./promtail/config.yml:/etc/promtail/config.yml
+      - /home/ubuntu/.pm2/logs:/var/log/pm2:ro
+      - /var/log:/var/log/host:ro
+      - promtail-positions:/tmp/positions
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - monitoring
+
+  # ===========================================
+  # PROMETHEUS - Metrics collection (port 9090)
+  # ===========================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: genstore-prometheus
+    restart: unless-stopped
+    expose:
+      - "9090"
+    volumes:
+      - ./prometheus/config.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=30d'
+    networks:
+      - monitoring
+
+  # ===========================================
+  # NODE EXPORTER - System metrics (CPU, RAM, disk)
+  # ===========================================
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: genstore-node-exporter
+    restart: unless-stopped
+    expose:
+      - "9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - monitoring
+
+volumes:
+  grafana-data:
+  loki-data:
+  prometheus-data:
+  promtail-positions:
+
+networks:
+  monitoring:
+    driver: bridge

@@ -1,0 +1,1 @@
+// REMOVED: Air Fryer insertion functionality has been eliminated
