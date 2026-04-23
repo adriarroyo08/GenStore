@@ -1,20 +1,3 @@
-export interface Patient {
-  id: string
-  nombre: string
-  apellido: string
-  telefono: string
-  email: string
-  fechaNacimiento: string
-  diagnostico: string
-  activo: boolean
-}
-
-export interface Cita {
-  id: string
-  pacienteId: string
-  fecha: string
-  hora: string
-  duracion: number
-  notas: string
-  estado: 'pendiente' | 'confirmada' | 'completada' | 'cancelada'
-}
+// Domain types are defined in src/types/index.ts
+// This file is kept for backwards compatibility with imports
+export type { Product, CartItem, User, CurrentPage } from './types/index';

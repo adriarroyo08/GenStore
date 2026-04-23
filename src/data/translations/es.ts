@@ -1,7 +1,7 @@
 export const es = {
   // Application
   app: {
-    tagline: "Equipos de Productos y Rehabilitación"
+    tagline: "Tu Tienda Online de Confianza"
   },
 
   // Loading
@@ -183,11 +183,11 @@ export const es = {
 
   // Hero Section
   hero: {
-    title: "Transforma Tu Salud con Equipos Profesionales de Productos",
-    subtitle: "Descubre la más amplia gama de equipos especializados en productos y rehabilitación - desde electroterapia hasta masaje terapéutico, todo lo que necesitas para el bienestar y la recuperación. Envío gratis en pedidos superiores a €50",
+    title: "Descubre los Mejores Productos al Mejor Precio",
+    subtitle: "Descubre nuestra amplia gama de productos de calidad - desde electrónica hasta moda, todo lo que necesitas en un solo lugar. Envío gratis en pedidos superiores a €50",
     shopNow: "Explorar Productos",
     learnMore: "Saber Más",
-    badge: "Equipos Profesionales de Productos",
+    badge: "Productos de Calidad",
     stats: {
       products: "Productos",
       customers: "Clientes",
@@ -235,7 +235,7 @@ export const es = {
     },
     additionalFeatures: {
       title: "Características Adicionales",
-      subtitle: "Más razones para elegir GenStore como tu tienda favorita de productos y rehabilitación"
+      subtitle: "Más razones para elegir GenStore como tu tienda online favorita"
     },
     features: {
       easyReturns: "Devoluciones fáciles de 30 días",
@@ -247,7 +247,7 @@ export const es = {
     },
     cta: {
       title: "¿Listo para Comenzar?",
-      subtitle: "Únete a miles de clientes satisfechos que ya confían en GenStore para sus necesidades de productos y rehabilitación",
+      subtitle: "Únete a miles de clientes satisfechos que ya confían en GenStore para sus compras online",
       startShopping: "Comenzar a Comprar",
       contactUs: "Contáctanos"
     },
@@ -273,12 +273,12 @@ export const es = {
     ourStory: "Nuestra Historia",
     storyParagraph1: "Somos dos hermanos que hemos jugado al fútbol toda la vida. Desde pequeños, el deporte ha sido nuestra forma de entender el mundo. Pero con el deporte también llegaron las lesiones: esguinces, sobrecargas, contracturas... y la frustración de no saber cómo recuperarte bien por tu cuenta.",
     storyParagraph2: "Pasamos años buscando formas de cuidar nuestro cuerpo y mejorar nuestro rendimiento de forma saludable. Probamos de todo: equipos de productos caseros, remedios que encontrábamos por internet, herramientas que nos recomendaban otros deportistas. Algunas funcionaban, muchas no. Y siempre era difícil encontrar productos de calidad sin tener que ir a una clínica profesional.",
-    storyParagraph3: "Así nació GenStore. Queríamos crear el lugar que nos hubiera encantado tener: una tienda donde cualquier deportista pueda encontrar equipamiento de productos y recuperación de verdad, seleccionado por gente que lo ha probado y sabe lo que funciona. Sin humo, sin promesas vacías. Solo lo que realmente ayuda.",
+    storyParagraph3: "Así nació GenStore. Queríamos crear el lugar que nos hubiera encantado tener: una tienda donde cualquier deportista pueda encontrar productos de calidad de verdad, seleccionado por gente que lo ha probado y sabe lo que funciona. Sin humo, sin promesas vacías. Solo lo que realmente ayuda.",
     whyGenStore: "Por qué GenStore",
     pillar1Title: "Experiencia real",
     pillar1Description: "Sabemos lo que es estar lesionado porque lo hemos vivido. Cada producto que vendemos lo hemos probado o lo probaríamos nosotros mismos.",
     pillar2Title: "Rendimiento saludable",
-    pillar2Description: "Mejorar sin atajos. Creemos en la recuperación bien hecha y en cuidar tu cuerpo con las herramientas correctas, no con soluciones rápidas.",
+    pillar2Description: "Mejorar sin atajos. Creemos en cuidar tu cuerpo con las herramientas correctas, no con soluciones rápidas.",
     pillar3Title: "Para deportistas, por deportistas",
     pillar3Description: "No somos una tienda genérica. Seleccionamos cada producto pensando en lo que un deportista autónomo necesita de verdad.",
     forWho: "¿Para quién es GenStore?",
@@ -289,7 +289,7 @@ export const es = {
     audience3Title: "Quienes cuidan su cuerpo de forma proactiva",
     audience3Description: "No hace falta estar lesionado. Prevenir, recuperar después de entrenar y mantenerte en forma también es parte del juego.",
     ctaTitle: "Encuentra lo que necesitas",
-    ctaDescription: "Explora nuestro catálogo de equipamiento de productos y recuperación. Seleccionado por deportistas, para deportistas.",
+    ctaDescription: "Explora nuestro catálogo de productos de calidad. Seleccionado por deportistas, para deportistas.",
     exploreCatalog: "Explorar Catálogo",
     shopNow: "Comprar Ahora"
   },
@@ -366,48 +366,48 @@ export const es = {
     noCategoriesDesc: "Las categorías se mostrarán aquí cuando estén disponibles",
 
     // New Products Subcategories
-    electroterapia: "Electroterapia",
-    electroterapiaDesc: "Unidades TENS, EMS, ultrasonido y dispositivos de estimulación eléctrica para alivio del dolor y rehabilitación muscular",
+    electroterapia: "Electrónica",
+    electroterapiaDesc: "Dispositivos electrónicos y gadgets para el día a día",
 
-    termoterapia: "Termoterapia",
-    termoterapiaDesc: "Lámparas infrarrojas, almohadillas térmicas y dispositivos de calor terapéutico para tratamiento del dolor y relajación muscular",
+    termoterapia: "Hogar",
+    termoterapiaDesc: "Productos y accesorios para el hogar, confort y decoración",
 
-    "masaje-terapeutico": "Masaje Terapéutico",
-    "masaje-terapeuticoDesc": "Pistolas de masaje percusivo, rodillos de espuma, pelotas de masaje y herramientas profesionales para terapia manual",
+    "masaje-terapeutico": "Bienestar",
+    "masaje-terapeuticoDesc": "Productos de bienestar, relajación y cuidado personal",
 
-    rehabilitacion: "Rehabilitación",
-    rehabilitacionDesc: "Equipos de ejercicio terapéutico, bandas elásticas, pelotas de equilibrio y material especializado para recuperación",
+    rehabilitacion: "Deportes",
+    rehabilitacionDesc: "Equipamiento deportivo y accesorios para ejercicio",
 
-    ortopedia: "Ortopedia",
-    ortopediaDesc: "Rodilleras terapéuticas, muletas ergonómicas, soportes articulares y productos ortopédicos especializados",
+    ortopedia: "Salud",
+    ortopediaDesc: "Productos de salud, soportes articulares y accesorios especializados",
 
     diagnostico: "Diagnóstico",
     diagnosticoDesc: "Equipos de medición biomecánica, análisis postural y herramientas de evaluación profesional",
 
     // Legacy categories (for backward compatibility)
-    electrotherapy: "Electroterapia",
-    electrotherapyDesc: "Unidades TENS, ultrasonido y dispositivos de terapia eléctrica",
-    recovery: "Recuperación y Rehabilitación",
-    recoveryDesc: "Terapia de compresión y equipos de recuperación",
-    heatTherapy: "Termoterapia",
-    "heat-therapy": "Termoterapia",
-    heatTherapyDesc: "Lámparas infrarrojas y dispositivos de terapia térmica",
+    electrotherapy: "Electrónica",
+    electrotherapyDesc: "Dispositivos electrónicos y gadgets",
+    recovery: "Fitness",
+    recoveryDesc: "Equipamiento de fitness y bienestar",
+    heatTherapy: "Hogar",
+    "heat-therapy": "Hogar",
+    heatTherapyDesc: "Productos y accesorios para el hogar",
     exercise: "Equipo de Ejercicio",
-    exerciseDesc: "Pelotas terapéuticas, bandas y herramientas de rehabilitación",
-    massage: "Terapia de Masaje",
-    massageDesc: "Aceites profesionales, piedras y herramientas de terapia",
+    exerciseDesc: "Equipamiento deportivo y accesorios",
+    massage: "Masaje y Bienestar",
+    massageDesc: "Aceites profesionales, piedras y herramientas de bienestar",
     skincare: "Cuidado Profesional de la Piel",
     skincareDesc: "Sueros anti-edad, mascarillas y productos dermatológicos",
     beautyTech: "Tecnología de Belleza",
     "beauty-tech": "Tecnología de Belleza",
-    beautyTechDesc: "Máscaras de terapia LED y dispositivos avanzados para el cuidado de la piel",
+    beautyTechDesc: "Máscaras LED y dispositivos avanzados para el cuidado de la piel",
     aromatherapy: "Aromaterapia",
     aromatherapyDesc: "Difusores de aceites esenciales y productos de bienestar aromático",
     furniture: "Mobiliario Profesional",
     furnitureDesc: "Mesas de tratamiento, sillas y equipos de clínica",
-    traditionalTherapy: "Terapia Tradicional",
-    "traditional-therapy": "Terapia Tradicional",
-    traditionalTherapyDesc: "Sets de ventosas y herramientas de sanación tradicional",
+    traditionalTherapy: "Accesorios",
+    "traditional-therapy": "Accesorios",
+    traditionalTherapyDesc: "Accesorios variados y herramientas prácticas",
     wearables: "Tecnología Portátil",
     wearablesDesc: "Rastreadores de fitness inteligentes y dispositivos de salud portátiles",
     kitchen: "Cocina y Bienestar",

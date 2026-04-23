@@ -9,6 +9,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useCurrency } from "../contexts/CurrencyContext";
 import { NotificationBell } from "./Notifications/NotificationBell";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { GenStoreLogo } from "./GenStoreLogo";
 
 interface User {
   id: string;
@@ -138,31 +139,8 @@ export function Header({
               onClick={handleLogoClick}
               className="flex items-center gap-1 xxs:gap-2 sm:gap-3 hover:opacity-80 transition-opacity cursor-pointer"
             >
-            <div className="bg-emerald-500 dark:bg-emerald-600 p-1.5 xxs:p-2 sm:p-3 rounded-lg xxs:rounded-xl flex items-center justify-center">
-              <svg
-                className="w-4 h-4 xxs:w-5 xxs:h-5 sm:w-6 sm:h-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                role="img"
-                aria-label="GenStore logo"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.317a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-            </div>
-            <div className="header-logo-responsive flex flex-col">
-              <h1 className="font-bold text-foreground text-xs xxs:text-sm xs:text-base sm:text-xl lg:text-2xl leading-tight">
-                GenStore
-              </h1>
-              <span className="text-xs xxs:text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-medium hidden sm:block">
-                Tu tienda online
-              </span>
-            </div>
+            <GenStoreLogo size={32} className="xxs:hidden" />
+            <GenStoreLogo size={36} showText textClassName="text-base sm:text-xl lg:text-2xl" className="hidden xxs:inline-flex" />
             </button>
           </div>
 

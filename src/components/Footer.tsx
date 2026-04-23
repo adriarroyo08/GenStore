@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import svgPaths from "../imports/svg-vnih5l184e";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Zap, Heart, Sparkles, Waves, Info, Mail, HelpCircle, MessageCircle, Truck, RotateCcw, Shield, FileText, Instagram, Facebook, Twitter } from "lucide-react";
+import { GenStoreLogo } from "./GenStoreLogo";
 
 interface FooterProps {
   onAboutClick?: () => void;
@@ -68,9 +68,9 @@ export function Footer({
     <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 opacity-10" aria-hidden="true">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-emerald-500 rounded-full blur-3xl"></div>
-        <div className="absolute top-32 right-20 w-24 h-24 bg-teal-500 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-green-500 rounded-full blur-3xl"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-violet-500 rounded-full blur-3xl"></div>
+        <div className="absolute top-32 right-20 w-24 h-24 bg-indigo-500 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-violet-600 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
@@ -86,31 +86,7 @@ export function Footer({
                 aria-label="Ir a inicio - GenStore"
                 className="flex items-center gap-3 mb-6 group transition-all duration-300 hover:opacity-80"
               >
-                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center p-0 rounded-xl shrink-0 w-12 h-12 shadow-lg transform group-hover:scale-105 transition-transform duration-300">
-                  <div className="relative shrink-0 w-6 h-6">
-                    <svg
-                      className="block w-full h-full"
-                      fill="none"
-                      preserveAspectRatio="none"
-                      viewBox="0 0 20 20"
-                      aria-hidden="true"
-                    >
-                      <g id="Zap">
-                        <path
-                          d={svgPaths.p8893f00}
-                          id="Vector"
-                          stroke="white"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="1.66667"
-                        />
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-                <div className="font-bold text-2xl text-white">
-                  GenStore
-                </div>
+                <GenStoreLogo size={44} showText textVariant="light" textClassName="text-2xl" />
               </button>
               <div className="text-gray-300 leading-relaxed max-w-sm mb-6">
                 {t("footer.trustedPartner")}

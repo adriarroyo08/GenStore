@@ -1,7 +1,7 @@
 export const en = {
   // Application
   app: {
-    tagline: "Products and Rehabilitation Equipment"
+    tagline: "Your Trusted Online Store"
   },
 
   // Loading
@@ -184,11 +184,11 @@ export const en = {
 
   // Hero Section
   hero: {
-    title: "Transform Your Health with Professional Products Equipment",
-    subtitle: "Discover the most comprehensive range of specialized products and rehabilitation equipment - from electrotherapy to therapeutic massage, everything you need for wellness and recovery. Free shipping on orders over $50",
+    title: "Discover the Best Products at the Best Prices",
+    subtitle: "Discover our wide range of quality products - from electronics to fashion, everything you need in one place. Free shipping on orders over $50",
     shopNow: "Explore Products",
     learnMore: "Learn More",
-    badge: "Professional Products Equipment",
+    badge: "Quality Products",
     stats: {
       products: "Products",
       customers: "Customers", 
@@ -236,7 +236,7 @@ export const en = {
     },
     additionalFeatures: {
       title: "Additional Features",
-      subtitle: "More reasons to choose GenStore as your favorite products and rehabilitation store"
+      subtitle: "More reasons to choose GenStore as your favorite online store"
     },
     features: {
       easyReturns: "Easy 30-day returns",
@@ -248,7 +248,7 @@ export const en = {
     },
     cta: {
       title: "Ready to Get Started?",
-      subtitle: "Join thousands of satisfied customers who already trust GenStore for their products and rehabilitation needs",
+      subtitle: "Join thousands of satisfied customers who already trust GenStore for their online shopping needs",
       startShopping: "Start Shopping",
       contactUs: "Contact Us"
     },
@@ -274,12 +274,12 @@ export const en = {
     ourStory: "Our Story",
     storyParagraph1: "We're two brothers who've played football our whole lives. From a young age, sport has been how we make sense of the world. But with sport came the injuries: sprains, muscle overload, contractures... and the frustration of not knowing how to properly recover on your own.",
     storyParagraph2: "We spent years looking for ways to take care of our bodies and improve our performance in a healthy way. We tried everything: home products equipment, internet remedies, tools recommended by other athletes. Some worked, many didn't. And it was always hard to find quality products without having to go to a professional clinic.",
-    storyParagraph3: "That's how GenStore was born. We wanted to create the place we wish we'd had: a store where any athlete can find real products and recovery equipment, selected by people who've tried it and know what works. No hype, no empty promises. Just what actually helps.",
+    storyParagraph3: "That's how GenStore was born. We wanted to create the place we wish we'd had: a store where any athlete can find real quality products, selected by people who've tried it and know what works. No hype, no empty promises. Just what actually helps.",
     whyGenStore: "Why GenStore",
     pillar1Title: "Real experience",
     pillar1Description: "We know what it's like to be injured because we've lived it. Every product we sell, we've tested or would test ourselves.",
     pillar2Title: "Healthy performance",
-    pillar2Description: "Improve without shortcuts. We believe in proper recovery and taking care of your body with the right tools, not quick fixes.",
+    pillar2Description: "Improve without shortcuts. We believe in taking care of your body with the right tools, not quick fixes.",
     pillar3Title: "By athletes, for athletes",
     pillar3Description: "We're not a generic store. We select every product thinking about what an independent athlete truly needs.",
     forWho: "Who is GenStore for?",
@@ -290,7 +290,7 @@ export const en = {
     audience3Title: "Those who take care of their body proactively",
     audience3Description: "You don't have to be injured. Preventing, recovering after training, and staying in shape is also part of the game.",
     ctaTitle: "Find what you need",
-    ctaDescription: "Explore our catalog of products and recovery equipment. Selected by athletes, for athletes.",
+    ctaDescription: "Explore our catalog of quality products. Selected by athletes, for athletes.",
     exploreCatalog: "Explore Catalog",
     shopNow: "Shop Now"
   },
@@ -367,48 +367,48 @@ export const en = {
     noCategoriesDesc: "Categories will appear here when available",
 
     // New Products Subcategories
-    electroterapia: "Electrotherapy",
-    electroterapiaDesc: "TENS, EMS units, ultrasound and electrical stimulation devices for pain relief and muscle rehabilitation",
+    electroterapia: "Electronics",
+    electroterapiaDesc: "Electronic devices and everyday gadgets",
 
-    termoterapia: "Heat Therapy",
-    termoterapiaDesc: "Infrared lamps, thermal pads and therapeutic heat devices for pain treatment and muscle relaxation",
+    termoterapia: "Home",
+    termoterapiaDesc: "Home products and accessories for comfort and decoration",
 
-    "masaje-terapeutico": "Therapeutic Massage",
-    "masaje-terapeuticoDesc": "Percussive massage guns, foam rollers, massage balls and professional tools for manual therapy",
+    "masaje-terapeutico": "Wellness",
+    "masaje-terapeuticoDesc": "Wellness, relaxation and personal care products",
 
-    rehabilitacion: "Rehabilitation",
-    rehabilitacionDesc: "Therapeutic exercise equipment, elastic bands, balance balls and specialized recovery materials",
+    rehabilitacion: "Sports",
+    rehabilitacionDesc: "Sports equipment and exercise accessories",
 
-    ortopedia: "Orthopedics",
-    ortopediaDesc: "Therapeutic knee braces, ergonomic crutches, joint supports and specialized orthopedic products",
+    ortopedia: "Health",
+    ortopediaDesc: "Health products, joint supports and specialized accessories",
 
     diagnostico: "Diagnostics",
     diagnosticoDesc: "Biomechanical measurement equipment, postural analysis and professional assessment tools",
 
     // Legacy categories (for backward compatibility)
-    electrotherapy: "Electrotherapy",
-    electrotherapyDesc: "TENS units, ultrasound and electrical therapy devices",
-    recovery: "Recovery & Rehabilitation",
-    recoveryDesc: "Compression therapy and recovery equipment",
-    heatTherapy: "Heat Therapy",
-    "heat-therapy": "Heat Therapy",
-    heatTherapyDesc: "Infrared lamps and warming therapy devices",
+    electrotherapy: "Electronics",
+    electrotherapyDesc: "Electronic devices and gadgets",
+    recovery: "Fitness",
+    recoveryDesc: "Fitness equipment and wellness gear",
+    heatTherapy: "Home",
+    "heat-therapy": "Home",
+    heatTherapyDesc: "Home products and accessories",
     exercise: "Exercise Equipment",
-    exerciseDesc: "Therapeutic exercise balls, bands and rehabilitation tools",
-    massage: "Massage Therapy",
-    massageDesc: "Professional massage oils, stones and therapy tools",
+    exerciseDesc: "Sports equipment and accessories",
+    massage: "Massage & Wellness",
+    massageDesc: "Professional massage oils, stones and wellness tools",
     skincare: "Professional Skincare",
     skincareDesc: "Anti-aging serums, masks and dermatological products",
     beautyTech: "Beauty Technology",
     "beauty-tech": "Beauty Technology",
-    beautyTechDesc: "LED therapy masks and advanced skincare devices",
+    beautyTechDesc: "LED masks and advanced skincare devices",
     aromatherapy: "Aromatherapy",
     aromatherapyDesc: "Essential oil diffusers and aromatic wellness products",
     furniture: "Professional Furniture",
     furnitureDesc: "Treatment tables, chairs and clinic equipment",
-    traditionalTherapy: "Traditional Therapy",
-    "traditional-therapy": "Traditional Therapy",
-    traditionalTherapyDesc: "Cupping sets and traditional healing tools",
+    traditionalTherapy: "Accessories",
+    "traditional-therapy": "Accessories",
+    traditionalTherapyDesc: "Assorted accessories and practical tools",
     wearables: "Wearable Technology",
     wearablesDesc: "Smart fitness trackers and wearable health devices",
     kitchen: "Kitchen & Wellness",

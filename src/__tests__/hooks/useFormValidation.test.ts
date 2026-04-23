@@ -403,37 +403,37 @@ describe('useFormValidation', () => {
   describe('validación de fecha futura', () => {
     it('rechaza fecha en el pasado', () => {
       const schema: ValidationSchema = {
-        fechaCita: [{ type: 'futureDate' }],
+        fechaEntrega: [{ type: 'futureDate' }],
       }
 
       const { result } = renderHook(() =>
-        useFormValidation({ fechaCita: '' }, schema)
+        useFormValidation({ fechaEntrega: '' }, schema)
       )
 
       act(() => {
-        result.current.setValue('fechaCita', '2020-01-01')
+        result.current.setValue('fechaEntrega', '2020-01-01')
       })
 
-      expect(result.current.errors.fechaCita).toBe('La fecha no puede ser en el pasado')
+      expect(result.current.errors.fechaEntrega).toBe('La fecha no puede ser en el pasado')
     })
 
     it('acepta fecha futura', () => {
       const schema: ValidationSchema = {
-        fechaCita: [{ type: 'futureDate' }],
+        fechaEntrega: [{ type: 'futureDate' }],
       }
 
       const { result } = renderHook(() =>
-        useFormValidation({ fechaCita: '' }, schema)
+        useFormValidation({ fechaEntrega: '' }, schema)
       )
 
       const futureDate = new Date()
       futureDate.setDate(futureDate.getDate() + 1)
 
       act(() => {
-        result.current.setValue('fechaCita', futureDate.toISOString())
+        result.current.setValue('fechaEntrega', futureDate.toISOString())
       })
 
-      expect(result.current.errors.fechaCita).toBeNull()
+      expect(result.current.errors.fechaEntrega).toBeNull()
     })
   })
 
