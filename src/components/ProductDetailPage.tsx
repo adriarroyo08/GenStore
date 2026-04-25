@@ -151,7 +151,7 @@ export function ProductDetailPage({
 
       {/* Main content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
 
           {/* ===== LEFT: Image gallery ===== */}
           <div className="space-y-3">
@@ -342,10 +342,10 @@ export function ProductDetailPage({
                 disabled={!inStock || cartState === 'loading'}
                 className={`hidden sm:flex w-full items-center justify-center gap-2 h-12 rounded-xl font-semibold text-base transition-all duration-200 shadow-sm disabled:cursor-not-allowed ${
                   cartState === 'done'
-                    ? 'bg-emerald-500 text-white scale-[1.02]'
+                    ? 'bg-green-500 text-white scale-[1.02]'
                     : cartState === 'loading'
-                    ? 'bg-primary/80 text-primary-foreground'
-                    : 'bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98] disabled:opacity-50'
+                    ? 'bg-blue-600/80 text-white'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-[0.98] disabled:opacity-50'
                 }`}
               >
                 {cartState === 'loading' ? (
@@ -359,7 +359,7 @@ export function ProductDetailPage({
               <button
                 onClick={handleBuyNow}
                 disabled={!inStock || cartState === 'loading'}
-                className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-emerald-600 text-white font-semibold text-base hover:bg-emerald-700 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-foreground hover:opacity-90 text-background font-semibold text-base active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
               >
                 <Zap className="w-5 h-5" />
                 {t('product.buyNow')}
@@ -383,7 +383,7 @@ export function ProductDetailPage({
                   <span className="text-sm font-medium text-foreground">Avísame cuando esté disponible</span>
                 </div>
                 {notifyState === 'done' ? (
-                  <p className="text-sm text-emerald-600 flex items-center gap-1.5">
+                  <p className="text-sm text-green-600 flex items-center gap-1.5">
                     <Check className="w-4 h-4" /> Te avisaremos cuando vuelva a estar en stock
                   </p>
                 ) : (
@@ -420,9 +420,9 @@ export function ProductDetailPage({
             <div className="space-y-2 pt-2">
               {/* Dynamic shipping highlight */}
               {product.price >= 50 ? (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/30">
-                  <Truck className="w-4 h-4 text-emerald-600" />
-                  <span className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">Envío gratis en este producto</span>
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30">
+                  <Truck className="w-4 h-4 text-green-600" />
+                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">Envío gratis en este producto</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/40">
@@ -498,7 +498,7 @@ export function ProductDetailPage({
                   <ul className="space-y-2">
                     {product.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <svg className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
                         <span className="text-foreground">{feature}</span>
@@ -532,7 +532,7 @@ export function ProductDetailPage({
                 <dl className="space-y-2 text-sm">
                   <div className="flex justify-between py-1.5 border-b border-border/50">
                     <dt className="text-muted-foreground">Stock</dt>
-                    <dd className={`font-medium ${inStock ? 'text-emerald-600' : 'text-red-500'}`}>{inStock ? `${stock} ${language === 'es' ? 'uds.' : 'units'}` : t('product.outOfStock')}</dd>
+                    <dd className={`font-medium ${inStock ? 'text-green-600' : 'text-red-500'}`}>{inStock ? `${stock} ${language === 'es' ? 'uds.' : 'units'}` : t('product.outOfStock')}</dd>
                   </div>
                   <div className="flex justify-between py-1.5 border-b border-border/50">
                     <dt className="text-muted-foreground">{t('product.shipping')}</dt>
@@ -607,11 +607,11 @@ export function ProductDetailPage({
           disabled={!inStock || cartState === 'loading'}
           className={`w-full flex items-center justify-center gap-2 rounded-xl font-semibold min-h-[48px] transition-colors disabled:cursor-not-allowed ${
             cartState === 'done'
-              ? 'bg-emerald-500 text-white'
+              ? 'bg-green-500 text-white'
               : cartState === 'loading'
-              ? 'bg-primary/80 text-primary-foreground'
+              ? 'bg-blue-600/80 text-white'
               : inStock
-              ? 'bg-emerald-500 hover:bg-emerald-600 text-white disabled:opacity-50'
+              ? 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
               : 'bg-muted text-muted-foreground opacity-50'
           }`}
         >

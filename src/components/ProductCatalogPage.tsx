@@ -281,7 +281,7 @@ export function ProductCatalogPage({
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16">
 
         {/* Header */}
         <div className="mb-6">
@@ -451,7 +451,7 @@ export function ProductCatalogPage({
             ) : (
               <>
                 {viewMode === 'grid' ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
                     {displayed.map((product) => (
                       <ProductCard
                         key={product.id}
