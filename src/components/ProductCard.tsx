@@ -62,8 +62,8 @@ export function ProductCard({
 
   return (
     <>
-    <article className={`group bg-card rounded-xl overflow-hidden border hover:shadow-md transition-all duration-300 flex flex-col h-full ${
-      showRipple ? 'border-emerald-500 shadow-lg shadow-emerald-500/20 scale-[1.02]' : 'border-border'
+    <article className={`group bg-card rounded-2xl overflow-hidden transition-all duration-300 flex flex-col h-full hover:shadow-xl hover:shadow-black/5 ${
+      showRipple ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/10 scale-[1.01]' : ''
     }`}>
       {/* Image */}
       <div
@@ -74,7 +74,7 @@ export function ProductCard({
           <img
             src={imageUrl}
             alt={product.name}
-            className="w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
         ) : (
@@ -85,7 +85,7 @@ export function ProductCard({
 
         {/* Discount badge */}
         {hasDiscount && discountPercent > 0 && (
-          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+          <span className="absolute top-3 left-3 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 text-xs font-bold px-2 py-1 rounded-lg">
             -{discountPercent}%
           </span>
         )}
@@ -125,6 +125,19 @@ export function ProductCard({
         {!inStock && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <span className="bg-white text-black text-sm font-medium px-3 py-1 rounded-md">Agotado</span>
+          </div>
+        )}
+
+        {/* Slide-up add button on hover */}
+        {inStock && onAddToCart && (
+          <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/60 to-transparent p-4 pt-8">
+            <button
+              onClick={handleAddToCart}
+              disabled={cartState !== 'idle'}
+              className="w-full bg-white text-black py-2.5 rounded-xl text-sm font-semibold hover:bg-neutral-100 transition-colors"
+            >
+              {cartState === 'loading' ? 'Añadiendo...' : cartState === 'done' ? '✓ Añadido' : t('product.addToCart')}
+            </button>
           </div>
         )}
       </div>
@@ -173,31 +186,6 @@ export function ProductCard({
             </span>
           </div>
 
-          {inStock && onAddToCart && (
-            <button
-              onClick={handleAddToCart}
-              disabled={cartState !== 'idle'}
-              className={`relative flex items-center justify-center w-10 h-10 rounded-lg shadow-sm overflow-hidden transition-all duration-300 ${
-                cartState === 'done'
-                  ? 'bg-emerald-500 text-white scale-125 shadow-emerald-500/40 shadow-md'
-                  : cartState === 'loading'
-                  ? 'bg-primary/70 text-primary-foreground scale-95'
-                  : 'bg-primary text-primary-foreground hover:opacity-90 hover:shadow-md active:scale-90'
-              }`}
-              aria-label={`Agregar ${product.name} al carrito`}
-            >
-              {cartState === 'done' && (
-                <span className="absolute inset-0 animate-ping bg-emerald-400 rounded-lg opacity-30" />
-              )}
-              {cartState === 'loading' ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : cartState === 'done' ? (
-                <Check className="w-5 h-5 animate-[bounceIn_0.4s_ease-out]" />
-              ) : (
-                <ShoppingCart className="w-4 h-4" />
-              )}
-            </button>
-          )}
         </div>
       </div>
     </article>
