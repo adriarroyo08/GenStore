@@ -8,6 +8,8 @@ import { stripePromise } from '../lib/stripe';
 import { apiClient } from '../lib/apiClient';
 import { usePoints } from '../hooks/usePoints';
 import { PHONE_PREFIXES, SPAIN_PROVINCES, flagUrl } from '../constants/locationData';
+import { motion, AnimatePresence } from 'motion/react';
+import { Truck, FileText, CreditCard, Check } from 'lucide-react';
 
 interface CheckoutPageProps {
   cart: CartItem[];
@@ -16,6 +18,44 @@ interface CheckoutPageProps {
   onBackToCart: () => void;
   onContinueToPayment: () => void;
   onOrderComplete: (orderId: string) => void;
+}
+
+function CheckoutStepper({ currentStep }: { currentStep: number }) {
+  const steps = [
+    { icon: Truck, label: 'Envío' },
+    { icon: FileText, label: 'Facturación' },
+    { icon: CreditCard, label: 'Pago' },
+  ];
+
+  return (
+    <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10">
+      {steps.map((step, i) => {
+        const StepIcon = step.icon;
+        const stepNum = i + 1;
+        const isActive = currentStep === stepNum;
+        const isCompleted = currentStep > stepNum;
+        return (
+          <React.Fragment key={i}>
+            {i > 0 && (
+              <div className={`hidden sm:block w-12 h-px ${isCompleted ? 'bg-blue-600' : 'bg-border'}`} />
+            )}
+            <div className="flex flex-col items-center gap-1.5">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                isCompleted ? 'bg-blue-600 text-white' :
+                isActive ? 'bg-blue-600 text-white ring-4 ring-blue-100 dark:ring-blue-900' :
+                'bg-muted text-muted-foreground'
+              }`}>
+                {isCompleted ? <Check className="w-4 h-4" /> : <StepIcon className="w-4 h-4" />}
+              </div>
+              <span className={`text-xs font-medium ${isActive || isCompleted ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {step.label}
+              </span>
+            </div>
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
 }
 
 export function CheckoutPage({
@@ -371,46 +411,20 @@ export function CheckoutPage({
           </div>
 
           {/* Progress Steps */}
-          <div className="mb-8">
-            <div className="flex items-center justify-center">
-              {[1, 2, 3].map((step, index) => (
-                <div key={step} className="flex items-center" aria-current={currentStep === step ? 'step' : undefined}>
-                  <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-                    currentStep >= step
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400'
-                  }`}>
-                    {currentStep > step ? (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (
-                      step
-                    )}
-                  </div>
-                  {index < 2 && (
-                    <div className={`w-16 h-1 mx-4 ${
-                      currentStep > step
-                        ? 'bg-blue-500'
-                        : 'bg-gray-300 dark:bg-gray-600'
-                    }`} />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-center mt-2">
-              <div className="flex space-x-20 text-sm text-gray-600 dark:text-gray-400">
-                <span>{t('checkout.shipping')}</span>
-                <span>{t('checkout.payment')}</span>
-                <span>{t('checkout.confirmation')}</span>
-              </div>
-            </div>
-          </div>
+          <CheckoutStepper currentStep={currentStep} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {/* Main Checkout Form */}
             <div className="lg:col-span-2">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
 
               {/* Step 1: Shipping Information */}
               {currentStep === 1 && (
@@ -838,6 +852,8 @@ export function CheckoutPage({
                   </button>
                 </div>
               )}
+                </motion.div>
+              </AnimatePresence>
             </div>
 
             {/* Order Summary */}
