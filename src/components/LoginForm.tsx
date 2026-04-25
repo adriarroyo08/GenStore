@@ -35,8 +35,22 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   const passwordStrength = password.length > 0 ? evaluatePasswordStrength(password) : null
 
-  const strengthColors = ['#dc2626', '#f97316', '#eab308', '#22c55e', '#16a34a']
-  const strengthColor = passwordStrength ? strengthColors[passwordStrength.score] : '#e2e8f0'
+  const strengthColorClasses = [
+    'bg-red-500',
+    'bg-orange-500',
+    'bg-yellow-500',
+    'bg-green-500',
+    'bg-green-600',
+  ]
+  const strengthTextColors = [
+    'text-red-500',
+    'text-orange-500',
+    'text-yellow-500',
+    'text-green-500',
+    'text-green-600',
+  ]
+  const strengthColorClass = passwordStrength ? strengthColorClasses[passwordStrength.score] : ''
+  const strengthTextClass = passwordStrength ? strengthTextColors[passwordStrength.score] : ''
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -62,18 +76,18 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
+      <div className="bg-card rounded-2xl shadow-lg border border-border p-6 sm:p-8 max-w-md mx-auto w-full">
         {/* Header */}
-        <div style={styles.header}>
-          <div style={styles.logo}>🛍️</div>
-          <h1 style={styles.title}>GenStore</h1>
-          <p style={styles.subtitle}>Tienda Online</p>
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-2" aria-hidden="true">🛍️</div>
+          <h1 className="text-2xl font-bold text-foreground">GenStore</h1>
+          <p className="text-sm text-muted-foreground">Tienda Online</p>
         </div>
 
         {/* Mensaje de bloqueo */}
         {isLocked && lockTimeMs !== null && (
-          <div style={styles.alertError} role="alert">
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-xl px-4 py-3 text-sm mb-4" role="alert">
             <strong>Cuenta temporalmente bloqueada.</strong>
             <br />
             Demasiados intentos fallidos. Intenta en{' '}
@@ -83,27 +97,27 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
         {/* Error del servidor */}
         {serverError && !isLocked && (
-          <div style={styles.alertError} role="alert">
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-xl px-4 py-3 text-sm mb-4" role="alert">
             {serverError}
             {email && remainingAttempts < 5 && remainingAttempts > 0 && (
-              <div style={styles.attemptsWarning}>
+              <div className="mt-1.5 text-xs font-medium">
                 Intentos restantes: <strong>{remainingAttempts}</strong>
               </div>
             )}
           </div>
         )}
 
-        {/* Éxito */}
+        {/* Exito */}
         {successMessage && (
-          <div style={styles.alertSuccess} role="status">
+          <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 rounded-xl px-4 py-3 text-sm mb-4" role="status">
             {successMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate style={styles.form}>
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {/* Campo Email */}
-          <div style={styles.fieldGroup}>
-            <label htmlFor="email" style={styles.label}>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium mb-1.5">
               Correo electrónico
             </label>
             <input
@@ -115,10 +129,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 setEmail(e.target.value)
                 setErrors((prev) => ({ ...prev, email: '' }))
               }}
-              style={{
-                ...styles.input,
-                ...(errors.email ? styles.inputError : {}),
-              }}
+              className={`w-full border rounded-xl px-4 py-3 bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm text-foreground placeholder:text-muted-foreground transition-colors ${
+                errors.email ? 'border-destructive' : 'border-input'
+              }`}
               placeholder="usuario@ejemplo.com"
               autoComplete="email"
               autoFocus
@@ -129,18 +142,18 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               maxLength={254}
             />
             {errors.email && (
-              <span id="email-error" style={styles.fieldError} role="alert">
+              <span id="email-error" className="text-xs text-destructive mt-1 block" role="alert">
                 {errors.email}
               </span>
             )}
           </div>
 
-          {/* Campo Contraseña */}
-          <div style={styles.fieldGroup}>
-            <label htmlFor="password" style={styles.label}>
+          {/* Campo Contrasena */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium mb-1.5">
               Contraseña
             </label>
-            <div style={styles.passwordWrapper}>
+            <div className="relative">
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
@@ -149,11 +162,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                   setPassword(e.target.value)
                   setErrors((prev) => ({ ...prev, password: '' }))
                 }}
-                style={{
-                  ...styles.input,
-                  ...styles.passwordInput,
-                  ...(errors.password ? styles.inputError : {}),
-                }}
+                className={`w-full border rounded-xl px-4 py-3 pr-12 bg-background focus:outline-none focus:ring-2 focus:ring-ring text-sm text-foreground placeholder:text-muted-foreground transition-colors ${
+                  errors.password ? 'border-destructive' : 'border-input'
+                }`}
                 placeholder="Tu contraseña"
                 autoComplete="current-password"
                 disabled={isLocked || isLoading}
@@ -165,7 +176,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                style={styles.showPasswordBtn}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors text-lg leading-none"
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 tabIndex={-1}
               >
@@ -173,27 +184,25 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               </button>
             </div>
             {errors.password && (
-              <span id="password-error" style={styles.fieldError} role="alert">
+              <span id="password-error" className="text-xs text-destructive mt-1 block" role="alert">
                 {errors.password}
               </span>
             )}
 
             {/* Indicador de fortaleza */}
             {passwordStrength && (
-              <div style={styles.strengthContainer}>
-                <div style={styles.strengthBars}>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex gap-1 flex-1">
                   {[0, 1, 2, 3, 4].map((i) => (
                     <div
                       key={i}
-                      style={{
-                        ...styles.strengthBar,
-                        backgroundColor:
-                          i <= passwordStrength.score ? strengthColor : '#e2e8f0',
-                      }}
+                      className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
+                        i <= passwordStrength.score ? strengthColorClass : 'bg-muted-foreground/20'
+                      }`}
                     />
                   ))}
                 </div>
-                <span style={{ ...styles.strengthLabel, color: strengthColor }}>
+                <span className={`text-xs font-semibold whitespace-nowrap ${strengthTextClass}`}>
                   {passwordStrength.label}
                 </span>
               </div>
@@ -201,227 +210,31 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           </div>
 
           {/* Recordarme */}
-          <div style={styles.checkboxGroup}>
+          <div className="flex items-center gap-2">
             <input
               id="recordarme"
               type="checkbox"
               checked={recordarme}
               onChange={(e) => setRecordarme(e.target.checked)}
               disabled={isLocked || isLoading}
-              style={styles.checkbox}
+              className="w-4 h-4 cursor-pointer accent-foreground"
             />
-            <label htmlFor="recordarme" style={styles.checkboxLabel}>
+            <label htmlFor="recordarme" className="text-sm text-muted-foreground cursor-pointer">
               Recordarme en este dispositivo
             </label>
           </div>
 
-          {/* Botón de submit */}
+          {/* Boton de submit */}
           <button
             type="submit"
             disabled={isLocked || isLoading}
-            style={{
-              ...styles.submitBtn,
-              ...(isLocked || isLoading ? styles.submitBtnDisabled : {}),
-            }}
+            className="w-full bg-foreground text-background rounded-xl py-3 font-semibold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-1"
             aria-busy={isLoading}
           >
             {isLoading ? 'Verificando...' : 'Iniciar sesión'}
           </button>
         </form>
-
-        {/* Info de demo */}
-        <div style={styles.demoInfo}>
-          <p style={styles.demoTitle}>Credenciales de demo:</p>
-          <code style={styles.demoCode}>admin@genstore.com / Admin123!</code>
-          <br />
-          <code style={styles.demoCode}>user@genstore.com / User123!</code>
-        </div>
       </div>
     </div>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f0f9ff',
-    padding: '1rem',
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 'clamp(1.25rem, 5vw, 2.5rem)',
-    width: '100%',
-    maxWidth: 420,
-    boxShadow: '0 10px 40px rgba(0,0,0,0.12)',
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '1.5rem',
-  },
-  logo: {
-    fontSize: 48,
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 700,
-    color: '#1e293b',
-    margin: '0 0 4px',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#64748b',
-    margin: 0,
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  fieldGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#374151',
-  },
-  input: {
-    padding: '10px 14px',
-    border: '1.5px solid #e2e8f0',
-    borderRadius: 8,
-    fontSize: 15,
-    color: '#1e293b',
-    outline: 'none',
-    transition: 'border-color 0.2s',
-    width: '100%',
-    boxSizing: 'border-box',
-  },
-  inputError: {
-    borderColor: '#dc2626',
-  },
-  passwordWrapper: {
-    position: 'relative',
-  },
-  passwordInput: {
-    paddingRight: 44,
-  },
-  showPasswordBtn: {
-    position: 'absolute',
-    right: 12,
-    top: '50%',
-    transform: 'translateY(-50%)',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: 18,
-    padding: 0,
-    lineHeight: 1,
-  },
-  fieldError: {
-    fontSize: 12,
-    color: '#dc2626',
-    marginTop: 2,
-  },
-  strengthContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 6,
-  },
-  strengthBars: {
-    display: 'flex',
-    gap: 4,
-    flex: 1,
-  },
-  strengthBar: {
-    height: 4,
-    flex: 1,
-    borderRadius: 2,
-    transition: 'background-color 0.3s',
-  },
-  strengthLabel: {
-    fontSize: 11,
-    fontWeight: 600,
-    whiteSpace: 'nowrap',
-  },
-  checkboxGroup: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-  },
-  checkbox: {
-    width: 16,
-    height: 16,
-    cursor: 'pointer',
-  },
-  checkboxLabel: {
-    fontSize: 14,
-    color: '#475569',
-    cursor: 'pointer',
-  },
-  submitBtn: {
-    backgroundColor: '#3b82f6',
-    color: '#ffffff',
-    border: 'none',
-    borderRadius: 8,
-    padding: '12px',
-    fontSize: 15,
-    fontWeight: 600,
-    cursor: 'pointer',
-    marginTop: 4,
-    transition: 'background-color 0.2s',
-  },
-  submitBtnDisabled: {
-    backgroundColor: '#93c5fd',
-    cursor: 'not-allowed',
-  },
-  alertError: {
-    backgroundColor: '#fef2f2',
-    border: '1px solid #fecaca',
-    borderRadius: 8,
-    padding: '12px 14px',
-    fontSize: 14,
-    color: '#dc2626',
-    marginBottom: '1rem',
-    lineHeight: 1.5,
-  },
-  alertSuccess: {
-    backgroundColor: '#f0fdf4',
-    border: '1px solid #bbf7d0',
-    borderRadius: 8,
-    padding: '12px 14px',
-    fontSize: 14,
-    color: '#16a34a',
-    marginBottom: '1rem',
-  },
-  attemptsWarning: {
-    marginTop: 6,
-    fontSize: 13,
-    color: '#9b1c1c',
-  },
-  demoInfo: {
-    marginTop: '1.5rem',
-    padding: '12px',
-    backgroundColor: '#f8fafc',
-    borderRadius: 8,
-    fontSize: 12,
-    color: '#64748b',
-    textAlign: 'center',
-  },
-  demoTitle: {
-    margin: '0 0 6px',
-    fontWeight: 600,
-  },
-  demoCode: {
-    fontSize: 11,
-    color: '#475569',
-    fontFamily: 'monospace',
-  },
 }
