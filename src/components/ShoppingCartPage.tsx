@@ -157,7 +157,7 @@ export function ShoppingCartPage({
             <p className="text-muted-foreground mb-6">{t('cart.emptyCartSubtitle')}</p>
             <button
               onClick={onContinueShopping}
-              className="bg-blue-500 dark:bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white rounded-full px-8 py-3 font-semibold hover:bg-blue-700 transition-colors"
             >
               {t('cart.continueShopping')}
             </button>
@@ -197,7 +197,7 @@ export function ShoppingCartPage({
                   return (
                   <li
                     key={itemKey}
-                    className={`bg-card relative rounded-xl shadow-sm border border-border shrink-0 w-full transition-all duration-300 ease-out ${
+                    className={`bg-card relative rounded-2xl shadow-sm hover:shadow-md shrink-0 w-full transition-all duration-300 ease-out ${
                       isRemoving ? 'opacity-0 -translate-x-8 scale-95 max-h-0 overflow-hidden border-transparent mb-0 p-0' : 'opacity-100 translate-x-0 scale-100'
                     }`}
                     style={{ transitionProperty: 'opacity, transform, max-height, margin, padding, border-color' }}
@@ -266,11 +266,11 @@ export function ShoppingCartPage({
                             <div className="box-border content-stretch flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-0 relative shrink-0 w-full">
                               
                               {/* Quantity Controls */}
-                              <div className="box-border content-stretch flex flex-row items-center justify-start p-0 relative rounded-md shrink-0 border border-border">
+                              <div className="box-border content-stretch flex flex-row items-center gap-2 justify-start p-0 relative shrink-0">
                                 <button
                                   onClick={() => handleQuantityDecrease(item.id, item.quantity, item.selectedColor)}
                                   aria-label="Reducir cantidad"
-                                  className="bg-card box-border content-stretch flex flex-row items-center justify-center p-0 relative shrink-0 w-9 h-9 min-w-[36px] min-h-[36px] hover:bg-accent transition-colors border-r border-border"
+                                  className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors text-sm"
                                 >
                                   <div className="relative shrink-0 size-3.5">
                                     <svg
@@ -288,7 +288,7 @@ export function ShoppingCartPage({
                                     </svg>
                                   </div>
                                 </button>
-                                <div className="bg-card box-border content-stretch flex flex-row h-8 items-center justify-center p-0 relative shrink-0 w-[50px] border-r border-border">
+                                <div className="flex items-center justify-center w-8">
                                   <div className="font-semibold text-sm text-foreground text-nowrap">
                                     {item.quantity}
                                   </div>
@@ -297,7 +297,7 @@ export function ShoppingCartPage({
                                   onClick={() => handleQuantityIncrease(item.id, item.quantity, item.stock, item.selectedColor)}
                                   disabled={item.quantity >= item.stock}
                                   aria-label="Aumentar cantidad"
-                                  className={`bg-card box-border content-stretch flex flex-row items-center justify-center p-0 relative shrink-0 w-9 h-9 min-w-[36px] min-h-[36px] transition-colors ${item.quantity >= item.stock ? 'opacity-40 cursor-not-allowed' : 'hover:bg-accent'}`}
+                                  className={`w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors text-sm ${item.quantity >= item.stock ? 'opacity-40 cursor-not-allowed' : ''}`}
                                 >
                                   <div className="relative shrink-0 size-3.5">
                                     <svg
@@ -424,7 +424,7 @@ export function ShoppingCartPage({
               </div>
 
               {/* Order Summary */}
-              <div className="bg-card box-border content-stretch flex flex-col gap-4 sm:gap-6 items-start justify-start p-4 sm:p-6 lg:p-8 relative rounded-xl shadow-sm border border-border shrink-0 w-full lg:w-[400px]">
+              <div className="bg-card box-border content-stretch flex flex-col gap-4 sm:gap-6 items-start justify-start p-4 sm:p-6 lg:p-8 relative rounded-2xl shadow-sm shrink-0 w-full lg:w-[400px] lg:sticky lg:top-24">
                 <div className="font-bold text-xl sm:text-2xl text-foreground relative shrink-0 w-full">
                   {t('cart.orderSummary')}
                 </div>
@@ -455,7 +455,7 @@ export function ShoppingCartPage({
                     <div className="font-medium text-muted-foreground">
                       {t('cart.shipping')}
                     </div>
-                    <div className="font-semibold text-emerald-500 text-nowrap">
+                    <div className="font-semibold text-blue-600 text-nowrap">
                       {t('cart.free')}
                     </div>
                   </div>
@@ -481,7 +481,7 @@ export function ShoppingCartPage({
                 {/* Checkout Button */}
                 <button
                   onClick={onProceedToCheckout}
-                  className="bg-blue-500 dark:bg-blue-600 text-white w-full py-4 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors font-semibold text-lg"
+                  className="w-full bg-foreground text-background rounded-xl py-3.5 font-semibold hover:opacity-90 transition-all"
                 >
                   {t('cart.proceedToCheckout')}
                 </button>
