@@ -30,12 +30,12 @@ export function GenStoreLogo({
       >
         <defs>
           <linearGradient id="gs-bag" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#7c3aed" />
-            <stop offset="100%" stopColor="#6366f1" />
+            <stop offset="0%" stopColor="#2563EB" />
+            <stop offset="100%" stopColor="#1D4ED8" />
           </linearGradient>
           <linearGradient id="gs-accent" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#a78bfa" />
-            <stop offset="100%" stopColor="#818cf8" />
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#2563EB" />
           </linearGradient>
           <linearGradient id="gs-shine" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.35" />
@@ -83,7 +83,7 @@ export function GenStoreLogo({
           className={`font-bold ${
             textVariant === 'light'
               ? 'text-white'
-              : 'bg-gradient-to-r from-violet-600 to-indigo-500 bg-clip-text text-transparent'
+              : 'bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent'
           } ${textClassName}`}
           style={{ fontSize: size * 0.55 }}
         >
