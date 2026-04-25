@@ -220,7 +220,7 @@ export function AccountPage({
     <>
       {message && (
         <div className={`fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg ${
-          message.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+          message.type === 'success' ? 'bg-green-500' : 'bg-red-500'
         } text-white`}>
           {message.text}
         </div>
@@ -268,7 +268,7 @@ export function AccountPage({
                   icon: <MapPin className="w-5 h-5" />,
                   label: t('account.addresses'),
                   value: '—',
-                  accent: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20',
+                  accent: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',
                   onClick: onAddressesClick,
                 },
                 ...(pointsEnabled && userPoints ? [{

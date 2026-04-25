@@ -148,7 +148,7 @@ export function WishlistPage({
               size="sm"
               className={`gap-1.5 transition-all duration-300 ${
                 addAllState === 'done'
-                  ? 'bg-emerald-500 hover:bg-emerald-500 text-white border-emerald-500'
+                  ? 'bg-green-500 hover:bg-green-500 text-white border-green-500'
                   : addAllState === 'loading'
                   ? 'opacity-80'
                   : ''
@@ -264,7 +264,7 @@ export function WishlistPage({
                       variant={state === 'done' ? 'default' : 'outline'}
                       className={`w-full gap-1.5 text-xs relative overflow-hidden transition-all duration-300 min-h-[44px] ${
                         state === 'done'
-                          ? 'bg-emerald-500 hover:bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-500/25'
+                          ? 'bg-green-500 hover:bg-green-500 text-white border-green-500 shadow-md shadow-green-500/25'
                           : state === 'loading'
                           ? 'border-primary/50 scale-95'
                           : ''
@@ -274,7 +274,7 @@ export function WishlistPage({
                     >
                       {state === 'done' && (
                         <motion.span
-                          className="absolute inset-0 bg-emerald-400 rounded-md"
+                          className="absolute inset-0 bg-green-400 rounded-md"
                           initial={{ scale: 0, opacity: 0.4 }}
                           animate={{ scale: 2.5, opacity: 0 }}
                           transition={{ duration: 0.6 }}

@@ -14,7 +14,7 @@ export function SimpleLoadingScreen({ message = 'Loading...' }: SimpleLoadingScr
         </div>
 
         <div>
-          <h2 className="text-xl font-bold bg-gradient-to-r from-violet-600 to-indigo-500 bg-clip-text text-transparent mb-2">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent mb-2">
             GenStore
           </h2>
           <p className="text-muted-foreground">{message}</p>

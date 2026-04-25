@@ -46,7 +46,7 @@ export function LearnMorePage({ onBack, onContactClick }: LearnMorePageProps) {
       icon: <Award className="w-8 h-8" />,
       title: t('learnMore.quality.title'),
       description: t('learnMore.quality.description'),
-      color: 'text-indigo-600 dark:text-indigo-400'
+      color: 'text-blue-600 dark:text-blue-400'
     }
   ];
 
@@ -62,7 +62,7 @@ export function LearnMorePage({ onBack, onContactClick }: LearnMorePageProps) {
   return (
     <section aria-labelledby="learnmore-heading" className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-900 dark:to-slate-800 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-900 dark:to-slate-800 overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <ImageWithFallback
@@ -70,7 +70,7 @@ export function LearnMorePage({ onBack, onContactClick }: LearnMorePageProps) {
             alt="Modern technology workspace"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/80 to-indigo-800/80 dark:from-slate-900/90 dark:to-slate-800/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/80 to-blue-800/80 dark:from-slate-900/90 dark:to-slate-800/90"></div>
         </div>
 
         {/* Content */}
@@ -127,7 +127,7 @@ export function LearnMorePage({ onBack, onContactClick }: LearnMorePageProps) {
         </div>
 
         {/* Additional Features Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-8 sm:p-12">
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-8 sm:p-12">
           <div className="text-center mb-8">
             <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
               {t('learnMore.additionalFeatures.title')}

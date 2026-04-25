@@ -45,9 +45,9 @@ const STATUS_CONFIG: Record<string, {
   shipped: {
     label: 'Enviado', labelEn: 'Shipped',
     icon: Truck,
-    dotColor: 'bg-indigo-500',
-    badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-400 dark:border-indigo-800',
-    barClass: 'bg-indigo-50/50 border-indigo-100 dark:bg-indigo-900/10 dark:border-indigo-900',
+    dotColor: 'bg-blue-500',
+    badgeClass: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
+    barClass: 'bg-blue-50/50 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900',
   },
   delivered: {
     label: 'Entregado', labelEn: 'Delivered',
@@ -136,7 +136,7 @@ export function OrderCard({ order, onViewDetail, onRetryPayment, onCancel, onReo
         <div className="px-5 pb-3">
           <div className="flex gap-1">
             {PROGRESS_STEPS.map((step, i) => (
-              <div key={step} className={`flex-1 h-1.5 rounded-full ${i <= progressIndex ? 'bg-indigo-500' : 'bg-muted'}`} />
+              <div key={step} className={`flex-1 h-1.5 rounded-full ${i <= progressIndex ? 'bg-blue-500' : 'bg-muted'}`} />
             ))}
           </div>
         </div>
@@ -168,7 +168,7 @@ export function OrderCard({ order, onViewDetail, onRetryPayment, onCancel, onReo
             </>
           )}
           {order.status === 'shipped' && (
-            <button onClick={() => onViewDetail(order.id)} className="bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors">
+            <button onClick={() => onViewDetail(order.id)} className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors">
               {language === 'es' ? 'Rastrear pedido →' : 'Track order →'}
             </button>
           )}

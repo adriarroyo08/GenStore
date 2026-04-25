@@ -35,13 +35,13 @@ export function ModernLoadingScreen({
       className="fixed inset-0 z-50 flex flex-col items-center justify-center min-h-screen"
     >
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-violet-950/40 to-indigo-950/60" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-blue-950/40 to-blue-950/60" />
 
       {/* Floating Particles */}
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-2 h-2 bg-violet-400/20 rounded-full"
+          className="absolute w-2 h-2 bg-blue-400/20 rounded-full"
           style={{
             left: `${20 + i * 15}%`,
             top: `${30 + (i % 2) * 40}%`,
@@ -79,7 +79,7 @@ export function ModernLoadingScreen({
           <motion.div
             animate={{ scale: [1, 1.6, 1], opacity: [0.6, 0, 0.6] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="absolute inset-0 rounded-2xl border-2 border-violet-500"
+            className="absolute inset-0 rounded-2xl border-2 border-blue-500"
           />
         </motion.div>
 
@@ -90,7 +90,7 @@ export function ModernLoadingScreen({
           transition={{ delay: 0.3, duration: 0.6 }}
           className="text-center"
         >
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
             GenStore
           </h1>
           <p className="text-slate-400 mt-2">
@@ -108,7 +108,7 @@ export function ModernLoadingScreen({
           <div className="relative">
             <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-violet-600 to-indigo-500 rounded-full relative"
+                className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full relative"
                 initial={{ width: "0%" }}
                 animate={{ width: `${currentProgress}%` }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
@@ -148,16 +148,16 @@ export function ModernLoadingScreen({
                 key={stageItem.key}
                 className={`flex items-center space-x-2 ${
                   index <= currentStageIndex
-                    ? 'text-violet-400'
+                    ? 'text-blue-400'
                     : 'text-slate-600'
                 }`}
               >
                 <motion.div
                   className={`w-3 h-3 rounded-full border-2 ${
                     index < currentStageIndex
-                      ? 'bg-violet-500 border-violet-500'
+                      ? 'bg-blue-500 border-blue-500'
                       : index === currentStageIndex
-                      ? 'border-violet-500'
+                      ? 'border-blue-500'
                       : 'border-slate-600'
                   }`}
                   animate={
@@ -170,7 +170,7 @@ export function ModernLoadingScreen({
                 {index < stages.length - 1 && (
                   <div className={`w-8 h-0.5 ${
                     index < currentStageIndex
-                      ? 'bg-violet-500'
+                      ? 'bg-blue-500'
                       : 'bg-slate-600'
                   }`} />
                 )}
@@ -189,7 +189,7 @@ export function ModernLoadingScreen({
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 bg-violet-500 rounded-full"
+              className="w-2 h-2 bg-blue-500 rounded-full"
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.5, 1, 0.5],

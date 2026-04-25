@@ -11,8 +11,8 @@ interface OrderTimelineProps {
 const EVENT_CONFIG: Record<string, { icon: React.ElementType; color: string }> = {
   preparando: { icon: Package, color: 'bg-blue-500' },
   recogido: { icon: Store, color: 'bg-blue-500' },
-  en_transito: { icon: Truck, color: 'bg-indigo-500' },
-  en_reparto: { icon: MapPin, color: 'bg-indigo-500' },
+  en_transito: { icon: Truck, color: 'bg-blue-500' },
+  en_reparto: { icon: MapPin, color: 'bg-blue-500' },
   entregado: { icon: CheckCircle, color: 'bg-green-500' },
   incidencia: { icon: AlertTriangle, color: 'bg-red-500' },
 };

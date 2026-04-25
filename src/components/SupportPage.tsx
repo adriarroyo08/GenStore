@@ -176,7 +176,7 @@ export function SupportPage({ onBackToHome, onContactClick }: SupportPageProps) 
       description: t('support.phoneDescription'),
       value: t('contact.contactPhone'),
       available: t('support.available247'),
-      color: 'from-green-500 to-emerald-600',
+      color: 'from-green-500 to-green-600',
       action: () => window.open(`tel:${t('contact.contactPhone')}`, '_self')
     },
     {

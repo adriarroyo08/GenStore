@@ -79,8 +79,8 @@ export function CategoriesSection({
     const configs = {
       'productos': {
         iconColor: "text-blue-600",
-        bgColor: "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20",
-        hoverColor: "hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-800/30 dark:hover:to-indigo-800/30",
+        bgColor: "bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/30",
+        hoverColor: "hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-800/30 dark:hover:to-blue-800/40",
         image: "https://images.unsplash.com/photo-1637580724561-ee200f66dae3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwaHlzaW90aGVyYXB5JTIwZXF1aXBtZW50fGVufDF8fHx8MTc1NzE4NDgyNXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
       },
       'cosmetica': {
@@ -93,9 +93,9 @@ export function CategoriesSection({
 
     // Return specific config or default
     return configs[slug] || {
-      iconColor: "text-emerald-600",
-      bgColor: "bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20",
-      hoverColor: "hover:from-emerald-100 hover:to-teal-100 dark:hover:from-emerald-800/30 dark:hover:to-teal-800/30",
+      iconColor: "text-green-600",
+      bgColor: "bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20",
+      hoverColor: "hover:from-green-100 hover:to-teal-100 dark:hover:from-green-800/30 dark:hover:to-teal-800/30",
       image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop&auto=format"
     };
   };

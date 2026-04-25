@@ -33,7 +33,7 @@ export function EmailVerificationPage({ email, onBackToLogin, onBackToSignup }: 
   return (
     <div className="min-h-screen w-full flex">
       {/* Left Panel - Decorative */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-blue-600 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" aria-hidden="true">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -99,7 +99,7 @@ export function EmailVerificationPage({ email, onBackToLogin, onBackToSignup }: 
           </button>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="bg-emerald-500 p-2 rounded-lg">
+            <div className="bg-blue-500 p-2 rounded-lg">
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.317a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
@@ -115,8 +115,8 @@ export function EmailVerificationPage({ email, onBackToLogin, onBackToSignup }: 
           <div className="w-full max-w-sm text-center">
             {/* Email icon */}
             <div className="flex justify-center mb-6">
-              <div className="bg-emerald-100 dark:bg-emerald-900/30 rounded-full p-5">
-                <Mail className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+              <div className="bg-blue-100 dark:bg-blue-900/30 rounded-full p-5">
+                <Mail className="w-10 h-10 text-blue-600 dark:text-blue-400" />
               </div>
             </div>
 
@@ -154,7 +154,7 @@ export function EmailVerificationPage({ email, onBackToLogin, onBackToSignup }: 
 
             {/* Messages */}
             {message && (
-              <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-xl mb-4" role="status">
+              <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded-xl mb-4" role="status">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span className="text-sm">{message}</span>
               </div>
@@ -172,7 +172,7 @@ export function EmailVerificationPage({ email, onBackToLogin, onBackToSignup }: 
               <button
                 onClick={handleResendVerification}
                 disabled={isResending}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg"
               >
                 <RefreshCw className={`w-4 h-4 ${isResending ? 'animate-spin' : ''}`} />
                 {isResending ? 'Reenviando...' : 'Reenviar email de verificación'}

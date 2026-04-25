@@ -202,7 +202,7 @@ export function FAQPage({ onBackToHome, onContactClick }: FAQPageProps) {
       {/* Enhanced Hero Section */}
       <section aria-labelledby="faq-heading" className="relative pt-16 pb-20 overflow-hidden">
         {/* Background with gradient and patterns */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800"></div>
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute top-32 right-20 w-24 h-24 bg-cyan-300 rounded-full blur-2xl animate-pulse delay-1000"></div>

@@ -11,7 +11,7 @@ interface NotificationDropdownProps {
 }
 
 const ICON_MAP: Record<string, { icon: React.ElementType; bg: string }> = {
-  order_shipped: { icon: Truck, bg: 'bg-indigo-100 dark:bg-indigo-900/20 text-indigo-600' },
+  order_shipped: { icon: Truck, bg: 'bg-blue-100 dark:bg-blue-900/20 text-blue-600' },
   order_delivered: { icon: Package, bg: 'bg-green-100 dark:bg-green-900/20 text-green-600' },
   payment_confirmed: { icon: CreditCard, bg: 'bg-blue-100 dark:bg-blue-900/20 text-blue-600' },
   payment_pending: { icon: AlertTriangle, bg: 'bg-amber-100 dark:bg-amber-900/20 text-amber-600' },

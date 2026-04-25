@@ -157,7 +157,7 @@ export function Header({
               onClick={handleLogoClick}
               className="flex items-center gap-1 xxs:gap-2 sm:gap-3 hover:opacity-80 transition-opacity cursor-pointer"
             >
-            <div className="bg-emerald-500 dark:bg-emerald-600 p-1.5 xxs:p-2 sm:p-3 rounded-lg xxs:rounded-xl flex items-center justify-center">
+            <div className="bg-blue-500 dark:bg-blue-600 p-1.5 xxs:p-2 sm:p-3 rounded-lg xxs:rounded-xl flex items-center justify-center">
               <svg
                 className="w-4 h-4 xxs:w-5 xxs:h-5 sm:w-6 sm:h-6 text-white"
                 fill="none"
@@ -176,7 +176,7 @@ export function Header({
               <h1 className="font-bold text-foreground xxs:text-sm xs:text-base sm:text-xl lg:text-2xl leading-tight">
                 GenStore
               </h1>
-              <span className="text-xs xxs:text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-medium hidden sm:block">
+              <span className="text-xs xxs:text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-medium hidden sm:block">
                 Tu tienda online
               </span>
             </div>
@@ -215,7 +215,7 @@ export function Header({
             <div className="relative" ref={cartRef}>
               <button
                 onClick={() => setIsCartOpen(!isCartOpen)}
-                className="header-nav-item-responsive flex items-center gap-1 xxs:gap-2 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-accent rounded-lg transition-colors"
+                className="header-nav-item-responsive flex items-center gap-1 xxs:gap-2 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:bg-accent rounded-lg transition-colors"
               >
                 <div className="relative">
                   <svg
@@ -288,7 +288,7 @@ export function Header({
                               onCatalogClick();
                             }
                           }}
-                          className="bg-emerald-500 dark:bg-emerald-600 hover:bg-emerald-600 dark:hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                          className="bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
                         >
                           {t("cart.goToCatalog")}
                         </button>
@@ -425,7 +425,7 @@ export function Header({
                                 onCheckoutClick();
                               }
                             }}
-                            className="w-full bg-emerald-500 dark:bg-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors"
+                            className="w-full bg-blue-500 dark:bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
                           >
                             {t("cart.proceedToCheckout")}
                           </button>
@@ -444,9 +444,9 @@ export function Header({
                   onClick={() =>
                     setIsUserMenuOpen(!isUserMenuOpen)
                   }
-                  className="header-nav-item-responsive flex items-center gap-1 xxs:gap-2 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-accent rounded-lg transition-colors"
+                  className="header-nav-item-responsive flex items-center gap-1 xxs:gap-2 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:bg-accent rounded-lg transition-colors"
                 >
-                  <div className={`w-6 h-6 xxs:w-8 xxs:h-8 ${user.email === 'admin@genstore.com' || user.email === 'adriarroyo2002@gmail.com' ? 'bg-orange-500 dark:bg-orange-600' : 'bg-emerald-500 dark:bg-emerald-600'} rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105`}>
+                  <div className={`w-6 h-6 xxs:w-8 xxs:h-8 ${user.email === 'admin@genstore.com' || user.email === 'adriarroyo2002@gmail.com' ? 'bg-orange-500 dark:bg-orange-600' : 'bg-blue-500 dark:bg-blue-600'} rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105`}>
                     <span className="text-white text-xs xxs:text-sm font-medium">
                       {user.name
                         ? user.name.charAt(0).toUpperCase()
@@ -473,7 +473,7 @@ export function Header({
               ) : (
                 <button
                   onClick={onLoginClick}
-                  className="header-nav-item-responsive flex items-center gap-1 xxs:gap-2 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-accent rounded-lg transition-colors"
+                  className="header-nav-item-responsive flex items-center gap-1 xxs:gap-2 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 hover:bg-accent rounded-lg transition-colors"
                 >
                   <svg
                     className="w-5 h-5 xxs:w-6 xxs:h-6"
@@ -566,7 +566,7 @@ export function Header({
                           {t("wishlist.title")}
                         </div>
                         {wishlist.length > 0 && (
-                          <span className="bg-emerald-500 dark:bg-emerald-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                          <span className="bg-blue-500 dark:bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                             {wishlist.length > 99 ? '99+' : wishlist.length}
                           </span>
                         )}

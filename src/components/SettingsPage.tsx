@@ -168,7 +168,7 @@ export function SettingsPage(props: SettingsPageProps) {
       aria-checked={enabled}
       aria-label={label}
       className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ${
-        enabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'
+        enabled ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'
       }`}
     >
       <span
@@ -181,7 +181,7 @@ export function SettingsPage(props: SettingsPageProps) {
 
   const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
     <div className="flex items-center gap-3 mb-5 pb-3 border-b border-border">
-      <div className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true">
+      <div className="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true">
         {icon}
       </div>
       <h3 className="text-lg font-semibold text-foreground">{title}</h3>
@@ -202,7 +202,7 @@ export function SettingsPage(props: SettingsPageProps) {
     <>
       {message && (
         <div className={`fixed top-20 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium ${
-          message.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+          message.type === 'success' ? 'bg-green-500' : 'bg-red-500'
         } text-white`}>
           {message.text}
         </div>
@@ -267,7 +267,7 @@ export function SettingsPage(props: SettingsPageProps) {
                     </>
                   ) : (
                     <>
-                      <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                       </svg>
                       {t('settings.darkMode', 'Modo Oscuro')}
@@ -322,7 +322,7 @@ export function SettingsPage(props: SettingsPageProps) {
           <section className="rounded-lg border border-border p-5">
             <div className="flex items-center justify-between mb-5 pb-3 border-b border-border">
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true">
+                <div className="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true">
                   <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
@@ -333,7 +333,7 @@ export function SettingsPage(props: SettingsPageProps) {
               </div>
               <button
                 onClick={() => setShowNotificationHistory(true)}
-                className="text-xs text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+                className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
               >
                 {t('notifications.viewHistory', 'Ver historial')}
               </button>
@@ -371,7 +371,7 @@ export function SettingsPage(props: SettingsPageProps) {
                     <span className="text-xs text-red-500">{t('settings.pushNotSupported', 'No soportado')}</span>
                   )}
                   {isPushSupported && preferences.pushNotifications && isPushEnabled && (
-                    <span className="text-xs text-emerald-600 dark:text-emerald-400">
+                    <span className="text-xs text-green-600 dark:text-green-400">
                       {t('settings.pushNotificationsActive', 'Activas')}
                     </span>
                   )}

@@ -107,7 +107,7 @@ function AddCardForm({ onSuccess, onCancel, showMsg }: {
           value={cardholderName}
           onChange={(e) => setCardholderName(e.target.value)}
           placeholder={t('payment.cardholderPlaceholder', 'Nombre como aparece en la tarjeta')}
-          className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           autoComplete="cc-name"
         />
       </div>
@@ -123,11 +123,11 @@ function AddCardForm({ onSuccess, onCancel, showMsg }: {
       </div>
 
       {/* Security notice */}
-      <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
-        <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+        <svg className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
-        <p className="text-xs text-emerald-700 dark:text-emerald-300">
+        <p className="text-xs text-green-700 dark:text-green-300">
           {t('payment.stripeSecurityNotice', 'Tus datos de tarjeta se procesan de forma segura por Stripe. Nunca se almacenan en nuestros servidores.')}
         </p>
       </div>
@@ -150,7 +150,7 @@ function AddCardForm({ onSuccess, onCancel, showMsg }: {
         <button
           type="submit"
           disabled={isLoading || !stripe}
-          className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg transition-colors text-sm font-medium"
+          className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg transition-colors text-sm font-medium"
         >
           {isLoading ? t('general.saving', 'Guardando...') : t('payment.saveCard', 'Guardar tarjeta')}
         </button>
@@ -213,7 +213,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
     const map: Record<string, string> = {
       visa: 'bg-blue-600',
       mastercard: 'bg-orange-500',
-      amex: 'bg-indigo-600',
+      amex: 'bg-blue-700',
     };
     return map[brand.toLowerCase()] || 'bg-gray-600';
   };
@@ -224,7 +224,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
       {message && (
         <div className={`p-3 rounded-lg text-sm ${
           message.type === 'success'
-            ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-200'
+            ? 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-200'
             : 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-200'
         }`}>
           {message.text}
@@ -235,7 +235,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
       <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
         <div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
             {t('payment.securityInfo', 'Tus datos de pago están protegidos')}
@@ -248,7 +248,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
         {!showAddCard && (
           <button
             onClick={() => setShowAddCard(true)}
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -277,7 +277,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
       {/* Loading */}
       {isLoading && (
         <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500" />
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
           <span className="ml-3 text-sm text-muted-foreground">{t('general.loading', 'Cargando...')}</span>
         </div>
       )}
@@ -296,7 +296,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
           </p>
           <button
             onClick={() => setShowAddCard(true)}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg transition-colors text-sm font-medium"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-colors text-sm font-medium"
           >
             {t('payment.addNewCard', 'Añadir tarjeta')}
           </button>
@@ -311,7 +311,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
               key={method.id}
               className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
                 i === 0
-                  ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50/50 dark:bg-emerald-900/10'
+                  ? 'border-blue-300 dark:border-blue-700 bg-blue-50/50 dark:bg-blue-900/10'
                   : 'border-border hover:border-muted-foreground/30'
               }`}
             >
@@ -325,7 +325,7 @@ export function PaymentMethodsSection({ showMessage: externalShowMessage }: Paym
                       {brandLabel(method.brand)} **** {method.last4}
                     </p>
                     {i === 0 && (
-                      <span className="text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 px-1.5 py-0.5 rounded">
+                      <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-1.5 py-0.5 rounded">
                         {t('payment.primary', 'Principal')}
                       </span>
                     )}

@@ -176,7 +176,7 @@ export function ProductQuickView({
               disabled={cartState !== 'idle'}
               className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
                 cartState === 'done'
-                  ? 'bg-emerald-500 text-white'
+                  ? 'bg-green-500 text-white'
                   : cartState === 'loading'
                   ? 'bg-primary/80 text-primary-foreground'
                   : 'bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98]'

@@ -197,7 +197,7 @@ export const SearchDropdown = React.forwardRef<HTMLDivElement, SearchDropdownPro
     <div className="relative w-full" ref={ref || dropdownRef}>
       <form onSubmit={handleSubmit} role="search" className="relative">
         <div className={`relative bg-input-background rounded-full border-2 transition-colors ${
-          isFocused ? 'border-emerald-500 bg-card' : 'border-border'
+          isFocused ? 'border-blue-500 bg-card' : 'border-border'
         }`}>
           <div className="flex items-center">
             <div className="pl-3 xxs:pl-4 sm:pl-5 pr-2 xxs:pr-3">
@@ -243,7 +243,7 @@ export const SearchDropdown = React.forwardRef<HTMLDivElement, SearchDropdownPro
             <button
               type="submit"
               aria-label={t('header.searchPlaceholder')}
-              className="bg-emerald-500 text-white rounded-full p-2 xxs:p-3 hover:bg-emerald-600 transition-colors flex-shrink-0"
+              className="bg-blue-500 text-white rounded-full p-2 xxs:p-3 hover:bg-blue-600 transition-colors flex-shrink-0"
             >
               <svg className="w-4 h-4 xxs:w-5 xxs:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -282,7 +282,7 @@ export const SearchDropdown = React.forwardRef<HTMLDivElement, SearchDropdownPro
                 className={`w-full text-left p-2 xxs:p-3 hover:bg-accent/50 rounded-lg transition-all duration-200 flex items-center gap-2 xxs:gap-3 min-h-[44px] group hover:shadow-sm border border-transparent hover:border-accent ${index === activeIndex ? 'bg-accent/50 border-accent' : ''}`}
                 tabIndex={-1}
               >
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted/20 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden border border-border/50 group-hover:border-emerald-200 transition-all duration-200">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted/20 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden border border-border/50 group-hover:border-blue-200 transition-all duration-200">
                   <ImageWithFallback
                     src={getProductImage(product)}
                     alt={product.name}
@@ -317,7 +317,7 @@ export const SearchDropdown = React.forwardRef<HTMLDivElement, SearchDropdownPro
                       ))}
                     </div>
                     <span className="text-xs text-muted-foreground">{product.rating}</span>
-                    <span className={`w-1.5 h-1.5 rounded-full inline-block ${(product.stock ?? 0) > 0 ? 'bg-emerald-500' : 'bg-red-400'}`} />
+                    <span className={`w-1.5 h-1.5 rounded-full inline-block ${(product.stock ?? 0) > 0 ? 'bg-green-500' : 'bg-red-400'}`} />
                   </div>
                 </div>
               </button>

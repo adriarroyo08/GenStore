@@ -52,7 +52,7 @@ export function ShippingInfoPage({ onContactClick, onBackToHome }: ShippingInfoP
       time: t('shipping.expressTime'),
       features: [t('shipping.priorityHandling'), t('shipping.realTimeTracking'), t('shipping.signatureRequired')],
       popular: true,
-      color: 'from-green-500 to-emerald-500',
+      color: 'from-green-500 to-green-600',
       bgColor: 'bg-green-50 dark:bg-green-900/20'
     }
   ];
@@ -94,11 +94,11 @@ export function ShippingInfoPage({ onContactClick, onBackToHome }: ShippingInfoP
       {/* Enhanced Hero Section */}
       <section aria-labelledby="shipping-heading" className="relative pt-16 pb-20 overflow-hidden">
         {/* Background with gradient and patterns */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800"></div>
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute top-32 right-20 w-24 h-24 bg-cyan-300 rounded-full blur-2xl animate-pulse delay-1000"></div>
-          <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-indigo-300 rounded-full blur-3xl animate-pulse delay-2000"></div>
+          <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-blue-300 rounded-full blur-3xl animate-pulse delay-2000"></div>
         </div>
         
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
@@ -165,7 +165,7 @@ export function ShippingInfoPage({ onContactClick, onBackToHome }: ShippingInfoP
                   {/* Popular badge */}
                   {option.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-1 rounded-full text-sm font-medium shadow-lg">
+                      <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 rounded-full text-sm font-medium shadow-lg">
                         {t('shipping.mostPopular')}
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export function ShippingInfoPage({ onContactClick, onBackToHome }: ShippingInfoP
               {/* Domestic Shipping */}
               <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="bg-gradient-to-br from-green-500 to-emerald-500 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                  <div className="bg-gradient-to-br from-green-500 to-green-600 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg">
                     <MapPin className="w-8 h-8" />
                   </div>
                   <div>
@@ -262,7 +262,7 @@ export function ShippingInfoPage({ onContactClick, onBackToHome }: ShippingInfoP
               {/* International Shipping */}
               <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="bg-gradient-to-br from-blue-500 to-indigo-500 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg">
                     <Globe className="w-8 h-8" />
                   </div>
                   <div>
@@ -350,7 +350,7 @@ export function ShippingInfoPage({ onContactClick, onBackToHome }: ShippingInfoP
           </section>
 
           {/* Enhanced Contact CTA */}
-          <div className="text-center bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl p-12 text-white">
+          <div className="text-center bg-gradient-to-r from-blue-500 to-blue-700 rounded-3xl p-12 text-white">
             <div className="max-w-2xl mx-auto">
               <div className="bg-white/10 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Package className="w-10 h-10 text-white" aria-hidden="true" />

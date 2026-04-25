@@ -82,7 +82,7 @@ export function TermsOfServicePage({ onBackToHome, onContactClick }: TermsOfServ
           {/* Payment */}
           <section aria-labelledby="terms-payment-heading" className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <CreditCard className="w-6 h-6 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
+              <CreditCard className="w-6 h-6 text-blue-600 dark:text-blue-400" aria-hidden="true" />
               <h2 id="terms-payment-heading" className="text-2xl font-bold text-gray-900 dark:text-white">{t('termsOfService.paymentTitle')}</h2>
             </div>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -117,7 +117,7 @@ export function TermsOfServicePage({ onBackToHome, onContactClick }: TermsOfServ
           {/* Warranties */}
           <section aria-labelledby="terms-warranty-heading" className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <ShieldCheck className="w-6 h-6 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+              <ShieldCheck className="w-6 h-6 text-green-600 dark:text-green-400" aria-hidden="true" />
               <h2 id="terms-warranty-heading" className="text-2xl font-bold text-gray-900 dark:text-white">{t('termsOfService.warrantyTitle')}</h2>
             </div>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">

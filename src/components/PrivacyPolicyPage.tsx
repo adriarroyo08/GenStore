@@ -127,7 +127,7 @@ export function PrivacyPolicyPage({ onBackToHome, onContactClick }: PrivacyPolic
           {/* Legal Basis */}
           <section aria-labelledby="privacy-legal-heading" className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
             <div className="flex items-center gap-3 mb-6">
-              <Scale className="w-6 h-6 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
+              <Scale className="w-6 h-6 text-blue-600 dark:text-blue-400" aria-hidden="true" />
               <h2 id="privacy-legal-heading" className="text-2xl font-bold text-gray-900 dark:text-white">{t('privacyPolicy.legalBasisTitle')}</h2>
             </div>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">

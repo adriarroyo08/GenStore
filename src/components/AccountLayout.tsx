@@ -67,7 +67,7 @@ export function AccountLayout({
           </p>
           <button
             onClick={onLogout}
-            className="px-6 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-medium"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
           >
             {t('auth.login')}
           </button>

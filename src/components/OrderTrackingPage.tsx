@@ -239,7 +239,7 @@ export function OrderTrackingPage({
       case 'processing':
         return 'text-purple-600 bg-purple-100 dark:text-purple-400 dark:bg-purple-900/20';
       case 'shipped':
-        return 'text-indigo-600 bg-indigo-100 dark:text-indigo-400 dark:bg-indigo-900/20';
+        return 'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/20';
       case 'delivered':
         return 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/20';
       case 'cancelled':
@@ -560,7 +560,7 @@ export function OrderTrackingPage({
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t('checkout.shipping')}</span>
-                  <span className="font-medium text-emerald-500">
+                  <span className="font-medium text-green-500">
                     {order.shipping === 0 ? t('checkout.free') : formatPrice(order.shipping)}
                   </span>
                 </div>

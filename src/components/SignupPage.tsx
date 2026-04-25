@@ -105,7 +105,7 @@ export function SignupPage({ onBackToLogin, onSignupSuccess, onVerificationRequi
 
     if (score <= 1) return { level: 'weak', score: 1, label: 'Débil', color: 'bg-red-500', tips };
     if (score <= 3) return { level: 'medium', score: 2, label: 'Media', color: 'bg-yellow-500', tips };
-    return { level: 'strong', score: 3, label: 'Fuerte', color: 'bg-emerald-500', tips };
+    return { level: 'strong', score: 3, label: 'Fuerte', color: 'bg-green-500', tips };
   };
 
   const passwordStrength = getPasswordStrength(formData.password);
@@ -218,7 +218,7 @@ export function SignupPage({ onBackToLogin, onSignupSuccess, onVerificationRequi
   return (
     <div className="min-h-screen w-full flex">
       {/* Left Panel - Decorative */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-blue-600 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10" aria-hidden="true">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -292,7 +292,7 @@ export function SignupPage({ onBackToLogin, onSignupSuccess, onVerificationRequi
 
           {/* Mobile logo */}
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="bg-emerald-500 p-2 rounded-lg">
+            <div className="bg-blue-500 p-2 rounded-lg">
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.317a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
@@ -384,7 +384,7 @@ export function SignupPage({ onBackToLogin, onSignupSuccess, onVerificationRequi
                 )}
                 {!errors.username && usernameStatus !== 'idle' && (
                   <span className={`text-xs flex items-center gap-1 ${
-                    usernameStatus === 'available' ? 'text-emerald-600' :
+                    usernameStatus === 'available' ? 'text-green-600' :
                     usernameStatus === 'taken' ? 'text-destructive' :
                     usernameStatus === 'invalid' ? 'text-amber-600' :
                     'text-muted-foreground'
@@ -716,7 +716,7 @@ export function SignupPage({ onBackToLogin, onSignupSuccess, onVerificationRequi
                       <span className={`text-xs font-medium ${
                         passwordStrength.level === 'weak' ? 'text-red-500' :
                         passwordStrength.level === 'medium' ? 'text-yellow-600' :
-                        'text-emerald-600'
+                        'text-green-600'
                       }`}>
                         {passwordStrength.label}
                       </span>
@@ -776,7 +776,7 @@ export function SignupPage({ onBackToLogin, onSignupSuccess, onVerificationRequi
               <button
                 type="submit"
                 disabled={isLoading || !formData.name || !formData.email || !formData.password || !formData.confirmPassword || passwordStrength.level === 'weak'}
-                className="w-full bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg mt-2"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg mt-2"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2">

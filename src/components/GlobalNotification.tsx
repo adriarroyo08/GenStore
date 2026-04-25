@@ -19,10 +19,10 @@ const icons = {
 
 const styles = {
   success: {
-    bg: 'bg-emerald-50 dark:bg-emerald-950/60',
-    border: 'border-emerald-200 dark:border-emerald-800',
-    icon: 'text-emerald-500',
-    text: 'text-emerald-800 dark:text-emerald-200',
+    bg: 'bg-green-50 dark:bg-green-950/60',
+    border: 'border-green-200 dark:border-green-800',
+    icon: 'text-green-500',
+    text: 'text-green-800 dark:text-green-200',
   },
   error: {
     bg: 'bg-red-50 dark:bg-red-950/60',

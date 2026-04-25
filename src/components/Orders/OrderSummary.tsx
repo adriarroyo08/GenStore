@@ -61,7 +61,7 @@ export function OrderSummary({ order }: OrderSummaryProps) {
             {language === 'es' ? 'Método de pago' : 'Payment method'}
           </h3>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-7 bg-indigo-500 rounded flex items-center justify-center">
+            <div className="w-10 h-7 bg-blue-600 rounded flex items-center justify-center">
               <span className="text-white text-[9px] font-bold">CARD</span>
             </div>
             <div className="text-sm">

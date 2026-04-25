@@ -152,7 +152,7 @@ export function LoginPage({ onBackToHome, onLoginSuccess, onShowSignup, onVerifi
             {showForgotPassword && (
               <div className="bg-muted rounded-xl p-4 space-y-3">
                 {forgotSuccess ? (
-                  <div className="flex items-center gap-2 text-emerald-600">
+                  <div className="flex items-center gap-2 text-green-600">
                     <CheckCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
                     <span className="text-sm">
                       {language === 'es'

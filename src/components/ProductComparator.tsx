@@ -176,7 +176,7 @@ function CompareTable({ products, onProductClick }: { products: Product[]; onPro
         return (
           <div className="flex items-center gap-1.5">
             {s > 0 ? (
-              <><Check className="w-4 h-4 text-emerald-500" /><span className="text-sm text-emerald-600">{s} uds.</span></>
+              <><Check className="w-4 h-4 text-green-500" /><span className="text-sm text-green-600">{s} uds.</span></>
             ) : (
               <><Minus className="w-4 h-4 text-red-500" /><span className="text-sm text-red-500">Agotado</span></>
             )}

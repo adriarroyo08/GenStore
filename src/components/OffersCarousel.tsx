@@ -373,14 +373,14 @@ export function OffersCarousel({
                           disabled={state !== 'idle'}
                           className={`relative w-full py-3 px-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 mt-auto overflow-hidden ${
                             state === 'done'
-                              ? 'bg-emerald-500 text-white scale-[1.03] shadow-lg shadow-emerald-500/30'
+                              ? 'bg-green-500 text-white scale-[1.03] shadow-lg shadow-green-500/30'
                               : state === 'loading'
                               ? 'bg-gradient-to-r from-red-400 to-pink-400 text-white scale-[0.98]'
                               : 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white hover:shadow-lg hover:-translate-y-0.5'
                           }`}
                         >
                           {state === 'done' && (
-                            <span className="absolute inset-0 animate-ping bg-emerald-400 rounded-xl opacity-20" />
+                            <span className="absolute inset-0 animate-ping bg-green-400 rounded-xl opacity-20" />
                           )}
                           {state === 'loading' ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
