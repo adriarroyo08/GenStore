@@ -11,7 +11,7 @@ describe('ImageCarousel', () => {
 
   it('renders the first slide with title and description', () => {
     render(<ImageCarousel />)
-    expect(screen.getByTestId('carousel-titulo')).toHaveTextContent('Camilla de Productos')
+    expect(screen.getByTestId('carousel-titulo')).toHaveTextContent('Productos Destacados')
     expect(screen.getByTestId('carousel-descripcion')).toBeInTheDocument()
   })
 
@@ -57,12 +57,12 @@ describe('ImageCarousel', () => {
     render(<ImageCarousel />)
     const img = screen.getByTestId('carousel-image')
     expect(img).toBeInTheDocument()
-    expect(img).toHaveAttribute('alt', 'Camilla de productos profesional')
+    expect(img).toHaveAttribute('alt', 'Productos destacados de la tienda')
   })
 
   it('has accessible aria-label on the carousel section', () => {
     render(<ImageCarousel />)
     const section = screen.getByTestId('image-carousel')
-    expect(section).toHaveAttribute('aria-label', 'Carrusel de productos destacados de productos')
+    expect(section).toHaveAttribute('aria-label', 'Carrusel de productos destacados')
   })
 })

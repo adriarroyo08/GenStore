@@ -18,6 +18,7 @@ export default defineConfig({
       '**/dist/**',
       '**/build/**',
       'server/**',
+      'e2e/**',
     ],
   },
 });
