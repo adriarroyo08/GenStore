@@ -55,7 +55,8 @@ jobs:
             NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${{ secrets.SUPABASE_ANON_KEY }}
             VITE_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
             VITE_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
-            API_PORT=3002
+            API_PORT=3006
+            APP_URL=https://genstore.automatito.win
             NODE_ENV=production
             APP_ENV=${{ steps.env.outputs.app_env }}
             STRIPE_SECRET_KEY=${{ steps.env.outputs.stripe_secret }}
@@ -93,3 +94,4 @@ jobs:
 
             # Restart services
             ~/.npm-global/bin/pm2 startOrRestart ecosystem.config.cjs --env production
+            ~/.npm-global/bin/pm2 save

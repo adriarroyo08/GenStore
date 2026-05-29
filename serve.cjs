@@ -97,6 +97,6 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`Frontend serving on port ${PORT}, proxying /api → ${API_TARGET}`);
+server.listen(PORT, '127.0.0.1', () => {
+  console.log(`Frontend serving on 127.0.0.1:${PORT}, proxying /api → ${API_TARGET}`);
 });
