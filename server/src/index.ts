@@ -87,8 +87,8 @@ app.route('/admin/shipments', shippingCronRoutes);
 app.onError(errorHandler);
 
 // Start server
-serve({ fetch: app.fetch, port: env.API_PORT, hostname: '127.0.0.1' }, (info) => {
-  console.log(`GenStore API running on http://127.0.0.1:${info.port}`);
+serve({ fetch: app.fetch, port: env.API_PORT, hostname: '0.0.0.0' }, (info) => {
+  console.log(`GenStore API running on 0.0.0.0:${info.port}`);
 });
 
 export default app;
