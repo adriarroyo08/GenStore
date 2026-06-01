@@ -6,7 +6,7 @@ const suppliers = new Hono<AppEnv>();
 
 suppliers.get('/', async (c) => {
   const page = Number(c.req.query('page') ?? 1);
-  const limit = Number(c.req.query('limit') ?? 15);
+  const limit = Math.min(Number(c.req.query('limit') ?? 15), 100);
   const search = c.req.query('search') || undefined;
   const activeParam = c.req.query('active');
   const active = activeParam !== undefined ? activeParam === 'true' : undefined;
@@ -24,14 +24,38 @@ suppliers.get('/:id', async (c) => {
 
 suppliers.post('/', async (c) => {
   const body = await c.req.json();
-  const supplier = await supplierService.createSupplier(body);
+  const { nombre, email, telefono, web, pais, condiciones_pago, plazo_envio_estimado, margen_defecto, notas, activo } = body;
+  if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
+  const safeBody: Record<string, unknown> = { nombre };
+  if (email !== undefined) safeBody.email = email;
+  if (telefono !== undefined) safeBody.telefono = telefono;
+  if (web !== undefined) safeBody.web = web;
+  if (pais !== undefined) safeBody.pais = pais;
+  if (condiciones_pago !== undefined) safeBody.condiciones_pago = condiciones_pago;
+  if (plazo_envio_estimado !== undefined) safeBody.plazo_envio_estimado = plazo_envio_estimado;
+  if (margen_defecto !== undefined) safeBody.margen_defecto = margen_defecto;
+  if (notas !== undefined) safeBody.notas = notas;
+  if (activo !== undefined) safeBody.activo = activo;
+  const supplier = await supplierService.createSupplier(safeBody as any);
   return c.json(supplier, 201);
 });
 
 suppliers.put('/:id', async (c) => {
   const id = c.req.param('id');
   const body = await c.req.json();
-  const supplier = await supplierService.updateSupplier(id, body);
+  const { nombre, email, telefono, web, pais, condiciones_pago, plazo_envio_estimado, margen_defecto, notas, activo } = body;
+  const safeBody: Record<string, unknown> = {};
+  if (nombre !== undefined) safeBody.nombre = nombre;
+  if (email !== undefined) safeBody.email = email;
+  if (telefono !== undefined) safeBody.telefono = telefono;
+  if (web !== undefined) safeBody.web = web;
+  if (pais !== undefined) safeBody.pais = pais;
+  if (condiciones_pago !== undefined) safeBody.condiciones_pago = condiciones_pago;
+  if (plazo_envio_estimado !== undefined) safeBody.plazo_envio_estimado = plazo_envio_estimado;
+  if (margen_defecto !== undefined) safeBody.margen_defecto = margen_defecto;
+  if (notas !== undefined) safeBody.notas = notas;
+  if (activo !== undefined) safeBody.activo = activo;
+  const supplier = await supplierService.updateSupplier(id, safeBody as any);
   return c.json(supplier);
 });
 
