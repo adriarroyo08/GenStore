@@ -58,9 +58,22 @@ addresses.put('/:id', async (c) => {
       .eq('tipo', body.tipo ?? 'shipping');
   }
 
+  const { tipo, nombre, calle, ciudad, codigo_postal, provincia, pais, is_default, telefono, notas } = body;
+  const allowedFields: Record<string, unknown> = {};
+  if (tipo !== undefined) allowedFields.tipo = tipo;
+  if (nombre !== undefined) allowedFields.nombre = nombre;
+  if (calle !== undefined) allowedFields.calle = calle;
+  if (ciudad !== undefined) allowedFields.ciudad = ciudad;
+  if (codigo_postal !== undefined) allowedFields.codigo_postal = codigo_postal;
+  if (provincia !== undefined) allowedFields.provincia = provincia;
+  if (pais !== undefined) allowedFields.pais = pais;
+  if (is_default !== undefined) allowedFields.is_default = is_default;
+  if (telefono !== undefined) allowedFields.telefono = telefono;
+  if (notas !== undefined) allowedFields.notas = notas;
+
   const { data, error } = await supabaseAdmin
     .from('addresses')
-    .update(body)
+    .update(allowedFields)
     .eq('id', c.req.param('id'))
     .eq('user_id', user.id)
     .select()

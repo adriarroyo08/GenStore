@@ -4,21 +4,26 @@ import { supabaseAdmin } from '../../config/supabase.js';
 const adminUsers = new Hono();
 
 adminUsers.get('/', async (c) => {
-  const { data, error } = await supabaseAdmin
+  const page = Number(c.req.query('page') ?? 1);
+  const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 100);
+  const from = (page - 1) * pageSize;
+
+  const { data, count, error } = await supabaseAdmin
     .from('profiles')
-    .select('*, orders(count)')
-    .order('created_at', { ascending: false });
+    .select('*, orders(count)', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, from + pageSize - 1);
 
   if (error) throw new Error(error.message);
 
   // Get emails from auth (paginated to avoid memory exhaustion)
   const allUsers: Array<{ id: string; email?: string }> = [];
-  let page = 1;
+  let authPage = 1;
   while (true) {
-    const { data: { users: batch } } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 100 });
+    const { data: { users: batch } } = await supabaseAdmin.auth.admin.listUsers({ page: authPage, perPage: 100 });
     allUsers.push(...batch);
     if (batch.length < 100) break;
-    page++;
+    authPage++;
   }
   const emailMap = new Map(allUsers.map(u => [u.id, u.email]));
 
@@ -29,7 +34,7 @@ adminUsers.get('/', async (c) => {
     orders: undefined,
   }));
 
-  return c.json({ users: result });
+  return c.json({ users: result, total: count ?? 0, page, pageSize });
 });
 
 export default adminUsers;
