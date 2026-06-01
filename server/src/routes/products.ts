@@ -14,7 +14,7 @@ products.get('/', async (c) => {
     onSale: c.req.query('onSale') === 'true' || undefined,
     inStock: c.req.query('inStock') === 'true' || undefined,
     page: c.req.query('page') ? Number(c.req.query('page')) : 1,
-    pageSize: c.req.query('pageSize') ? Number(c.req.query('pageSize')) : 20,
+    pageSize: Math.min(c.req.query('pageSize') ? Number(c.req.query('pageSize')) : 20, 100),
     sortBy: (c.req.query('sortBy') as ProductFilters['sortBy']) || 'created_at',
     sortOrder: (c.req.query('sortOrder') as ProductFilters['sortOrder']) || 'desc',
   };
