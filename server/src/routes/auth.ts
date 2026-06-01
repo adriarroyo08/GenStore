@@ -134,9 +134,9 @@ auth.post('/resend-verification', rateLimit(3, 60_000), async (c) => {
   if (!email) return c.json({ error: 'Email requerido' }, 400);
 
   try {
-    // Look up user to get their name
-    const { data: users } = await supabaseAdmin.auth.admin.listUsers();
-    const user = users?.users?.find((u: any) => u.email === email);
+    // Look up user by email (filtered query instead of fetching all users)
+    const { data: { users } } = await supabaseAdmin.auth.admin.listUsers({ filter: email });
+    const user = users?.find((u: any) => u.email === email);
 
     if (!user) {
       // Don't reveal if email exists
