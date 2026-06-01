@@ -61,6 +61,12 @@ reviews.post('/:productId', authMiddleware, async (c) => {
   if (!rating || !Number.isInteger(rating) || rating < 1 || rating > 5) {
     return c.json({ error: 'Rating debe ser un entero entre 1 y 5' }, 400);
   }
+  if (titulo && typeof titulo === 'string' && titulo.length > 200) {
+    return c.json({ error: 'El título no puede superar 200 caracteres' }, 400);
+  }
+  if (comentario && typeof comentario === 'string' && comentario.length > 5000) {
+    return c.json({ error: 'El comentario no puede superar 5000 caracteres' }, 400);
+  }
 
   // Check if user has purchased this product
   const { data: purchaseCheck } = await supabaseAdmin
