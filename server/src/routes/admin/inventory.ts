@@ -57,7 +57,7 @@ adminInventory.post('/adjust', async (c) => {
 adminInventory.get('/movements', async (c) => {
   const productId = c.req.query('productId');
   const page = Number(c.req.query('page') ?? 1);
-  const pageSize = Number(c.req.query('pageSize') ?? 50);
+  const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
   let query = supabaseAdmin

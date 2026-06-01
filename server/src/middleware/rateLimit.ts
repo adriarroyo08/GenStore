@@ -7,13 +7,15 @@ interface RateLimitEntry {
 
 const store = new Map<string, RateLimitEntry>();
 
-// Clean expired entries every 5 minutes
+// Clean expired entries every minute; cap store size to prevent memory exhaustion
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of store) {
     if (now > entry.resetAt) store.delete(key);
   }
-}, 5 * 60 * 1000);
+}, 60_000);
+
+const MAX_STORE_SIZE = 50_000;
 
 export function rateLimit(maxRequests: number = 100, windowMs: number = 60_000) {
   return async (c: Context, next: Next) => {
@@ -29,6 +31,12 @@ export function rateLimit(maxRequests: number = 100, windowMs: number = 60_000) 
       }
       entry.count++;
     } else {
+      if (store.size >= MAX_STORE_SIZE) {
+        // Evict expired entries first; if still full, reject to prevent OOM
+        for (const [k, v] of store) {
+          if (now > v.resetAt) store.delete(k);
+        }
+      }
       store.set(key, { count: 1, resetAt: now + windowMs });
     }
 

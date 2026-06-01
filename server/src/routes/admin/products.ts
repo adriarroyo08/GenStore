@@ -7,7 +7,7 @@ const adminProducts = new Hono();
 // GET /admin/products — all products including inactive
 adminProducts.get('/', async (c) => {
   const page = Number(c.req.query('page') ?? 1);
-  const pageSize = Number(c.req.query('pageSize') ?? 50);
+  const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
   const { data, count, error } = await supabaseAdmin
@@ -54,6 +54,13 @@ adminProducts.post('/import', async (c) => {
 
   if (!supplier_id) {
     return c.json({ error: 'supplier_id es obligatorio' }, 400);
+  }
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return c.json({ error: 'products array is required' }, 400);
+  }
+  if (rows.length > 1000) {
+    return c.json({ error: 'Máximo 1000 productos por importación' }, 400);
   }
 
   const supplier = await supplierService.getSupplierById(supplier_id);
