@@ -33,9 +33,10 @@ adminInventory.post('/import', async (c) => {
 // GET /admin/inventory/export — export CSV
 adminInventory.get('/export', async (c) => {
   const filter = c.req.query('filter') ?? 'all';
+  const safeFilter = filter.replace(/[^a-z0-9_-]/gi, '');
   const csv = await inventoryService.exportCsv(filter);
   return new Response(csv, {
-    headers: { 'Content-Type': 'text/csv', 'Content-Disposition': `attachment; filename="productos-${filter}.csv"` },
+    headers: { 'Content-Type': 'text/csv', 'Content-Disposition': `attachment; filename="productos-${safeFilter || 'all'}.csv"` },
   });
 });
 
