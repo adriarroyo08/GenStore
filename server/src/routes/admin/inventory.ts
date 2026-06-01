@@ -16,14 +16,17 @@ adminInventory.post('/import', async (c) => {
   const user = c.get('user');
   const contentType = c.req.header('content-type') ?? '';
 
+  const MAX_CSV_SIZE = 5 * 1024 * 1024; // 5 MB
   let csvContent: string;
   if (contentType.includes('multipart/form-data')) {
     const formData = await c.req.formData();
     const file = formData.get('file') as File;
     if (!file) return c.json({ error: 'Archivo CSV requerido' }, 400);
+    if (file.size > MAX_CSV_SIZE) return c.json({ error: 'El archivo CSV no puede superar 5 MB' }, 400);
     csvContent = await file.text();
   } else {
     csvContent = await c.req.text();
+    if (csvContent.length > MAX_CSV_SIZE) return c.json({ error: 'El CSV no puede superar 5 MB' }, 400);
   }
 
   const result = await inventoryService.importCsv(csvContent, user.id);
