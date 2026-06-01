@@ -22,11 +22,20 @@ adminCategories.get('/', async (c) => {
 
 adminCategories.post('/', async (c) => {
   const body = await c.req.json();
-  const slug = body.slug ?? body.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const { nombre, descripcion, parent_id, activo, orden, imagen } = body;
+  if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
+  const slug = body.slug ?? nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  const insertData: Record<string, unknown> = { nombre, slug };
+  if (descripcion !== undefined) insertData.descripcion = descripcion;
+  if (parent_id !== undefined) insertData.parent_id = parent_id;
+  if (activo !== undefined) insertData.activo = activo;
+  if (orden !== undefined) insertData.orden = orden;
+  if (imagen !== undefined) insertData.imagen = imagen;
 
   const { data, error } = await supabaseAdmin
     .from('categories')
-    .insert({ ...body, slug })
+    .insert(insertData)
     .select()
     .single();
 

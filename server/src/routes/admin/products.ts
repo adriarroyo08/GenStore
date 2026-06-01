@@ -23,11 +23,34 @@ adminProducts.get('/', async (c) => {
 // POST /admin/products — create product
 adminProducts.post('/', async (c) => {
   const body = await c.req.json();
-  const slug = body.slug ?? body.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku } = body;
+  if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
+  const slug = body.slug ?? nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  const insertData: Record<string, unknown> = { nombre, slug };
+  if (sku !== undefined) insertData.sku = sku;
+  if (precio !== undefined) insertData.precio = precio;
+  if (precio_coste !== undefined) insertData.precio_coste = precio_coste;
+  if (stock !== undefined) insertData.stock = stock;
+  if (stock_minimo !== undefined) insertData.stock_minimo = stock_minimo;
+  if (descripcion !== undefined) insertData.descripcion = descripcion;
+  if (descripcion_corta !== undefined) insertData.descripcion_corta = descripcion_corta;
+  if (marca !== undefined) insertData.marca = marca;
+  if (activo !== undefined) insertData.activo = activo;
+  if (en_oferta !== undefined) insertData.en_oferta = en_oferta;
+  if (porcentaje_descuento !== undefined) insertData.porcentaje_descuento = porcentaje_descuento;
+  if (precio_original !== undefined) insertData.precio_original = precio_original;
+  if (imagenes !== undefined) insertData.imagenes = imagenes;
+  if (specs !== undefined) insertData.specs = specs;
+  if (tags !== undefined) insertData.tags = tags;
+  if (peso !== undefined) insertData.peso = peso;
+  if (category_id !== undefined) insertData.category_id = category_id;
+  if (supplier_id !== undefined) insertData.supplier_id = supplier_id;
+  if (supplier_sku !== undefined) insertData.supplier_sku = supplier_sku;
 
   const { data, error } = await supabaseAdmin
     .from('products')
-    .insert({ ...body, slug })
+    .insert(insertData)
     .select()
     .single();
 
