@@ -12,7 +12,8 @@ reviews.get('/:productId', async (c) => {
     .from('reviews')
     .select('*, profile:profiles(nombre, apellidos)')
     .eq('product_id', productId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(100);
 
   if (error) throw new Error(error.message);
   return c.json(data);

@@ -12,7 +12,8 @@ wishlist.get('/', async (c) => {
     .from('wishlist_items')
     .select('*, product:products(*)')
     .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(200);
 
   if (error) throw new Error(error.message);
   return c.json(data);

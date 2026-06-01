@@ -87,7 +87,8 @@ adminOrders.get('/:id/refunds', async (c) => {
     .from('refunds')
     .select('*, admin:profiles!created_by(nombre, apellidos)')
     .eq('order_id', orderId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(100);
 
   if (error) throw new Error(error.message);
   return c.json({ refunds: data ?? [] });

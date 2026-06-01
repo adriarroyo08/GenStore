@@ -82,7 +82,8 @@ returns.get('/', async (c) => {
     .from('return_requests')
     .select('*')
     .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(50);
 
   if (error) throw new Error(error.message);
   return c.json({ success: true, returns: data ?? [] });
