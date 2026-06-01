@@ -1,6 +1,13 @@
 import { supabase } from './supabase';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const REQUEST_TIMEOUT_MS = 15_000;
+
+function withTimeout(ms: number): { signal: AbortSignal; clear: () => void } {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  return { signal: controller.signal, clear: () => clearTimeout(id) };
+}
 
 // Keep access token in memory, updated by auth state changes
 let _accessToken: string | null = null;
@@ -64,36 +71,51 @@ async function handleResponse<T>(response: Response): Promise<T> {
 export const apiClient = {
   async get<T = unknown>(path: string): Promise<T> {
     const headers = await getAuthHeaders();
-    const res = await fetch(`${BASE_URL}${path}`, { headers });
-    return handleResponse<T>(res);
+    const { signal, clear } = withTimeout(REQUEST_TIMEOUT_MS);
+    try {
+      const res = await fetch(`${BASE_URL}${path}`, { headers, signal });
+      return await handleResponse<T>(res);
+    } finally { clear(); }
   },
 
   async post<T = unknown>(path: string, body?: unknown): Promise<T> {
     const headers = await getAuthHeaders();
-    const res = await fetch(`${BASE_URL}${path}`, {
-      method: 'POST',
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    return handleResponse<T>(res);
+    const { signal, clear } = withTimeout(REQUEST_TIMEOUT_MS);
+    try {
+      const res = await fetch(`${BASE_URL}${path}`, {
+        method: 'POST',
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+        signal,
+      });
+      return await handleResponse<T>(res);
+    } finally { clear(); }
   },
 
   async put<T = unknown>(path: string, body: unknown): Promise<T> {
     const headers = await getAuthHeaders();
-    const res = await fetch(`${BASE_URL}${path}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(body),
-    });
-    return handleResponse<T>(res);
+    const { signal, clear } = withTimeout(REQUEST_TIMEOUT_MS);
+    try {
+      const res = await fetch(`${BASE_URL}${path}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(body),
+        signal,
+      });
+      return await handleResponse<T>(res);
+    } finally { clear(); }
   },
 
   async delete<T = unknown>(path: string): Promise<T> {
     const headers = await getAuthHeaders();
-    const res = await fetch(`${BASE_URL}${path}`, {
-      method: 'DELETE',
-      headers,
-    });
-    return handleResponse<T>(res);
+    const { signal, clear } = withTimeout(REQUEST_TIMEOUT_MS);
+    try {
+      const res = await fetch(`${BASE_URL}${path}`, {
+        method: 'DELETE',
+        headers,
+        signal,
+      });
+      return await handleResponse<T>(res);
+    } finally { clear(); }
   },
 };
