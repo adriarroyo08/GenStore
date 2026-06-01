@@ -13,13 +13,13 @@ setInterval(() => {
   for (const [key, entry] of store) {
     if (now > entry.resetAt) store.delete(key);
   }
-}, 60_000);
+}, 60_000).unref();
 
 const MAX_STORE_SIZE = 50_000;
 
 export function rateLimit(maxRequests: number = 100, windowMs: number = 60_000) {
   return async (c: Context, next: Next) => {
-    const ip = c.req.header('x-forwarded-for') ?? c.req.header('x-real-ip') ?? 'unknown';
+    const ip = (c.req.header('x-forwarded-for')?.split(',')[0]?.trim()) ?? c.req.header('x-real-ip') ?? 'unknown';
     const normalizedPath = c.req.path.replace(/\/+$/, '').toLowerCase();
     const key = `${ip}:${normalizedPath}`;
     const now = Date.now();

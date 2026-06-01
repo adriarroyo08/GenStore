@@ -15,7 +15,7 @@ export async function getSuppliers(params: {
     .select('*', { count: 'exact' });
 
   if (search) {
-    const sanitized = search.replace(/[%_,.()"\\]/g, '');
+    const sanitized = search.replace(/[%_,.()\"\\;`[\]{}]/g, '');
     if (sanitized) {
       query = query.or(`nombre.ilike.%${sanitized}%,email.ilike.%${sanitized}%`);
     }
