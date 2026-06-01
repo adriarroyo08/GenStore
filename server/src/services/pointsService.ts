@@ -186,7 +186,7 @@ export async function redeemReward(userId: string, rewardId: string): Promise<{ 
     .from('user_points')
     .update({
       current_points: userPoints.current_points - reward.points_cost,
-      lifetime_redeemed: (userPoints as any).lifetime_redeemed + reward.points_cost,
+      lifetime_redeemed: ((userPoints as any).lifetime_redeemed ?? 0) + reward.points_cost,
       updated_at: new Date().toISOString(),
     })
     .eq('user_id', userId);

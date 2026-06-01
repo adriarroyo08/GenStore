@@ -32,9 +32,17 @@ export function rateLimit(maxRequests: number = 100, windowMs: number = 60_000) 
       entry.count++;
     } else {
       if (store.size >= MAX_STORE_SIZE) {
-        // Evict expired entries first; if still full, reject to prevent OOM
         for (const [k, v] of store) {
           if (now > v.resetAt) store.delete(k);
+        }
+        // Evict oldest entry if still at capacity
+        if (store.size >= MAX_STORE_SIZE) {
+          let oldestKey: string | undefined;
+          let oldestTime = Infinity;
+          for (const [k, v] of store) {
+            if (v.resetAt < oldestTime) { oldestTime = v.resetAt; oldestKey = k; }
+          }
+          if (oldestKey) store.delete(oldestKey);
         }
       }
       store.set(key, { count: 1, resetAt: now + windowMs });
