@@ -58,8 +58,8 @@ reviews.post('/:productId', authMiddleware, async (c) => {
   const productId = c.req.param('productId');
   const { rating, titulo, comentario } = await c.req.json();
 
-  if (!rating || rating < 1 || rating > 5) {
-    return c.json({ error: 'Rating debe ser entre 1 y 5' }, 400);
+  if (!rating || !Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return c.json({ error: 'Rating debe ser un entero entre 1 y 5' }, 400);
   }
 
   // Check if user has purchased this product
