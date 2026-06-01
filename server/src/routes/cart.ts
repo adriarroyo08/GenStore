@@ -16,6 +16,7 @@ cart.post('/', async (c) => {
   const user = c.get('user');
   const { productId, cantidad = 1, opciones = {} } = await c.req.json();
   if (!productId) return c.json({ error: 'productId requerido' }, 400);
+  if (cantidad < 1 || cantidad > 999) return c.json({ error: 'Cantidad debe ser entre 1 y 999' }, 400);
   const item = await cartService.addToCart(user.id, productId, cantidad, opciones);
   return c.json(item, 201);
 });
@@ -23,7 +24,7 @@ cart.post('/', async (c) => {
 cart.put('/:id', async (c) => {
   const user = c.get('user');
   const { cantidad } = await c.req.json();
-  if (!cantidad || cantidad < 1) return c.json({ error: 'Cantidad debe ser mayor a 0' }, 400);
+  if (!cantidad || cantidad < 1 || cantidad > 999) return c.json({ error: 'Cantidad debe ser entre 1 y 999' }, 400);
   const item = await cartService.updateCartItem(user.id, c.req.param('id'), cantidad);
   return c.json(item);
 });
