@@ -11,8 +11,8 @@ coupons.post('/validate', async (c) => {
   const user = c.get('user');
   const { code, subtotal } = await c.req.json();
 
-  if (!code || typeof code !== 'string') {
-    return c.json({ error: 'Código de cupón requerido' }, 400);
+  if (!code || typeof code !== 'string' || code.length > 50) {
+    return c.json({ error: 'Código de cupón inválido' }, 400);
   }
   if (!subtotal || typeof subtotal !== 'number' || subtotal <= 0) {
     return c.json({ error: 'Subtotal inválido' }, 400);

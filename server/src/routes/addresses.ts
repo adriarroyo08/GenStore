@@ -26,6 +26,12 @@ addresses.post('/', async (c) => {
   if (!nombre || !calle || !ciudad || !codigo_postal || !provincia) {
     return c.json({ error: 'Todos los campos de dirección son requeridos' }, 400);
   }
+  if ([nombre, calle, ciudad, provincia].some((f) => typeof f === 'string' && f.length > 200)) {
+    return c.json({ error: 'Los campos no pueden superar 200 caracteres' }, 400);
+  }
+  if (typeof codigo_postal === 'string' && codigo_postal.length > 10) {
+    return c.json({ error: 'Código postal inválido' }, 400);
+  }
 
   // If setting as default, unset other defaults of same type
   if (is_default) {
