@@ -102,7 +102,8 @@ export async function getOrders(userId: string): Promise<Order[]> {
     .from('orders')
     .select('*, order_items(*, product:products(nombre, slug, imagenes))')
     .eq('user_id', userId)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(100);
 
   if (error) throw new Error(error.message);
   return (data ?? []) as Order[];

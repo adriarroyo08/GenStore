@@ -8,7 +8,7 @@ notifications.use('*', authMiddleware);
 
 notifications.get('/', async (c) => {
   const user = c.get('user');
-  const limit = Number(c.req.query('limit') || 20);
+  const limit = Math.min(Number(c.req.query('limit') || 20), 100);
   const items = await notificationService.getForUser(user.id, limit);
   return c.json({ success: true, notifications: items });
 });
