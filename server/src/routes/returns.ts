@@ -32,16 +32,21 @@ returns.post('/', async (c) => {
   }
 
   const { motivo, descripcion, fotos } = await c.req.json();
-  if (!motivo) return c.json({ error: 'Motivo requerido' }, 400);
+  if (!motivo || typeof motivo !== 'string') return c.json({ error: 'Motivo requerido' }, 400);
+  if (motivo.length > 500) return c.json({ error: 'Motivo no puede superar 500 caracteres' }, 400);
+  if (descripcion && typeof descripcion === 'string' && descripcion.length > 2000) {
+    return c.json({ error: 'Descripción no puede superar 2000 caracteres' }, 400);
+  }
+  const safePhotos = Array.isArray(fotos) ? fotos.slice(0, 10) : [];
 
   const { data: request, error } = await supabaseAdmin
     .from('return_requests')
     .insert({
       order_id: orderId,
       user_id: user.id,
-      motivo,
-      descripcion: descripcion || null,
-      fotos: fotos || [],
+      motivo: motivo.slice(0, 500),
+      descripcion: descripcion?.slice(0, 2000) || null,
+      fotos: safePhotos,
     })
     .select()
     .single();
