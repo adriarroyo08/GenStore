@@ -17,6 +17,9 @@ cart.post('/', async (c) => {
   const { productId, cantidad = 1, opciones = {} } = await c.req.json();
   if (!productId) return c.json({ error: 'productId requerido' }, 400);
   if (cantidad < 1 || cantidad > 999) return c.json({ error: 'Cantidad debe ser entre 1 y 999' }, 400);
+  if (typeof opciones === 'object' && JSON.stringify(opciones).length > 2000) {
+    return c.json({ error: 'Opciones demasiado grandes' }, 400);
+  }
   const item = await cartService.addToCart(user.id, productId, cantidad, opciones);
   return c.json(item, 201);
 });

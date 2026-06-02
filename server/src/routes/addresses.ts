@@ -12,7 +12,8 @@ addresses.get('/', async (c) => {
     .from('addresses')
     .select('*')
     .eq('user_id', user.id)
-    .order('is_default', { ascending: false });
+    .order('is_default', { ascending: false })
+    .limit(50);
 
   if (error) throw new Error(error.message);
   return c.json(data);
@@ -65,6 +66,12 @@ addresses.put('/:id', async (c) => {
   }
 
   const { tipo, nombre, calle, ciudad, codigo_postal, provincia, pais, is_default, telefono, notas } = body;
+  if ([nombre, calle, ciudad, provincia].some((f) => typeof f === 'string' && f.length > 200)) {
+    return c.json({ error: 'Los campos no pueden superar 200 caracteres' }, 400);
+  }
+  if (typeof codigo_postal === 'string' && codigo_postal.length > 10) {
+    return c.json({ error: 'Código postal inválido' }, 400);
+  }
   const allowedFields: Record<string, unknown> = {};
   if (tipo !== undefined) allowedFields.tipo = tipo;
   if (nombre !== undefined) allowedFields.nombre = nombre;
