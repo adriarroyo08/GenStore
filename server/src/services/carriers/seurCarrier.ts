@@ -1,4 +1,5 @@
 import { env } from '../../config/env.js';
+import { fetchWithTimeout } from '../../utils/fetchWithTimeout.js';
 import type { ShippingCarrier } from '../shippingService.js';
 import type { Order, Address } from '../../types/index.js';
 
@@ -69,7 +70,7 @@ export class SeurCarrier implements ShippingCarrier {
   </soapenv:Body>
 </soapenv:Envelope>`;
 
-    const response = await fetch(`${this.baseUrl}/webseur/services/WSCrearEnvio`, {
+    const response = await fetchWithTimeout(`${this.baseUrl}/webseur/services/WSCrearEnvio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
@@ -108,7 +109,7 @@ export class SeurCarrier implements ShippingCarrier {
   </soapenv:Body>
 </soapenv:Envelope>`;
 
-    const response = await fetch(`${this.baseUrl}/webseur/services/WSSeguimientoEnvio`, {
+    const response = await fetchWithTimeout(`${this.baseUrl}/webseur/services/WSSeguimientoEnvio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
@@ -156,7 +157,7 @@ export class SeurCarrier implements ShippingCarrier {
   </soapenv:Body>
 </soapenv:Envelope>`;
 
-    const response = await fetch(`${this.baseUrl}/webseur/services/WSConsultaEnvio`, {
+    const response = await fetchWithTimeout(`${this.baseUrl}/webseur/services/WSConsultaEnvio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',

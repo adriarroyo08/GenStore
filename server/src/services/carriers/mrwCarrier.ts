@@ -1,4 +1,5 @@
 import { env } from '../../config/env.js';
+import { fetchWithTimeout } from '../../utils/fetchWithTimeout.js';
 import type { ShippingCarrier } from '../shippingService.js';
 import type { Order, Address } from '../../types/index.js';
 
@@ -30,7 +31,7 @@ export class MrwCarrier implements ShippingCarrier {
   }
 
   async createShipment(order: Order, address: Address): Promise<{ trackingNumber: string; labelUrl?: string }> {
-    const response = await fetch(`${this.baseUrl}/TransmEnvio`, {
+    const response = await fetchWithTimeout(`${this.baseUrl}/TransmEnvio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -68,7 +69,7 @@ export class MrwCarrier implements ShippingCarrier {
     ubicacion: string | null;
     occurred_at: string;
   }>> {
-    const response = await fetch(`${this.baseUrl}/GetSeguimientoEnvio`, {
+    const response = await fetchWithTimeout(`${this.baseUrl}/GetSeguimientoEnvio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -97,7 +98,7 @@ export class MrwCarrier implements ShippingCarrier {
   }
 
   async getLabel(trackingNumber: string): Promise<Buffer> {
-    const response = await fetch(`${this.baseUrl}/GetEtiquetaEnvio`, {
+    const response = await fetchWithTimeout(`${this.baseUrl}/GetEtiquetaEnvio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

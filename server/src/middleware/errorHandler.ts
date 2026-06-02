@@ -2,6 +2,10 @@ import { Context } from 'hono';
 import { env } from '../config/env.js';
 
 export function errorHandler(err: Error, c: Context) {
+  if (err instanceof SyntaxError && err.message.includes('JSON')) {
+    return c.json({ error: 'JSON inválido en el cuerpo de la solicitud' }, 400);
+  }
+
   const status = (err as any).status ?? 500;
 
   // Always log the real error server-side

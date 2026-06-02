@@ -1,5 +1,6 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
 import { logger } from 'hono/logger';
 import { secureHeaders } from 'hono/secure-headers';
 import { env } from './config/env.js';
@@ -38,7 +39,16 @@ import returnRoutes from './routes/returns.js';
 const app = new Hono().basePath('/api/v1');
 
 // Global middleware
-app.use('*', secureHeaders());
+app.use('*', secureHeaders({
+  permissionsPolicy: {
+    camera: [],
+    microphone: [],
+    geolocation: [],
+    payment: [],
+    usb: [],
+  },
+}));
+app.use('*', bodyLimit({ maxSize: 1024 * 1024, onError: (c) => c.json({ error: 'Payload demasiado grande (máx 1 MB)' }, 413) }));
 app.use('*', corsMiddleware);
 app.use('*', rateLimit(100, 60_000));
 if (env.NODE_ENV !== 'production') {
