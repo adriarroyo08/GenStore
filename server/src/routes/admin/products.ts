@@ -112,7 +112,7 @@ adminProducts.post('/import', async (c) => {
         const { data: cat } = await supabaseAdmin
           .from('categories')
           .select('id')
-          .ilike('nombre', row.categoria.trim())
+          .ilike('nombre', row.categoria.trim().replace(/[%_]/g, ''))
           .single();
         categoryId = cat?.id ?? null;
       }
