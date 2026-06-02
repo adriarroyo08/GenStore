@@ -74,6 +74,9 @@ adminOrders.post('/:id/refund', async (c) => {
   if (!motivo || !motivo.trim()) {
     return c.json({ error: 'El motivo del reembolso es obligatorio' }, 400);
   }
+  if (motivo.length > 500) {
+    return c.json({ error: 'El motivo no puede superar 500 caracteres' }, 400);
+  }
 
   const result = await paymentService.createRefund(orderId, amount ?? null, motivo.trim(), user.id);
   return c.json(result);

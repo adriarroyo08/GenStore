@@ -15,6 +15,9 @@ orders.post('/', async (c) => {
   const { shippingAddressId, billingAddressId, paisImpuesto = 'ES', notas } = await c.req.json();
 
   if (!shippingAddressId) return c.json({ error: 'Dirección de envío requerida' }, 400);
+  if (notas && typeof notas === 'string' && notas.length > 1000) {
+    return c.json({ error: 'Las notas no pueden superar 1000 caracteres' }, 400);
+  }
 
   const order = await orderService.createOrder({
     userId: user.id,

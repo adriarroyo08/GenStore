@@ -56,8 +56,14 @@ auth.post('/signup', rateLimit(5, 60_000), async (c) => {
     return c.json({ error: 'Email, contraseña, nombre y nombre de usuario son requeridos' }, 400);
   }
 
+  // Validate field lengths
+  if (email.length > 254) return c.json({ error: 'Email no válido' }, 400);
+  if (nombre.length > 100) return c.json({ error: 'Nombre demasiado largo (máx 100)' }, 400);
+  if (apellidos && apellidos.length > 100) return c.json({ error: 'Apellidos demasiado largo (máx 100)' }, 400);
+
   // Validate password strength
   const passwordErrors: string[] = [];
+  if (password.length > 128) passwordErrors.push('máximo 128 caracteres');
   if (password.length < 8) passwordErrors.push('al menos 8 caracteres');
   if (!/[A-Z]/.test(password)) passwordErrors.push('una letra mayúscula');
   if (!/[a-z]/.test(password)) passwordErrors.push('una letra minúscula');
@@ -307,6 +313,16 @@ auth.put('/me', authMiddleware, async (c) => {
   const user = c.get('user');
   const { nombre, apellidos, telefono, username } = await c.req.json();
 
+  if (nombre !== undefined && typeof nombre === 'string' && nombre.length > 100) {
+    return c.json({ error: 'Nombre demasiado largo (máx 100)' }, 400);
+  }
+  if (apellidos !== undefined && typeof apellidos === 'string' && apellidos.length > 100) {
+    return c.json({ error: 'Apellidos demasiado largo (máx 100)' }, 400);
+  }
+  if (telefono !== undefined && typeof telefono === 'string' && telefono.length > 20) {
+    return c.json({ error: 'Teléfono demasiado largo (máx 20)' }, 400);
+  }
+
   const updateData: Record<string, any> = {};
   if (nombre !== undefined) updateData.nombre = nombre;
   if (apellidos !== undefined) updateData.apellidos = apellidos;
@@ -342,7 +358,7 @@ auth.put('/me', authMiddleware, async (c) => {
 });
 
 // POST /auth/change-password
-auth.post('/change-password', authMiddleware, async (c) => {
+auth.post('/change-password', rateLimit(5, 60_000), authMiddleware, async (c) => {
   const user = c.get('user');
   const { currentPassword, newPassword } = await c.req.json();
 
@@ -366,6 +382,7 @@ auth.post('/change-password', authMiddleware, async (c) => {
 
   // Server-side password strength validation
   const passwordErrors: string[] = [];
+  if (newPassword.length > 128) passwordErrors.push('máximo 128 caracteres');
   if (newPassword.length < 8) passwordErrors.push('al menos 8 caracteres');
   if (!/[A-Z]/.test(newPassword)) passwordErrors.push('una letra mayúscula');
   if (!/[a-z]/.test(newPassword)) passwordErrors.push('una letra minúscula');
