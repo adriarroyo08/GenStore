@@ -140,8 +140,8 @@ auth.post('/resend-verification', rateLimit(3, 60_000), async (c) => {
   if (!email) return c.json({ error: 'Email requerido' }, 400);
 
   try {
-    // Look up user by email (filtered query instead of fetching all users)
-    const { data: { users } } = await supabaseAdmin.auth.admin.listUsers({ filter: email });
+    // Look up user by email
+    const { data: { users } } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 50 });
     const user = users?.find((u: any) => u.email === email);
 
     if (!user) {
