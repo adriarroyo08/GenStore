@@ -59,7 +59,7 @@ adminInventory.post('/adjust', async (c) => {
 // GET /admin/inventory/movements — inventory history
 adminInventory.get('/movements', async (c) => {
   const productId = c.req.query('productId');
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.max(1, Number(c.req.query('page') ?? 1) || 1);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
@@ -85,7 +85,7 @@ adminInventory.get('/dashboard', async (c) => {
     supabaseAdmin.from('orders').select('total').gte('created_at', firstOfMonth).in('estado', ['pagado', 'enviado', 'entregado']).limit(10000),
     supabaseAdmin.from('orders').select('id', { count: 'exact' }).in('estado', ['pendiente', 'pagado', 'enviado']).limit(1),
     inventoryService.getLowStockAlerts(),
-    supabaseAdmin.from('profiles').select('id', { count: 'exact' }),
+    supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }),
     supabaseAdmin.from('orders').select('id, numero_pedido, estado, total, created_at').order('created_at', { ascending: false }).limit(5),
   ]);
 

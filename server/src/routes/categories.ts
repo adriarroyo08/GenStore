@@ -9,7 +9,8 @@ categories.get('/', async (c) => {
     .from('categories')
     .select('*, products(count)')
     .eq('activo', true)
-    .order('orden', { ascending: true });
+    .order('orden', { ascending: true })
+    .limit(200);
 
   if (error) throw new Error(error.message);
 

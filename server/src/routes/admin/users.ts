@@ -4,7 +4,7 @@ import { supabaseAdmin } from '../../config/supabase.js';
 const adminUsers = new Hono();
 
 adminUsers.get('/', async (c) => {
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.max(1, Number(c.req.query('page') ?? 1) || 1);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 100);
   const from = (page - 1) * pageSize;
 

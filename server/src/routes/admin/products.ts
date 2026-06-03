@@ -6,7 +6,7 @@ const adminProducts = new Hono();
 
 // GET /admin/products — all products including inactive
 adminProducts.get('/', async (c) => {
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.max(1, Number(c.req.query('page') ?? 1) || 1);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
