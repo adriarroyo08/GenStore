@@ -7,9 +7,10 @@ adminCategories.get('/', async (c) => {
   const { data, error } = await supabaseAdmin
     .from('categories')
     .select('*, products(count)')
-    .order('orden', { ascending: true });
+    .order('orden', { ascending: true })
+    .limit(500);
 
-  if (error) throw new Error(error.message);
+  if (error) throw error;
 
   const result = (data ?? []).map((cat: any) => ({
     ...cat,

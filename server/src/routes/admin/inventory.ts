@@ -82,8 +82,8 @@ adminInventory.get('/dashboard', async (c) => {
   const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   const [salesResult, activeOrdersResult, lowStockAlerts, usersResult, recentOrdersResult] = await Promise.all([
-    supabaseAdmin.from('orders').select('total').gte('created_at', firstOfMonth).in('estado', ['pagado', 'enviado', 'entregado']),
-    supabaseAdmin.from('orders').select('id', { count: 'exact' }).in('estado', ['pendiente', 'pagado', 'enviado']),
+    supabaseAdmin.from('orders').select('total').gte('created_at', firstOfMonth).in('estado', ['pagado', 'enviado', 'entregado']).limit(10000),
+    supabaseAdmin.from('orders').select('id', { count: 'exact' }).in('estado', ['pendiente', 'pagado', 'enviado']).limit(1),
     inventoryService.getLowStockAlerts(),
     supabaseAdmin.from('profiles').select('id', { count: 'exact' }),
     supabaseAdmin.from('orders').select('id, numero_pedido, estado, total, created_at').order('created_at', { ascending: false }).limit(5),

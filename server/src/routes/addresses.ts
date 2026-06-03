@@ -24,6 +24,11 @@ addresses.post('/', async (c) => {
   const body = await c.req.json();
   const { tipo, nombre, calle, ciudad, codigo_postal, provincia, pais, is_default } = body;
 
+  const validTipos = ['shipping', 'billing'];
+  if (tipo && !validTipos.includes(tipo)) {
+    return c.json({ error: 'Tipo de dirección inválido' }, 400);
+  }
+
   if (!nombre || !calle || !ciudad || !codigo_postal || !provincia) {
     return c.json({ error: 'Todos los campos de dirección son requeridos' }, 400);
   }
