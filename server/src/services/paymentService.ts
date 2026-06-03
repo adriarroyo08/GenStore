@@ -463,6 +463,9 @@ export async function createRefund(
   }
 
   const refundAmount = amount ?? order.total;
+  if (refundAmount <= 0 || refundAmount > order.total) {
+    throw Object.assign(new Error('El importe de reembolso debe ser entre 0.01 y el total del pedido'), { status: 400 });
+  }
   const refundAmountCents = Math.round(refundAmount * 100);
 
   const stripeRefund = await stripe.refunds.create({
