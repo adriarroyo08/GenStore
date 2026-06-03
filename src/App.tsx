@@ -1,4 +1,5 @@
 import React from 'react';
+import { apiClient } from './lib/apiClient';
 import { useLanguage, LanguageProvider } from './contexts/LanguageContext';
 import { CurrencyProvider } from './contexts/CurrencyContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
@@ -74,12 +75,7 @@ function AppContent() {
     const type = params.get('type');
     if (token) {
       window.history.replaceState({}, '', window.location.pathname);
-      fetch('/api/v1/auth/verify-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, type }),
-      })
-        .then((res) => res.json())
+      apiClient.post('/auth/verify-email', { token, type })
         .then((data) => {
           if (data.error) {
             showNotification('error', data.error);
