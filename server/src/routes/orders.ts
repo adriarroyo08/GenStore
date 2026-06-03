@@ -134,7 +134,8 @@ orders.post('/:id/cancel', async (c) => {
     const result = await orderService.cancelOrder(user.id, orderId);
     return c.json({ success: true, ...result });
   } catch (err: any) {
-    return c.json({ error: err.message }, err.status || 500);
+    const status = err.status || 500;
+    return c.json({ error: status < 500 ? err.message : 'Error al cancelar el pedido' }, status);
   }
 });
 

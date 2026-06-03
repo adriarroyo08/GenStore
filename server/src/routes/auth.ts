@@ -101,7 +101,7 @@ auth.post('/signup', rateLimit(5, 60_000), async (c) => {
     if (error.message.includes('already registered')) {
       return c.json({ error: 'Este email ya está registrado' }, 409);
     }
-    return c.json({ error: error.message }, 400);
+    return c.json({ error: 'Error al crear la cuenta' }, 400);
   }
 
   // Generate confirmation link via Supabase
@@ -397,7 +397,7 @@ auth.post('/change-password', rateLimit(5, 60_000), authMiddleware, async (c) =>
     password: newPassword,
   });
 
-  if (error) return c.json({ error: error.message }, 400);
+  if (error) return c.json({ error: 'Error al actualizar la contraseña' }, 400);
   return c.json({ message: 'Contraseña actualizada' });
 });
 
@@ -458,7 +458,7 @@ auth.get('/2fa/status', authMiddleware, async (c) => {
     .eq('id', user.id)
     .single();
 
-  if (error) return c.json({ error: error.message }, 500);
+  if (error) return c.json({ error: 'Error al consultar estado 2FA' }, 500);
 
   const enabled = profile?.two_factor_enabled ?? false;
   const hasSecret = !!profile?.two_factor_secret;
@@ -484,7 +484,7 @@ auth.post('/2fa/setup', authMiddleware, async (c) => {
     .update({ two_factor_secret: secret })
     .eq('id', user.id);
 
-  if (error) return c.json({ error: error.message }, 500);
+  if (error) return c.json({ error: 'Error al configurar 2FA' }, 500);
 
   const otpauthUrl = generateURI({ issuer: 'GenStore', label: user.email, secret });
   const qrCodeUrl = await toDataURL(otpauthUrl);
@@ -532,7 +532,7 @@ auth.post('/2fa/verify', authMiddleware, async (c) => {
     })
     .eq('id', user.id);
 
-  if (updateErr) return c.json({ error: updateErr.message }, 500);
+  if (updateErr) return c.json({ error: 'Error al activar 2FA' }, 500);
 
   return c.json({ backupCodes });
 });
@@ -573,7 +573,7 @@ auth.post('/2fa/disable', authMiddleware, async (c) => {
     })
     .eq('id', user.id);
 
-  if (updateErr) return c.json({ error: updateErr.message }, 500);
+  if (updateErr) return c.json({ error: 'Error al desactivar 2FA' }, 500);
 
   return c.json({ message: '2FA desactivado' });
 });
