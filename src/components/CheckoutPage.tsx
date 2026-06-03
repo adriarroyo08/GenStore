@@ -163,8 +163,7 @@ export function CheckoutPage({
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
-    fetch('/api/v1/settings/public')
-      .then((r) => r.json())
+    apiClient.get('/settings/public')
       .then((data) => setBusinessSettings({
         envio_gratis_umbral: data.envio_gratis_umbral ?? 50,
         coste_envio_estandar: data.coste_envio_estandar ?? 9.99,

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Instagram, Facebook, Twitter } from "lucide-react";
 import { GenStoreLogo } from "./GenStoreLogo";
+import { apiClient } from "../lib/apiClient";
 
 interface FooterProps {
   onAboutClick?: () => void;
@@ -34,8 +35,7 @@ export function Footer({
   const [businessInfo, setBusinessInfo] = useState({ razon_social: '', cif: '' });
 
   useEffect(() => {
-    fetch('/api/v1/settings/public')
-      .then((r) => r.json())
+    apiClient.get('/settings/public')
       .then((data) => setBusinessInfo({
         razon_social: data.razon_social ?? '',
         cif: data.cif ?? '',

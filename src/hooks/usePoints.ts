@@ -84,8 +84,7 @@ export function usePoints(user: any): UsePointsReturn {
 
   // Check if points system is enabled via public settings
   useEffect(() => {
-    fetch('/api/v1/settings/public')
-      .then((r) => r.json())
+    apiClient.get('/settings/public')
       .then((data) => {
         const enabled = data.puntos_enabled ?? true;
         setIsEnabled(enabled);
