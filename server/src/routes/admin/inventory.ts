@@ -82,14 +82,14 @@ adminInventory.get('/dashboard', async (c) => {
   const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   const [salesResult, activeOrdersResult, lowStockAlerts, usersResult, recentOrdersResult] = await Promise.all([
-    supabaseAdmin.from('orders').select('total').gte('created_at', firstOfMonth).in('estado', ['pagado', 'enviado', 'entregado']).limit(10000),
-    supabaseAdmin.from('orders').select('id', { count: 'exact' }).in('estado', ['pendiente', 'pagado', 'enviado']).limit(1),
+    supabaseAdmin.from('orders').select('total.sum()').gte('created_at', firstOfMonth).in('estado', ['pagado', 'enviado', 'entregado']).single(),
+    supabaseAdmin.from('orders').select('id', { count: 'exact', head: true }).in('estado', ['pendiente', 'pagado', 'enviado']),
     inventoryService.getLowStockAlerts(),
     supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }),
     supabaseAdmin.from('orders').select('id, numero_pedido, estado, total, created_at').order('created_at', { ascending: false }).limit(5),
   ]);
 
-  const ventasMes = (salesResult.data ?? []).reduce((sum: number, o: any) => sum + Number(o.total), 0);
+  const ventasMes = Number((salesResult.data as any)?.sum ?? 0);
 
   return c.json({
     ventasMes: Math.round(ventasMes * 100) / 100,
