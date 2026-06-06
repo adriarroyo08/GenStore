@@ -158,7 +158,8 @@ adminProducts.post('/import', async (c) => {
         results.created++;
       }
     } catch (err: any) {
-      results.errors.push({ row: i + 1, message: err.message ?? 'Error desconocido' });
+      console.error(`[Import] Row ${i + 1} error:`, err.message);
+      results.errors.push({ row: i + 1, message: 'Error al procesar fila' });
     }
   }
 

@@ -5,9 +5,9 @@ import * as supplierService from '../../services/supplierService.js';
 const suppliers = new Hono<AppEnv>();
 
 suppliers.get('/', async (c) => {
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.min(Math.max(Number(c.req.query('page') ?? 1) || 1, 1), 1000);
   const limit = Math.min(Number(c.req.query('limit') ?? 15), 100);
-  const search = c.req.query('search') || undefined;
+  const search = c.req.query('search')?.slice(0, 200) || undefined;
   const activeParam = c.req.query('active');
   const active = activeParam !== undefined ? activeParam === 'true' : undefined;
 

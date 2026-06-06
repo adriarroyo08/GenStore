@@ -37,7 +37,7 @@ adminInventory.post('/import', async (c) => {
 adminInventory.get('/export', async (c) => {
   const filter = c.req.query('filter') ?? 'all';
   const safeFilter = filter.replace(/[^a-z0-9_-]/gi, '');
-  const csv = await inventoryService.exportCsv(filter);
+  const csv = await inventoryService.exportCsv(safeFilter || 'all');
   return new Response(csv, {
     headers: { 'Content-Type': 'text/csv', 'Content-Disposition': `attachment; filename="productos-${safeFilter || 'all'}.csv"` },
   });
@@ -56,6 +56,14 @@ adminInventory.post('/adjust', async (c) => {
 
   if (!productId || cantidad === undefined || !motivo) {
     return c.json({ error: 'productId, cantidad y motivo son requeridos' }, 400);
+  }
+
+  if (!isFinite(Number(cantidad)) || Math.abs(Number(cantidad)) > 100000) {
+    return c.json({ error: 'cantidad debe ser un número finito con valor absoluto <= 100000' }, 400);
+  }
+
+  if (typeof motivo === 'string' && motivo.length > 500) {
+    return c.json({ error: 'motivo no puede superar 500 caracteres' }, 400);
   }
 
   await inventoryService.adjustStock(productId, cantidad, motivo, user.id);

@@ -8,7 +8,8 @@ const adminOrders = new Hono<AppEnv>();
 
 adminOrders.get('/', async (c) => {
   const estado = c.req.query('estado');
-  const page = Math.max(1, Number(c.req.query('page') ?? 1) || 1);
+  const validStates = ['pendiente', 'confirmado', 'procesando', 'pagado', 'enviado', 'entregado', 'cancelado', 'devuelto', 'fallido'];
+  const page = Math.min(Math.max(1, Number(c.req.query('page') ?? 1) || 1), 1000);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
@@ -18,7 +19,7 @@ adminOrders.get('/', async (c) => {
     .order('created_at', { ascending: false })
     .range(from, from + pageSize - 1);
 
-  if (estado) query = query.eq('estado', estado);
+  if (estado && validStates.includes(estado)) query = query.eq('estado', estado);
 
   const { data, count, error } = await query;
   if (error) throw new Error(error.message);

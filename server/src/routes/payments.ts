@@ -78,7 +78,7 @@ payments.post('/confirm', async (c) => {
   const { stripe } = await import('../config/stripe.js');
   const pi = await stripe.paymentIntents.retrieve(order.payment_intent_id);
   if (pi.status !== 'succeeded') {
-    return c.json({ error: `Pago no completado (estado: ${pi.status})` }, 400);
+    return c.json({ error: 'Pago no completado' }, 400);
   }
 
   // Run the same logic as the webhook handler (reuse retrieved PI)
