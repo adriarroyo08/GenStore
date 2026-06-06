@@ -68,7 +68,10 @@ export function SignupPage({ onBackToLogin, onSignupSuccess, onVerificationRequi
     let cancelled = false;
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/v1/auth/check-username?username=${encodeURIComponent(username)}`);
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 10000);
+        const res = await fetch(`/api/v1/auth/check-username?username=${encodeURIComponent(username)}`, { signal: controller.signal });
+        clearTimeout(tid);
         const data = await res.json();
         if (!cancelled) setUsernameStatus(data.available ? 'available' : 'taken');
       } catch {

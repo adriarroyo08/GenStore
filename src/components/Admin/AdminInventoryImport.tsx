@@ -96,11 +96,15 @@ export function AdminInventoryImport({ onClose, onImported }: AdminInventoryImpo
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
 
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 30000);
       const res = await fetch('/api/v1/admin/inventory/import', {
         method: 'POST',
         headers,
         body: formData,
+        signal: controller.signal,
       });
+      clearTimeout(tid);
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({ error: 'Error desconocido' }));
