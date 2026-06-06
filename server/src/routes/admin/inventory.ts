@@ -46,7 +46,13 @@ adminInventory.get('/export', async (c) => {
 // POST /admin/inventory/adjust — manual stock adjustment
 adminInventory.post('/adjust', async (c) => {
   const user = c.get('user');
-  const { productId, cantidad, motivo } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { productId, cantidad, motivo } = body;
 
   if (!productId || cantidad === undefined || !motivo) {
     return c.json({ error: 'productId, cantidad y motivo son requeridos' }, 400);

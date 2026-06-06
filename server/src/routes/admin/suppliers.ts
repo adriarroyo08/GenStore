@@ -23,7 +23,12 @@ suppliers.get('/:id', async (c) => {
 });
 
 suppliers.post('/', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, email, telefono, web, pais, condiciones_pago, plazo_envio_estimado, margen_defecto, notas, activo } = body;
   if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
   const safeBody: Record<string, unknown> = { nombre };
@@ -42,7 +47,12 @@ suppliers.post('/', async (c) => {
 
 suppliers.put('/:id', async (c) => {
   const id = c.req.param('id');
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, email, telefono, web, pais, condiciones_pago, plazo_envio_estimado, margen_defecto, notas, activo } = body;
   const safeBody: Record<string, unknown> = {};
   if (nombre !== undefined) safeBody.nombre = nombre;

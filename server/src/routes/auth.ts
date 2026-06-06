@@ -136,7 +136,13 @@ auth.post('/signup', rateLimit(5, 60_000), async (c) => {
 
 // POST /auth/resend-verification — resend branded verification email
 auth.post('/resend-verification', rateLimit(3, 60_000), async (c) => {
-  const { email } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { email } = body;
   if (!email) return c.json({ error: 'Email requerido' }, 400);
 
   try {
@@ -184,7 +190,13 @@ auth.post('/resend-verification', rateLimit(3, 60_000), async (c) => {
 
 // POST /auth/verify-email — confirm email with token
 auth.post('/verify-email', async (c) => {
-  const { token, type } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { token, type } = body;
   if (!token) return c.json({ error: 'Token requerido' }, 400);
 
   try {
@@ -210,7 +222,13 @@ auth.post('/verify-email', async (c) => {
 
 // POST /auth/login — sign in (supports email or username)
 auth.post('/login', rateLimit(10, 60_000), async (c) => {
-  const { email: identifier, password } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { email: identifier, password } = body;
 
   if (!identifier || !password) {
     return c.json({ error: 'Email/usuario y contraseña requeridos' }, 400);
@@ -311,7 +329,13 @@ auth.get('/me', authMiddleware, async (c) => {
 // PUT /auth/me — update profile
 auth.put('/me', authMiddleware, async (c) => {
   const user = c.get('user');
-  const { nombre, apellidos, telefono, username } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { nombre, apellidos, telefono, username } = body;
 
   if (nombre !== undefined && typeof nombre === 'string' && nombre.length > 100) {
     return c.json({ error: 'Nombre demasiado largo (máx 100)' }, 400);
@@ -360,7 +384,13 @@ auth.put('/me', authMiddleware, async (c) => {
 // POST /auth/change-password
 auth.post('/change-password', rateLimit(5, 60_000), authMiddleware, async (c) => {
   const user = c.get('user');
-  const { currentPassword, newPassword } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { currentPassword, newPassword } = body;
 
   if (!currentPassword) {
     return c.json({ error: 'La contraseña actual es requerida' }, 400);
@@ -403,7 +433,13 @@ auth.post('/change-password', rateLimit(5, 60_000), authMiddleware, async (c) =>
 
 // POST /auth/forgot-password
 auth.post('/forgot-password', rateLimit(3, 60_000), async (c) => {
-  const { email } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { email } = body;
   if (!email) return c.json({ error: 'Email requerido' }, 400);
 
   // Always return success to prevent email enumeration
@@ -495,7 +531,13 @@ auth.post('/2fa/setup', authMiddleware, async (c) => {
 // POST /auth/2fa/verify — verify TOTP token and enable 2FA
 auth.post('/2fa/verify', authMiddleware, async (c) => {
   const user = c.get('user');
-  const { token } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { token } = body;
 
   if (!token) return c.json({ error: 'Token requerido' }, 400);
 
@@ -540,7 +582,13 @@ auth.post('/2fa/verify', authMiddleware, async (c) => {
 // POST /auth/2fa/disable — disable 2FA with token or backup code
 auth.post('/2fa/disable', authMiddleware, async (c) => {
   const user = c.get('user');
-  const { token } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { token } = body;
 
   if (!token) return c.json({ error: 'Token o código de respaldo requerido' }, 400);
 
@@ -580,7 +628,13 @@ auth.post('/2fa/disable', authMiddleware, async (c) => {
 
 // POST /auth/2fa/challenge — verify 2FA code during login and return session tokens
 auth.post('/2fa/challenge', rateLimit(10, 60_000), async (c) => {
-  const { challenge_token, token } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { challenge_token, token } = body;
 
   if (!challenge_token || !token) {
     return c.json({ error: 'Token de desafío y código 2FA son requeridos' }, 400);

@@ -17,7 +17,12 @@ const ALLOWED_KEYS = new Set([
 ]);
 
 settings.put('/', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const filtered: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(body)) {
     if (ALLOWED_KEYS.has(key)) filtered[key] = value;

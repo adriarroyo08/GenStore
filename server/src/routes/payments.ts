@@ -11,6 +11,12 @@ payments.use('*', authMiddleware);
 // POST /payments/create-intent
 payments.post('/create-intent', async (c) => {
   const user = c.get('user');
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const {
     shippingAddressId,
     billingAddressId,
@@ -19,7 +25,7 @@ payments.post('/create-intent', async (c) => {
     saveCard = false,
     paymentMethodId,
     couponCode,
-  } = await c.req.json();
+  } = body;
 
   if (!shippingAddressId) {
     return c.json({ error: 'Dirección de envío requerida' }, 400);
@@ -43,7 +49,13 @@ payments.post('/create-intent', async (c) => {
 // POST /payments/confirm — fallback to confirm payment when webhook doesn't arrive (dev/local)
 payments.post('/confirm', async (c) => {
   const user = c.get('user');
-  const { orderId } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { orderId } = body;
 
   if (!orderId) return c.json({ error: 'orderId requerido' }, 400);
 
@@ -96,7 +108,13 @@ payments.get('/methods', async (c) => {
 // POST /payments/methods — save a new payment method
 payments.post('/methods', async (c) => {
   const user = c.get('user');
-  const { paymentMethodId } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { paymentMethodId } = body;
 
   if (!paymentMethodId) {
     return c.json({ error: 'paymentMethodId requerido' }, 400);

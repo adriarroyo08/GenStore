@@ -22,7 +22,12 @@ adminProducts.get('/', async (c) => {
 
 // POST /admin/products — create product
 adminProducts.post('/', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku } = body;
   if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
   const slug = body.slug ?? nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -60,7 +65,12 @@ adminProducts.post('/', async (c) => {
 
 // POST /admin/products/import — bulk import products from CSV data
 adminProducts.post('/import', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { supplier_id, products: rows } = body as {
     supplier_id: string;
     products: Array<{
@@ -157,7 +167,12 @@ adminProducts.post('/import', async (c) => {
 
 // PUT /admin/products/:id — update product
 adminProducts.put('/:id', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku } = body;
   const updateData: Record<string, unknown> = {};
   if (nombre !== undefined) updateData.nombre = nombre;

@@ -9,7 +9,13 @@ coupons.use('*', authMiddleware);
 // POST /coupons/validate — validate a coupon code and return discount
 coupons.post('/validate', async (c) => {
   const user = c.get('user');
-  const { code, subtotal } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { code, subtotal } = body;
 
   if (!code || typeof code !== 'string' || code.length > 50) {
     return c.json({ error: 'Código de cupón inválido' }, 400);

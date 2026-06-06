@@ -7,7 +7,7 @@ const products = new Hono();
 // GET /products — public catalog with pagination and filters
 products.get('/', async (c) => {
   const filters: ProductFilters = {
-    q: c.req.query('q') || undefined,
+    q: c.req.query('q')?.slice(0, 200) || undefined,
     category: c.req.query('category') || undefined,
     minPrice: c.req.query('minPrice') ? Number(c.req.query('minPrice')) : undefined,
     maxPrice: c.req.query('maxPrice') ? Number(c.req.query('maxPrice')) : undefined,
