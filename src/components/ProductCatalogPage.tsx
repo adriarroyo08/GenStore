@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import { Product, CartItem } from '../types/index';
 import { ProductCard } from './ProductCard';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -281,11 +282,11 @@ export function ProductCatalogPage({
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
 
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
             {searchQuery ? `Resultados para "${searchQuery}"` : 'Catalogo'}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -352,7 +353,7 @@ export function ProductCatalogPage({
             {/* Active filter badges */}
             {activeCategory && (
               <span
-                className="flex flex-wrap items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium cursor-pointer hover:bg-primary/20"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted text-sm text-foreground border border-border/50 cursor-pointer hover:text-destructive"
                 onClick={() => setActiveCategory(null)}
               >
                 {categories.find(c => c.slug === activeCategory)?.name ?? activeCategory} <X className="w-3 h-3" />
@@ -360,7 +361,7 @@ export function ProductCatalogPage({
             )}
             {priceRangeActive && (
               <span
-                className="flex flex-wrap items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium cursor-pointer hover:bg-primary/20"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted text-sm text-foreground border border-border/50 cursor-pointer hover:text-destructive"
                 onClick={() => setPriceRange([globalPriceMin, globalPriceMax])}
               >
                 {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])} <X className="w-3 h-3" />
@@ -368,7 +369,7 @@ export function ProductCatalogPage({
             )}
             {minRating !== null && (
               <span
-                className="flex flex-wrap items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium cursor-pointer hover:bg-primary/20"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted text-sm text-foreground border border-border/50 cursor-pointer hover:text-destructive"
                 onClick={() => setMinRating(null)}
               >
                 {minRating}★+ <X className="w-3 h-3" />
@@ -376,7 +377,7 @@ export function ProductCatalogPage({
             )}
             {inStockOnly && (
               <span
-                className="flex flex-wrap items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium cursor-pointer hover:bg-primary/20"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted text-sm text-foreground border border-border/50 cursor-pointer hover:text-destructive"
                 onClick={() => setInStockOnly(false)}
               >
                 En stock <X className="w-3 h-3" />
@@ -429,7 +430,7 @@ export function ProductCatalogPage({
         {/* Main layout: sidebar (desktop) + grid */}
         <div className="flex gap-8">
           {/* Desktop sidebar */}
-          <aside className="hidden lg:block w-56 flex-shrink-0">
+          <aside className="hidden lg:block w-56 flex-shrink-0 border-r border-border/50 pr-6 bg-transparent">
             <FilterContent />
           </aside>
 
@@ -451,17 +452,23 @@ export function ProductCatalogPage({
             ) : (
               <>
                 {viewMode === 'grid' ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-                    {displayed.map((product) => (
-                      <ProductCard
+                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                    {displayed.map((product, index) => (
+                      <motion.div
                         key={product.id}
-                        product={product}
-                        onAddToCart={onAddToCart}
-                        onProductClick={onProductSelect}
-                        isInWishlist={wishlist.includes(product.id)}
-                        onToggleWishlist={onToggleWishlist}
-                        user={user}
-                      />
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: (index % 12) * 0.04 }}
+                      >
+                        <ProductCard
+                          product={product}
+                          onAddToCart={onAddToCart}
+                          onProductClick={onProductSelect}
+                          isInWishlist={wishlist.includes(product.id)}
+                          onToggleWishlist={onToggleWishlist}
+                          user={user}
+                        />
+                      </motion.div>
                     ))}
                   </div>
                 ) : (
@@ -549,15 +556,18 @@ export function ProductCatalogPage({
                 {/* Load more */}
                 {displayLimit < sortedProducts.length && (
                   <div className="text-center mt-10">
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Mostrando {displayed.length} de {sortedProducts.length}
-                    </p>
-                    <Button
-                      variant="outline"
+                    <button
                       onClick={() => setDisplayLimit(prev => prev + 12)}
+                      className="rounded-full border border-border px-8 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors"
                     >
                       Cargar mas productos
-                    </Button>
+                    </button>
+                    <div className="mt-4 text-center">
+                      <p className="text-sm text-muted-foreground">Mostrando {displayed.length} de {sortedProducts.length} productos</p>
+                      <div className="mt-2 h-0.5 w-32 mx-auto bg-border rounded-full overflow-hidden">
+                        <div className="h-full bg-foreground rounded-full transition-all" style={{ width: `${(displayed.length / sortedProducts.length) * 100}%` }} />
+                      </div>
+                    </div>
                   </div>
                 )}
               </>
