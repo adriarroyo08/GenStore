@@ -38,6 +38,7 @@ export interface AdminProduct {
   features?: string[];
   colors?: any[];
   specs?: Record<string, any>;
+  has_variants?: boolean;
 }
 
 export interface AdminCategory {
@@ -222,4 +223,5 @@ export interface ProductFormData {
   features: string;
   colors: string;
   specs: string;
+  has_variants: boolean;
 }
