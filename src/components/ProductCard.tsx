@@ -39,53 +39,54 @@ export function ProductCard({
     ? product.image
     : null;
 
-  const [showRipple, setShowRipple] = useState(false);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onAddToCart || cartState !== 'idle') return;
     setCartState('loading');
-    setShowRipple(true);
     try {
       await Promise.resolve(onAddToCart(product));
       setCartState('done');
       setTimeout(() => {
         setCartState('idle');
-        setShowRipple(false);
       }, 1500);
     } catch {
       setCartState('idle');
-      setShowRipple(false);
     }
   };
 
   return (
     <>
-    <article className={`group bg-card rounded-2xl overflow-hidden transition-all duration-300 flex flex-col h-full hover:shadow-xl hover:shadow-black/5 ${
-      showRipple ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/10 scale-[1.01]' : ''
-    }`}>
+    <article className="bg-card rounded-2xl overflow-hidden border border-border/50 hover:shadow-lg hover:shadow-black/5 transition-all duration-300 group flex flex-col h-full">
       {/* Image */}
       <div
-        className="relative aspect-square bg-muted/30 cursor-pointer overflow-hidden"
+        className="relative aspect-[4/5] bg-muted/30 cursor-pointer rounded-2xl overflow-hidden"
         onClick={() => onProductClick?.(product)}
       >
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={product.name}
-            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105${!inStock ? ' opacity-50' : ''}`}
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className={`w-full h-full flex items-center justify-center${!inStock ? ' opacity-50' : ''}`}>
             <Package className="w-16 h-16 text-muted-foreground/40" />
           </div>
         )}
 
+        {/* Hover overlay with Vista rapida button */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+          <button className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white text-foreground rounded-full px-5 py-2 text-sm font-medium shadow-lg hover:bg-gray-50">
+            Vista rapida
+          </button>
+        </div>
+
         {/* Discount badge */}
         {hasDiscount && discountPercent > 0 && (
-          <span className="absolute top-3 left-3 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 text-xs font-bold px-2 py-1 rounded-lg">
+          <span className="absolute top-3 left-3 rounded-full bg-destructive text-white text-xs font-bold px-2.5 py-1">
             -{discountPercent}%
           </span>
         )}
@@ -123,21 +124,8 @@ export function ProductCard({
 
         {/* Out of stock overlay */}
         {!inStock && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="bg-white text-black text-sm font-medium px-3 py-1 rounded-md">Agotado</span>
-          </div>
-        )}
-
-        {/* Slide-up add button on hover */}
-        {inStock && onAddToCart && (
-          <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/60 to-transparent p-4 pt-8">
-            <button
-              onClick={handleAddToCart}
-              disabled={cartState !== 'idle'}
-              className="w-full bg-white text-black py-2.5 rounded-xl text-sm font-semibold hover:bg-neutral-100 transition-colors"
-            >
-              {cartState === 'loading' ? 'Añadiendo...' : cartState === 'done' ? '✓ Añadido' : t('product.addToCart')}
-            </button>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="rounded-full bg-muted text-muted-foreground text-xs px-3 py-1">Agotado</span>
           </div>
         )}
       </div>
@@ -146,14 +134,14 @@ export function ProductCard({
       <div className="p-3 sm:p-4 flex flex-col flex-1 gap-2">
         {/* Category */}
         {product.category && (
-          <span className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">
             {product.category}
           </span>
         )}
 
         {/* Name */}
         <h3
-          className="text-sm font-semibold text-foreground line-clamp-2 cursor-pointer hover:text-primary transition-colors leading-snug"
+          className="text-sm font-medium text-foreground line-clamp-2 cursor-pointer hover:text-primary transition-colors leading-snug"
           onClick={() => onProductClick?.(product)}
         >
           {product.name}
@@ -177,15 +165,24 @@ export function ProductCard({
         <div className="flex items-end justify-between gap-2 pt-1">
           <div className="flex flex-col">
             {hasDiscount && product.originalPrice && (
-              <span className="text-xs text-muted-foreground line-through">
+              <span className="text-sm text-muted-foreground line-through">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
-            <span className={`text-lg font-bold ${hasDiscount ? 'text-red-600 dark:text-red-400' : 'text-foreground'}`}>
+            <span className="text-base font-semibold text-foreground">
               {formatPrice(product.price)}
             </span>
           </div>
 
+          {inStock && onAddToCart && (
+            <button
+              onClick={handleAddToCart}
+              disabled={cartState !== 'idle'}
+              className="rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-medium"
+            >
+              {cartState === 'loading' ? 'Añadiendo...' : cartState === 'done' ? '✓ Añadido' : t('product.addToCart')}
+            </button>
+          )}
         </div>
       </div>
     </article>
