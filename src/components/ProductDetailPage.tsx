@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Product, CartItem } from '../types/index';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -15,6 +15,7 @@ import {
   Star, Package, Truck, ShieldCheck, RotateCcw, Minus, Plus,
   Check, Loader2, Expand, Bell,
 } from 'lucide-react';
+import { useFlyingItem } from './FlyingItemAnimation';
 
 interface User {
   id: string;
@@ -64,6 +65,8 @@ export function ProductDetailPage({
 }: ProductDetailPageProps) {
   const { t, language } = useLanguage();
   const { formatPrice } = useCurrency();
+  const { triggerFly } = useFlyingItem();
+  const addToCartBtnRef = useRef<HTMLButtonElement>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -130,6 +133,10 @@ export function ProductDetailPage({
   const handleAddToCart = async () => {
     if (!inStock || cartState !== 'idle') return;
     if ((product as any).has_variants && !selectedVariant) return;
+    if (addToCartBtnRef.current) {
+      const rect = addToCartBtnRef.current.getBoundingClientRect();
+      triggerFly(images[selectedImageIndex] || product.image || '', rect.left, rect.top);
+    }
     setCartState('loading');
     try {
       for (let i = 0; i < quantity; i++) {
@@ -381,6 +388,7 @@ export function ProductDetailPage({
             {/* Action buttons */}
             <div className="flex flex-col gap-3 pt-2">
               <button
+                ref={addToCartBtnRef}
                 onClick={handleAddToCart}
                 disabled={!inStock || cartState !== 'idle' || ((product as any).has_variants && !selectedVariant)}
                 className={`hidden sm:flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-medium transition-all duration-200 disabled:cursor-not-allowed ${

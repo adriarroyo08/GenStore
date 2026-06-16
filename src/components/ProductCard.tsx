@@ -6,6 +6,7 @@ import { Heart, ShoppingCart, Star, Package, Check, Loader2, Eye, ArrowRightLeft
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { ProductQuickView } from './ProductQuickView';
 import { useProductComparator } from './ProductComparator';
+import { useFlyingItem } from './FlyingItemAnimation';
 
 interface ProductCardProps {
   product: Product;
@@ -27,6 +28,7 @@ export function ProductCard({
   const { formatPrice } = useCurrency();
   const { t } = useLanguage();
   const { addToCompare, removeFromCompare, isInCompare } = useProductComparator();
+  const { triggerFly } = useFlyingItem();
   const [cartState, setCartState] = useState<'idle' | 'loading' | 'done'>('idle');
   const inCompare = isInCompare(product.id);
 
@@ -44,6 +46,8 @@ export function ProductCard({
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onAddToCart || cartState !== 'idle') return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    triggerFly(imageUrl || '', rect.left, rect.top);
     setCartState('loading');
     try {
       await Promise.resolve(onAddToCart(product));

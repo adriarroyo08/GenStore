@@ -16,6 +16,7 @@ import { TranslationDebugPanel } from './components/TranslationDebugPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { DevBanner } from './components/DevBanner';
 import { MiniCartDrawer } from './components/MiniCartDrawer';
+import { FlyingItemProvider } from './components/FlyingItemAnimation';
 import { motion } from 'motion/react';
 
 // Hooks
@@ -302,7 +303,9 @@ export default function App() {
           <CurrencyProvider>
             <AuthProvider>
               <ProductComparatorProvider>
-                <AppContent />
+                <FlyingItemProvider>
+                  <AppContent />
+                </FlyingItemProvider>
               </ProductComparatorProvider>
             </AuthProvider>
           </CurrencyProvider>
