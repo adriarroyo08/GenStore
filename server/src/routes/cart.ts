@@ -20,13 +20,14 @@ cart.post('/', async (c) => {
   } catch {
     return c.json({ error: 'Invalid JSON' }, 400);
   }
-  const { productId, cantidad = 1, opciones = {} } = body;
+  const { productId, variantId, cantidad = 1, opciones = {} } = body;
   if (!productId) return c.json({ error: 'productId requerido' }, 400);
+  if (variantId && typeof variantId !== 'string') return c.json({ error: 'variantId debe ser un string' }, 400);
   if (cantidad < 1 || cantidad > 999) return c.json({ error: 'Cantidad debe ser entre 1 y 999' }, 400);
   if (typeof opciones === 'object' && JSON.stringify(opciones).length > 2000) {
     return c.json({ error: 'Opciones demasiado grandes' }, 400);
   }
-  const item = await cartService.addToCart(user.id, productId, cantidad, opciones);
+  const item = await cartService.addToCart(user.id, productId, cantidad, opciones, variantId);
   return c.json(item, 201);
 });
 

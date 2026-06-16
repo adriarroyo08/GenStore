@@ -14,12 +14,22 @@ interface CartProduct {
   categories?: { nombre: string } | null;
 }
 
+interface CartVariant {
+  id: string;
+  precio: number;
+  stock: number;
+  imagenes?: string[];
+  attributes?: Record<string, string>;
+}
+
 interface ServerCartItem {
   id: string;
   product_id: string;
+  variant_id?: string;
   cantidad: number;
   opciones: Record<string, unknown>;
   product: CartProduct;
+  variant?: CartVariant;
 }
 
 export function useCart() {
@@ -39,13 +49,15 @@ export function useCart() {
 
   useEffect(() => { loadCart(); }, [loadCart]);
 
-  const addToCart = useCallback(async (productOrId: any, selectedColor?: string, selectedColorName?: string) => {
+  const addToCart = useCallback(async (productOrId: any, variantId?: string, selectedColor?: string, selectedColorName?: string) => {
     const productId = typeof productOrId === 'string' ? productOrId : productOrId?.id;
     if (!productId) throw new Error('Producto no válido');
     const opciones: Record<string, unknown> = {};
     if (selectedColor) opciones.color = selectedColor;
     if (selectedColorName) opciones.colorName = selectedColorName;
-    await apiClient.post('/cart', { productId, cantidad: 1, opciones });
+    const body: Record<string, unknown> = { productId, cantidad: 1, opciones };
+    if (variantId) body.variantId = variantId;
+    await apiClient.post('/cart', body);
     await loadCart();
   }, [loadCart]);
 
@@ -69,18 +81,20 @@ export function useCart() {
   const mappedCart = cart.map((item) => ({
     id: item.id,
     productId: item.product_id,
+    variantId: item.variant_id ?? undefined,
     name: item.product.nombre,
-    price: item.product.precio,
-    image: item.product.imagenes?.[0] || '',
+    price: item.variant?.precio ?? item.product.precio,
+    image: (item.variant?.imagenes?.length ?? 0) > 0 ? item.variant!.imagenes![0] : (item.product.imagenes?.[0] || ''),
     category: item.product.categories?.nombre ?? '',
     brand: item.product.marca ?? '',
     rating: 0,
     reviews: 0,
     description: item.product.descripcion ?? '',
-    stock: item.product.stock,
+    stock: item.variant?.stock ?? item.product.stock,
     quantity: item.cantidad,
     selectedColor: (item.opciones?.color as string) || undefined,
     selectedColorName: (item.opciones?.colorName as string) || undefined,
+    variantAttributes: item.variant?.attributes ?? undefined,
   }));
 
   const cartTotal = mappedCart.reduce((sum, item) => sum + item.price * item.quantity, 0);

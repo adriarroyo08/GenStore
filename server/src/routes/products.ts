@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { getProducts, getProductBySlug } from '../services/productService.js';
+import { supabaseAdmin } from '../config/supabase.js';
 import type { ProductFilters } from '../types/index.js';
 
 const products = new Hono();
@@ -20,14 +21,41 @@ products.get('/', async (c) => {
   };
 
   const result = await getProducts(filters);
-  return c.json(result);
+  const productsList: any[] = (result as any).data ?? [];
+
+  const enriched = await Promise.all(
+    productsList.map(async (p: any) => {
+      if (!p.has_variants) return p;
+      const { data: vars } = await supabaseAdmin
+        .from('product_variants')
+        .select('precio')
+        .eq('product_id', p.id)
+        .eq('activo', true)
+        .order('precio', { ascending: true })
+        .limit(1);
+      return { ...p, precio_desde: vars?.[0]?.precio ?? p.precio };
+    })
+  );
+
+  return c.json({ ...(result as any), data: enriched });
 });
 
 // GET /products/:slug — single product detail
 products.get('/:slug', async (c) => {
   const product = await getProductBySlug(c.req.param('slug'));
   if (!product) return c.json({ error: 'Producto no encontrado' }, 404);
-  return c.json(product);
+
+  let variants: any[] = [];
+  if ((product as any).has_variants) {
+    const { data: variantData } = await supabaseAdmin
+      .from('product_variants')
+      .select('id, sku, attributes, precio, stock, imagenes, activo')
+      .eq('product_id', (product as any).id)
+      .eq('activo', true)
+      .order('created_at', { ascending: true });
+    variants = variantData ?? [];
+  }
+  return c.json({ ...product, variants });
 });
 
 export default products;

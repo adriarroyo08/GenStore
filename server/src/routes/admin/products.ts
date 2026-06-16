@@ -28,7 +28,7 @@ adminProducts.post('/', async (c) => {
   } catch {
     return c.json({ error: 'Invalid JSON' }, 400);
   }
-  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku } = body;
+  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku, has_variants } = body;
   if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
   const slug = body.slug ?? nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
@@ -52,6 +52,7 @@ adminProducts.post('/', async (c) => {
   if (category_id !== undefined) insertData.category_id = category_id;
   if (supplier_id !== undefined) insertData.supplier_id = supplier_id;
   if (supplier_sku !== undefined) insertData.supplier_sku = supplier_sku;
+  if (has_variants !== undefined) insertData.has_variants = has_variants;
 
   const { data, error } = await supabaseAdmin
     .from('products')
@@ -174,7 +175,7 @@ adminProducts.put('/:id', async (c) => {
   } catch {
     return c.json({ error: 'Invalid JSON' }, 400);
   }
-  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku } = body;
+  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku, has_variants } = body;
   const updateData: Record<string, unknown> = {};
   if (nombre !== undefined) updateData.nombre = nombre;
   if (sku !== undefined) updateData.sku = sku;
@@ -196,6 +197,7 @@ adminProducts.put('/:id', async (c) => {
   if (category_id !== undefined) updateData.category_id = category_id;
   if (supplier_id !== undefined) updateData.supplier_id = supplier_id;
   if (supplier_sku !== undefined) updateData.supplier_sku = supplier_sku;
+  if (has_variants !== undefined) updateData.has_variants = has_variants;
   updateData.updated_at = new Date().toISOString();
 
   const { data, error } = await supabaseAdmin
