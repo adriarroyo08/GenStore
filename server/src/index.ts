@@ -28,6 +28,7 @@ import stockAlertRoutes from './routes/admin/stockAlerts.js';
 import adminShippingRoutes from './routes/admin/shipping.js';
 import adminSupplierRoutes from './routes/admin/suppliers.js';
 import adminSettingsRoutes from './routes/admin/settings.js';
+import { adminImageRoutes } from './routes/admin/images.js';
 import publicSettingsRoutes from './routes/public/settings.js';
 import shippingCronRoutes from './routes/shippingCron.js';
 import couponRoutes from './routes/coupons.js';
@@ -89,6 +90,7 @@ admin.route('/inventory', adminInventoryRoutes);
 admin.route('/shipping', adminShippingRoutes);
 admin.route('/suppliers', adminSupplierRoutes);
 admin.route('/settings', adminSettingsRoutes);
+admin.route('/', adminImageRoutes);
 app.route('/admin', admin);
 
 // Cron-protected routes (outside admin group — uses own auth)
