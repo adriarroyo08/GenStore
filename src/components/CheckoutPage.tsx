@@ -9,7 +9,7 @@ import { apiClient } from '../lib/apiClient';
 import { usePoints } from '../hooks/usePoints';
 import { PHONE_PREFIXES, SPAIN_PROVINCES, flagUrl } from '../constants/locationData';
 import { motion, AnimatePresence } from 'motion/react';
-import { Truck, FileText, CreditCard, Check } from 'lucide-react';
+import { Truck, FileText, CreditCard, Check, Lock } from 'lucide-react';
 
 interface CheckoutPageProps {
   cart: CartItem[];
@@ -28,7 +28,7 @@ function CheckoutStepper({ currentStep }: { currentStep: number }) {
   ];
 
   return (
-    <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10">
+    <div className="flex items-center justify-center mb-10">
       {steps.map((step, i) => {
         const StepIcon = step.icon;
         const stepNum = i + 1;
@@ -37,13 +37,15 @@ function CheckoutStepper({ currentStep }: { currentStep: number }) {
         return (
           <React.Fragment key={i}>
             {i > 0 && (
-              <div className={`hidden sm:block w-12 h-px ${isCompleted ? 'bg-blue-600' : 'bg-border'}`} />
+              <div className="hidden sm:flex flex-1 items-center mx-2" style={{ maxWidth: '4rem' }}>
+                <div className={`h-0.5 flex-1 rounded-full ${isCompleted ? 'bg-primary' : 'bg-border'}`} />
+              </div>
             )}
             <div className="flex flex-col items-center gap-1.5">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                isCompleted ? 'bg-blue-600 text-white' :
-                isActive ? 'bg-blue-600 text-white ring-4 ring-blue-100 dark:ring-blue-900' :
-                'bg-muted text-muted-foreground'
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2 transition-colors ${
+                isCompleted ? 'bg-primary text-primary-foreground border-primary' :
+                isActive ? 'border-primary text-primary' :
+                'border-border text-muted-foreground'
               }`}>
                 {isCompleted ? <Check className="w-4 h-4" /> : <StepIcon className="w-4 h-4" />}
               </div>
@@ -427,7 +429,7 @@ export function CheckoutPage({
 
               {/* Step 1: Shipping Information */}
               {currentStep === 1 && (
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+                <div className="bg-card rounded-2xl p-6 border border-border/50">
                   <fieldset>
                   <legend className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     {t('checkout.shippingInformation')}
@@ -445,9 +447,9 @@ export function CheckoutPage({
                         aria-describedby={errors.firstName ? 'error-firstName' : undefined}
                         value={shippingInfo.firstName}
                         onChange={(e) => setShippingInfo({...shippingInfo, firstName: e.target.value})}
-                        className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors.firstName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                        className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                          errors.firstName ? 'border-red-500' : 'border-border'
+                        }`}
                       />
                       {errors.firstName && <p id="error-firstName" role="alert" className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
                     </div>
@@ -463,9 +465,9 @@ export function CheckoutPage({
                         aria-describedby={errors.lastName ? 'error-lastName' : undefined}
                         value={shippingInfo.lastName}
                         onChange={(e) => setShippingInfo({...shippingInfo, lastName: e.target.value})}
-                        className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors.lastName ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                        className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                          errors.lastName ? 'border-red-500' : 'border-border'
+                        }`}
                       />
                       {errors.lastName && <p id="error-lastName" role="alert" className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
                     </div>
@@ -481,9 +483,9 @@ export function CheckoutPage({
                         aria-describedby={errors.email ? 'error-email' : undefined}
                         value={shippingInfo.email}
                         onChange={(e) => setShippingInfo({...shippingInfo, email: e.target.value})}
-                        className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                        className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                          errors.email ? 'border-red-500' : 'border-border'
+                        }`}
                       />
                       {errors.email && <p id="error-email" role="alert" className="text-red-500 text-sm mt-1">{errors.email}</p>}
                     </div>
@@ -533,9 +535,9 @@ export function CheckoutPage({
                           placeholder="612 345 678"
                           value={shippingInfo.phone}
                           onChange={(e) => setShippingInfo({...shippingInfo, phone: e.target.value})}
-                          className={`flex-1 h-12 px-4 border rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.phone ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                          } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                          className={`flex-1 rounded-r-xl border border-l-0 px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                            errors.phone ? 'border-red-500' : 'border-border'
+                          }`}
                         />
                       </div>
                       {errors.phone && <p id="error-phone" role="alert" className="text-red-500 text-sm mt-1">{errors.phone}</p>}
@@ -552,9 +554,9 @@ export function CheckoutPage({
                         aria-describedby={errors.address ? 'error-address' : undefined}
                         value={shippingInfo.address}
                         onChange={(e) => setShippingInfo({...shippingInfo, address: e.target.value})}
-                        className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors.address ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                        className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                          errors.address ? 'border-red-500' : 'border-border'
+                        }`}
                       />
                       {errors.address && <p id="error-address" role="alert" className="text-red-500 text-sm mt-1">{errors.address}</p>}
                     </div>
@@ -570,9 +572,9 @@ export function CheckoutPage({
                           aria-describedby={errors.state ? 'error-state' : undefined}
                           value={shippingInfo.state}
                           onChange={(e) => { setShippingInfo({...shippingInfo, state: e.target.value, city: ''}); setCustomCity(false); }}
-                          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.state ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                          } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                          className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                            errors.state ? 'border-red-500' : 'border-border'
+                          }`}
                         >
                           <option value="">Selecciona provincia</option>
                           {SPAIN_PROVINCES.map(p => (
@@ -587,9 +589,9 @@ export function CheckoutPage({
                           aria-describedby={errors.state ? 'error-state' : undefined}
                           value={shippingInfo.state}
                           onChange={(e) => setShippingInfo({...shippingInfo, state: e.target.value})}
-                          className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.state ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                          } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                          className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                            errors.state ? 'border-red-500' : 'border-border'
+                          }`}
                         />
                       )}
                       {errors.state && <p id="error-state" role="alert" className="text-red-500 text-sm mt-1">{errors.state}</p>}
@@ -613,9 +615,9 @@ export function CheckoutPage({
                               setShippingInfo({...shippingInfo, city: e.target.value});
                             }
                           }}
-                          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                            errors.city ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                          } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                          className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                            errors.city ? 'border-red-500' : 'border-border'
+                          }`}
                         >
                           <option value="">Selecciona municipio</option>
                           {availableCities.map(c => (
@@ -633,9 +635,9 @@ export function CheckoutPage({
                             placeholder={shippingInfo.country === 'ES' && !shippingInfo.state ? 'Selecciona provincia primero' : 'Escribe tu municipio'}
                             value={shippingInfo.city}
                             onChange={(e) => setShippingInfo({...shippingInfo, city: e.target.value})}
-                            className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                              errors.city ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                            } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                            className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                              errors.city ? 'border-red-500' : 'border-border'
+                            }`}
                           />
                           {customCity && availableCities.length > 0 && (
                             <button
@@ -662,9 +664,9 @@ export function CheckoutPage({
                         aria-describedby={errors.zipCode ? 'error-zipCode' : undefined}
                         value={shippingInfo.zipCode}
                         onChange={(e) => setShippingInfo({...shippingInfo, zipCode: e.target.value})}
-                        className={`w-full h-12 px-4 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                          errors.zipCode ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                        className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background ${
+                          errors.zipCode ? 'border-red-500' : 'border-border'
+                        }`}
                       />
                       {errors.zipCode && <p id="error-zipCode" role="alert" className="text-red-500 text-sm mt-1">{errors.zipCode}</p>}
                     </div>
@@ -677,7 +679,7 @@ export function CheckoutPage({
                         id="checkout-country"
                         value={shippingInfo.country}
                         onChange={(e) => { setShippingInfo({...shippingInfo, country: e.target.value, state: '', city: ''}); setCustomCity(false); }}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full rounded-xl border border-border px-4 py-3 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background"
                       >
                         <option value="ES">Spain</option>
                         <option value="DE">Germany</option>
@@ -695,8 +697,9 @@ export function CheckoutPage({
                     <button
                       onClick={handleContinueToPayment}
                       disabled={isProcessing}
-                      className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white px-8 py-3 rounded-lg font-medium transition-colors"
+                      className="flex items-center justify-center rounded-full bg-primary text-primary-foreground py-4 px-8 text-sm font-medium disabled:opacity-50 transition-opacity"
                     >
+                      <Lock className="w-4 h-4 mr-2" />
                       {isProcessing ? 'Procesando...' : t('checkout.continueToPayment')}
                     </button>
                   </div>
@@ -777,7 +780,7 @@ export function CheckoutPage({
 
               {/* Step 3: Order Confirmation */}
               {currentStep === 3 && orderCompleted && (
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center animate-fade-in">
+                <div className="bg-card rounded-2xl border border-border/50 p-8 text-center animate-fade-in">
                   {/* Success animation */}
                   <div className="mb-8">
                     <div className="relative w-20 h-20 mx-auto mb-6">
@@ -857,7 +860,7 @@ export function CheckoutPage({
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <aside aria-label="Resumen del pedido" className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sticky top-24">
+              <aside aria-label="Resumen del pedido" className="rounded-2xl border border-border/50 bg-card p-6 lg:sticky lg:top-24">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
                   {t('checkout.orderSummary')}
                 </h3>
@@ -866,7 +869,7 @@ export function CheckoutPage({
                 <div className="space-y-4 mb-6">
                   {cart.map((item) => (
                     <div key={`${item.id}-${item.selectedColor || 'default'}`} className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
                         <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
@@ -892,7 +895,7 @@ export function CheckoutPage({
                 </div>
 
                 {/* Coupon Code Input */}
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                <div className="border-t border-border pt-4 mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Cupón de descuento
                   </label>
@@ -920,7 +923,7 @@ export function CheckoutPage({
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                         placeholder="Código de cupón"
-                        className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="flex-1 rounded-xl border border-border px-3 py-2 text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-shadow bg-background"
                         onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
                       />
                       <button
@@ -959,9 +962,9 @@ export function CheckoutPage({
                     <span className="text-gray-600 dark:text-gray-400">{t('checkout.tax')}</span>
                     <span className="text-gray-900 dark:text-white">{formatEur(tax)}</span>
                   </div>
-                  <div className="flex justify-between text-lg font-semibold border-t border-gray-200 dark:border-gray-700 pt-2">
-                    <span className="text-gray-900 dark:text-white">{t('checkout.total')}</span>
-                    <span className="text-gray-900 dark:text-white">{formatEur(totalAmount)}</span>
+                  <div className="flex justify-between text-lg font-bold border-t border-border pt-4 mt-4">
+                    <span>{t('checkout.total')}</span>
+                    <span>{formatEur(totalAmount)}</span>
                   </div>
                 </div>
 
