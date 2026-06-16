@@ -1,4 +1,5 @@
 import React from 'react';
+import { PageTransition } from './PageTransition';
 import { HeroSection } from './HeroSection';
 import { OffersCarousel } from './OffersCarousel';
 import { CategoriesSection } from './CategoriesSection';
@@ -95,7 +96,7 @@ export function PageRouter({
     onHomeClick: () => handlers.handleHomeClickWithFilters()
   };
 
-  switch (currentPage) {
+  const content = (() => { switch (currentPage) {
     case 'login':
       return (
         <LoginPage 
@@ -405,5 +406,11 @@ export function PageRouter({
           <Footer {...footerProps} />
         </>
       );
-  }
+  } })();
+
+  return (
+    <PageTransition pageKey={currentPage}>
+      {content}
+    </PageTransition>
+  );
 }
