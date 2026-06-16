@@ -248,6 +248,11 @@ export function ShoppingCartPage({
                               <div className="font-bold text-lg sm:text-xl text-foreground relative shrink-0 w-full">
                                 {item.name}
                               </div>
+                              {(item as any).variantAttributes && (
+                                <p className="text-xs text-muted-foreground">
+                                  {Object.entries((item as any).variantAttributes).map(([k, v]) => `${k}: ${v}`).join(' / ')}
+                                </p>
+                              )}
                               <div className="font-medium text-sm text-muted-foreground relative shrink-0 w-full">
                                 {item.brand} • {item.category}
                                 {item.selectedColorName && (
