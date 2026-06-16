@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageTransition } from './PageTransition';
-import { HeroSection } from './HeroSection';
+import { HeroPremium } from './HeroPremium';
 import { OffersCarousel } from './OffersCarousel';
 import { CategoriesSection } from './CategoriesSection';
 import { FeaturedProducts } from './FeaturedProducts';
@@ -372,10 +372,7 @@ export function PageRouter({
     default:
       return (
         <>
-          <HeroSection 
-            onShopNowClick={() => setCurrentPage('catalog')}
-            onLearnMoreClick={() => setCurrentPage('learn-more')}
-          />
+          <HeroPremium onShopClick={() => setCurrentPage('catalog')} />
           <TrustBadgesBar />
           <OffersCarousel
             products={translatedProducts}
