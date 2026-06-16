@@ -8,6 +8,7 @@ import { PriceDisplay } from './PriceDisplay';
 import { ImageZoom } from './ImageZoom';
 import { ImageLightbox } from './ImageLightbox';
 import { RecentlyViewed, trackRecentlyViewed } from './RecentlyViewed';
+import { VariantSelector } from './VariantSelector';
 import {
   ChevronLeft, ChevronRight, Heart, ShoppingCart, Zap,
   Star, Package, Truck, ShieldCheck, RotateCcw, Minus, Plus,
@@ -29,7 +30,7 @@ interface ProductDetailPageProps {
   user: User | null;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  onAddToCart: (product: Product, selectedColor?: string, selectedColorName?: string) => void;
+  onAddToCart: (product: Product, variantId?: string, selectedColor?: string, selectedColorName?: string) => void;
   cartItemsCount: number;
   updateQuantity: (productId: string, quantity: number) => void;
   removeFromCart: (productId: string) => void;
@@ -70,12 +71,23 @@ export function ProductDetailPage({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState('');
   const [notifyState, setNotifyState] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
+
+  // Variant-aware computed values
+  const displayPrecio = selectedVariant?.precio ?? product.precio ?? product.price;
+  const displayStock = selectedVariant?.stock ?? product.stock ?? 0;
+  const displayImages = (selectedVariant?.imagenes?.length > 0)
+    ? selectedVariant.imagenes
+    : (product.imagenes ?? []);
 
   // Images
   const images = useMemo(() => {
+    if (displayImages.length > 0) {
+      return (displayImages as string[]).filter((img: string) => img && (img.startsWith('http') || img.startsWith('data:')));
+    }
     const imgs = [product.image, ...(product.additionalImages ?? [])];
     return imgs.filter(img => img && (img.startsWith('http') || img.startsWith('data:')));
-  }, [product.image, product.additionalImages]);
+  }, [product.image, product.additionalImages, displayImages]);
 
   // Related products (same category)
   const relatedProducts = useMemo(() => {
@@ -98,10 +110,10 @@ export function ProductDetailPage({
       .slice(0, 4);
   }, [allProducts, product]);
 
-  // Stock
-  const stock = product.stock ?? 0;
-  const inStock = stock > 0;
-  const lowStock = stock > 0 && stock <= 10;
+  // Stock (variant-aware)
+  const stock = displayStock;
+  const inStock = displayStock > 0;
+  const lowStock = displayStock > 0 && displayStock <= 10;
   const isInWishlist = wishlist.includes(product.id);
 
   // Reset state and scroll to top when product changes
@@ -116,11 +128,18 @@ export function ProductDetailPage({
 
   const handleAddToCart = async () => {
     if (!inStock || cartState !== 'idle') return;
+    if ((product as any).has_variants && !selectedVariant) return;
     setCartState('loading');
     try {
-      const colorObj = product.colors?.find(c => c.name === selectedColor);
       for (let i = 0; i < quantity; i++) {
-        await Promise.resolve(onAddToCart(product, colorObj?.color, selectedColor ?? undefined));
+        await Promise.resolve(
+          onAddToCart(
+            product,
+            selectedVariant?.id,
+            selectedVariant ? undefined : (product.colors?.find(c => c.name === selectedColor)?.color),
+            selectedVariant ? Object.values(selectedVariant.attributes).join(' / ') : (selectedColor ?? undefined)
+          )
+        );
       }
       setCartState('done');
       setTimeout(() => setCartState('idle'), 2000);
@@ -265,7 +284,7 @@ export function ProductDetailPage({
 
             {/* Price */}
             <div className="flex items-baseline gap-3">
-              <PriceDisplay product={product} size="xl" />
+              <PriceDisplay product={{ ...product, price: displayPrecio ?? product.price }} size="xl" />
             </div>
 
             {/* Short description */}
@@ -277,8 +296,13 @@ export function ProductDetailPage({
 
             <hr className="border-border" />
 
-            {/* Color options */}
-            {product.colors && product.colors.length > 0 && (
+            {/* Color / Variant options */}
+            {(product as any).has_variants && (product as any).variants?.length > 0 ? (
+              <VariantSelector
+                variants={(product as any).variants}
+                onVariantSelect={setSelectedVariant}
+              />
+            ) : product.colors && product.colors.length > 0 ? (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Color: <span className="text-muted-foreground font-normal">{selectedColor}</span>
@@ -304,14 +328,14 @@ export function ProductDetailPage({
                   ))}
                 </div>
               </div>
-            )}
+            ) : null}
 
             {/* Quantity */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-foreground">Cantidad</label>
                 <span className={`text-sm ${lowStock ? 'text-orange-500 font-medium' : 'text-muted-foreground'}`}>
-                  {!inStock ? 'Agotado' : lowStock ? `Solo ${stock} disponibles` : `${stock} en stock`}
+                  {!inStock ? 'Agotado' : lowStock ? `Solo ${displayStock} disponibles` : `${displayStock} en stock`}
                 </span>
               </div>
               <div className="inline-flex items-center border border-border rounded-lg bg-card">
@@ -325,8 +349,8 @@ export function ProductDetailPage({
                 </button>
                 <span className="w-12 text-center text-sm font-medium tabular-nums">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(Math.min(stock, quantity + 1))}
-                  disabled={quantity >= stock || !inStock}
+                  onClick={() => setQuantity(Math.min(displayStock, quantity + 1))}
+                  disabled={quantity >= displayStock || !inStock}
                   className="p-2.5 hover:bg-muted transition-colors disabled:opacity-40"
                   aria-label="Aumentar cantidad"
                 >
@@ -339,7 +363,7 @@ export function ProductDetailPage({
             <div className="flex flex-col gap-3 pt-2">
               <button
                 onClick={handleAddToCart}
-                disabled={!inStock || cartState === 'loading'}
+                disabled={!inStock || cartState !== 'idle' || ((product as any).has_variants && !selectedVariant)}
                 className={`hidden sm:flex w-full items-center justify-center gap-2 h-12 rounded-xl font-semibold text-base transition-all duration-200 shadow-sm disabled:cursor-not-allowed ${
                   cartState === 'done'
                     ? 'bg-green-500 text-white scale-[1.02]'
@@ -352,6 +376,8 @@ export function ProductDetailPage({
                   <><Loader2 className="w-5 h-5 animate-spin" /> Agregando...</>
                 ) : cartState === 'done' ? (
                   <><Check className="w-5 h-5" /> Agregado al carrito</>
+                ) : (product as any).has_variants && !selectedVariant ? (
+                  <><ShoppingCart className="w-5 h-5" /> Selecciona una opcion</>
                 ) : (
                   <><ShoppingCart className="w-5 h-5" /> {t('product.addToCart')}</>
                 )}
@@ -419,7 +445,7 @@ export function ProductDetailPage({
             {/* Contextual shipping & trust info */}
             <div className="space-y-2 pt-2">
               {/* Dynamic shipping highlight */}
-              {product.price >= 50 ? (
+              {(displayPrecio ?? product.price) >= 50 ? (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30">
                   <Truck className="w-4 h-4 text-green-600" />
                   <span className="text-sm text-green-700 dark:text-green-400 font-medium">Envío gratis en este producto</span>
@@ -428,7 +454,7 @@ export function ProductDetailPage({
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/40">
                   <Truck className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">
-                    Envío gratis a partir de 50€ — te faltan {formatPrice(50 - product.price)}
+                    Envío gratis a partir de 50€ — te faltan {formatPrice(50 - (displayPrecio ?? product.price))}
                   </span>
                 </div>
               )}
@@ -436,7 +462,7 @@ export function ProductDetailPage({
               {lowStock && (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800/30">
                   <Package className="w-4 h-4 text-orange-600" />
-                  <span className="text-sm text-orange-700 dark:text-orange-400 font-medium">¡Solo quedan {stock} unidades!</span>
+                  <span className="text-sm text-orange-700 dark:text-orange-400 font-medium">¡Solo quedan {displayStock} unidades!</span>
                 </div>
               )}
               {/* Trust badges */}
@@ -532,7 +558,7 @@ export function ProductDetailPage({
                 <dl className="space-y-2 text-sm">
                   <div className="flex justify-between py-1.5 border-b border-border/50">
                     <dt className="text-muted-foreground">Stock</dt>
-                    <dd className={`font-medium ${inStock ? 'text-green-600' : 'text-red-500'}`}>{inStock ? `${stock} ${language === 'es' ? 'uds.' : 'units'}` : t('product.outOfStock')}</dd>
+                    <dd className={`font-medium ${inStock ? 'text-green-600' : 'text-red-500'}`}>{inStock ? `${displayStock} ${language === 'es' ? 'uds.' : 'units'}` : t('product.outOfStock')}</dd>
                   </div>
                   <div className="flex justify-between py-1.5 border-b border-border/50">
                     <dt className="text-muted-foreground">{t('product.shipping')}</dt>
@@ -604,7 +630,7 @@ export function ProductDetailPage({
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-border p-3 sm:hidden">
         <button
           onClick={handleAddToCart}
-          disabled={!inStock || cartState === 'loading'}
+          disabled={!inStock || cartState !== 'idle' || ((product as any).has_variants && !selectedVariant)}
           className={`w-full flex items-center justify-center gap-2 rounded-xl font-semibold min-h-[48px] transition-colors disabled:cursor-not-allowed ${
             cartState === 'done'
               ? 'bg-green-500 text-white'
@@ -619,8 +645,10 @@ export function ProductDetailPage({
             <><Loader2 className="w-5 h-5 animate-spin" /> Agregando...</>
           ) : cartState === 'done' ? (
             <><Check className="w-5 h-5" /> Agregado al carrito</>
+          ) : (product as any).has_variants && !selectedVariant ? (
+            'Selecciona una opcion'
           ) : inStock ? (
-            `Añadir al carrito — ${formatPrice(product.price)}`
+            `Añadir al carrito — ${formatPrice(displayPrecio ?? product.price)}`
           ) : (
             'Sin stock'
           )}
