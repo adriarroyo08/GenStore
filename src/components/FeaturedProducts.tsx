@@ -99,7 +99,7 @@ export function FeaturedProducts({
             </p>
             <button
               onClick={onClearFilters}
-              className="bg-blue-500 dark:bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
+              className="rounded-full border border-border bg-background hover:bg-muted text-foreground px-6 py-2 transition-colors"
             >
               {t('featured.clearFilters')}
             </button>
@@ -110,10 +110,10 @@ export function FeaturedProducts({
   }
 
   return (
-    <section aria-labelledby="featured-heading" className="bg-muted/50 py-12 sm:py-16">
+    <section aria-labelledby="featured-heading" className="bg-muted/50 py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-12">
-          <h2 id="featured-heading" className="text-2xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">
+          <h2 id="featured-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-center mb-12">
             {isFiltered ? t('featured.searchResults') : t('featured.title')}
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground px-4">
@@ -198,14 +198,14 @@ export function FeaturedProducts({
           {hasMore && (
             <button
               onClick={showLoadMore}
-              className="bg-card border border-border text-foreground px-6 sm:px-8 py-3 rounded-lg hover:bg-accent transition-colors w-full sm:w-auto"
+              className="rounded-full border border-border bg-background hover:bg-muted text-foreground px-6 sm:px-8 py-3 transition-colors w-full sm:w-auto"
             >
               {t('featured.loadMore')}
             </button>
           )}
           <button
             onClick={onViewAll}
-            className="bg-blue-500 dark:bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors w-full sm:w-auto"
+            className="rounded-full border border-border bg-background hover:bg-muted text-foreground px-6 sm:px-8 py-3 transition-colors w-full sm:w-auto"
           >
             {t('featured.viewAll')}
           </button>
