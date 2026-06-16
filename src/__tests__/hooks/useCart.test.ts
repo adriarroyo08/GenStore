@@ -46,8 +46,8 @@ describe('useCart', () => {
   it('addToCart calls API and reloads', async () => {
     const { result } = renderHook(() => useCart());
     await waitFor(() => expect(result.current.isLoading).toBe(false));
-    await act(async () => { await result.current.addToCart('prod-1', '#ff0000', 'Red'); });
-    expect(apiClient.post).toHaveBeenCalledWith('/cart', { productId: 'prod-1', cantidad: 1, opciones: { color: '#ff0000', colorName: 'Red' } });
+    await act(async () => { await result.current.addToCart('prod-1', 'variant-1', 'Red', 'Red'); });
+    expect(apiClient.post).toHaveBeenCalledWith('/cart', { productId: 'prod-1', cantidad: 1, opciones: { color: 'Red', colorName: 'Red' }, variantId: 'variant-1' });
   });
 
   it('clearCart empties local state', async () => {
