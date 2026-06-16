@@ -46,7 +46,7 @@ export function Footer({
   return (
     <footer className="bg-neutral-950 text-neutral-300">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16 sm:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
           <div>
             <button onClick={onHomeClick} className="flex items-center gap-2.5 mb-5 hover:opacity-80 transition-opacity">
@@ -71,7 +71,7 @@ export function Footer({
 
           {/* Shop */}
           <nav aria-label="Comprar">
-            <h3 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">{t('categories.title')}</h3>
+            <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-4">{t('categories.title')}</h3>
             <div className="space-y-3">
               {['electrotherapy', 'massage', 'skincare', 'beauty-tech'].map((cat) => (
                 <button key={cat} onClick={() => onCategoryClick?.(cat)}
@@ -84,7 +84,7 @@ export function Footer({
 
           {/* Support */}
           <nav aria-label="Soporte">
-            <h3 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">{t('footer.customerService')}</h3>
+            <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-4">{t('footer.customerService')}</h3>
             <div className="space-y-3">
               {[
                 { key: 'footer.shipping', onClick: onShippingInfoClick },
@@ -101,7 +101,7 @@ export function Footer({
 
           {/* Legal */}
           <nav aria-label="Legal">
-            <h3 className="text-white text-sm font-semibold uppercase tracking-widest mb-5">Legal</h3>
+            <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-4">Legal</h3>
             <div className="space-y-3">
               {[
                 { key: 'general.about', onClick: onAboutClick },
@@ -118,7 +118,7 @@ export function Footer({
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-neutral-800 mt-14 pt-8 text-center text-sm text-neutral-500">
+        <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-xs text-neutral-500">
           © {currentYear} {businessInfo.razon_social || 'GenStore'}. {t('footer.allRightsReserved')}
           {businessInfo.cif && <> · CIF: {businessInfo.cif}</>}
         </div>

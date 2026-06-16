@@ -15,6 +15,8 @@ import { PageRouter } from './components/PageRouter';
 import { TranslationDebugPanel } from './components/TranslationDebugPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { DevBanner } from './components/DevBanner';
+import { MiniCartDrawer } from './components/MiniCartDrawer';
+import { FlyingItemProvider } from './components/FlyingItemAnimation';
 import { motion } from 'motion/react';
 
 // Hooks
@@ -25,6 +27,7 @@ import { useWishlist } from './hooks/useWishlist';
 import { useSearch } from './hooks/useSearch';
 import { useNavigation } from './hooks/useNavigation';
 import { useAppHandlers } from './hooks/useAppHandlers';
+import { useCurrency } from './contexts/CurrencyContext';
 
 // Utilities
 import { createCommonProps, createAccountNavigationProps } from './utils/appProps';
@@ -40,10 +43,14 @@ const authPages = AUTH_PAGES || ['login', 'signup', 'verify-email'];
 function AppContent() {
   const { t } = useLanguage();
   const { theme } = useTheme();
+  const { formatPrice } = useCurrency();
 
   // Core state
   const { notification, showNotification } = useNotification();
   const { user, isLoading: isCheckingAuth, logout: signOut } = useAuth();
+
+  // Mini-cart drawer state
+  const [miniCartOpen, setMiniCartOpen] = React.useState(false);
 
   // Navigation
   const {
@@ -132,6 +139,15 @@ function AppContent() {
     signOut,
   });
 
+  const handleAddToCartWithDrawer = async (...args: Parameters<typeof handlers.handleAddToCart>) => {
+    await handlers.handleAddToCart(...args);
+    setMiniCartOpen(true);
+    setTimeout(() => setMiniCartOpen(false), 3000);
+  };
+
+  // Override handleAddToCart in handlers so PageRouter auto-opens drawer on add
+  handlers.handleAddToCart = handleAddToCartWithDrawer;
+
   const commonProps = React.useMemo(() => createCommonProps({
     user,
     searchQuery,
@@ -188,7 +204,7 @@ function AppContent() {
             <Header
               {...commonProps}
               onHomeClick={handlers.handleHomeClickWithFilters}
-              onCartClick={() => setCurrentPage('cart')}
+              onCartClick={() => setMiniCartOpen(true)}
               onCheckoutClick={() => setCurrentPage('checkout')}
               onAccountClick={() => setCurrentPage('account')}
               onWishlistClick={() => setCurrentPage('wishlist')}
@@ -267,6 +283,14 @@ function AppContent() {
         />
       </motion.div>
       <CompareFloatingBar onProductClick={handleNavigateToProduct} />
+      <MiniCartDrawer
+        isOpen={miniCartOpen}
+        onClose={() => setMiniCartOpen(false)}
+        cart={cart}
+        formatPrice={formatPrice}
+        onViewCart={() => setCurrentPage('cart')}
+        onCheckout={() => setCurrentPage('checkout')}
+      />
     </NotificationProvider>
   );
 }
@@ -279,7 +303,9 @@ export default function App() {
           <CurrencyProvider>
             <AuthProvider>
               <ProductComparatorProvider>
-                <AppContent />
+                <FlyingItemProvider>
+                  <AppContent />
+                </FlyingItemProvider>
               </ProductComparatorProvider>
             </AuthProvider>
           </CurrencyProvider>

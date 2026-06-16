@@ -40,9 +40,9 @@ export function NewsletterSection() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="w-full bg-gradient-to-b from-primary/10 to-background py-16 px-4 sm:px-6 lg:px-8"
+      className="w-full py-16 md:py-24 bg-muted/20 px-4 sm:px-6 lg:px-8"
     >
-      <div className="mx-auto max-w-2xl text-center">
+      <div className="mx-auto max-w-md text-center">
         {/* Decorative Gift icon */}
         <div className="mb-4 flex justify-center">
           <div className="relative">
@@ -54,7 +54,7 @@ export function NewsletterSection() {
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <h2 className="text-2xl font-semibold tracking-tight text-center">
           Únete a nuestra newsletter
         </h2>
         <p className="mt-2 text-muted-foreground">
@@ -83,13 +83,13 @@ export function NewsletterSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={status === 'loading'}
-                  className="h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full rounded-full border border-border bg-background pl-10 pr-5 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               >
                 {status === 'loading' ? (
                   <>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { HeroSection } from './HeroSection';
+import { PageTransition } from './PageTransition';
+import { HeroPremium } from './HeroPremium';
 import { OffersCarousel } from './OffersCarousel';
 import { CategoriesSection } from './CategoriesSection';
 import { FeaturedProducts } from './FeaturedProducts';
@@ -95,7 +96,7 @@ export function PageRouter({
     onHomeClick: () => handlers.handleHomeClickWithFilters()
   };
 
-  switch (currentPage) {
+  const content = (() => { switch (currentPage) {
     case 'login':
       return (
         <LoginPage 
@@ -371,10 +372,7 @@ export function PageRouter({
     default:
       return (
         <>
-          <HeroSection 
-            onShopNowClick={() => setCurrentPage('catalog')}
-            onLearnMoreClick={() => setCurrentPage('learn-more')}
-          />
+          <HeroPremium onShopClick={() => setCurrentPage('catalog')} />
           <TrustBadgesBar />
           <OffersCarousel
             products={translatedProducts}
@@ -405,5 +403,11 @@ export function PageRouter({
           <Footer {...footerProps} />
         </>
       );
-  }
+  } })();
+
+  return (
+    <PageTransition pageKey={currentPage}>
+      {content}
+    </PageTransition>
+  );
 }

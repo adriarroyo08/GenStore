@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useScrollDirection } from '../hooks/useScrollDirection';
 import { Menu, ShoppingBag, Heart, User as UserIcon } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Product, CartItem } from "../App";
@@ -82,6 +83,7 @@ export function Header({
 }: HeaderProps) {
   const { t } = useLanguage();
   const { formatPrice, convertPrice } = useCurrency();
+  const { hidden, scrolled } = useScrollDirection();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartBounce, setCartBounce] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -106,7 +108,15 @@ export function Header({
   const isAdmin = user?.email === 'admin@genstore.com' || user?.email === 'adriarroyo2002@gmail.com' || user?.profile?.isAdmin === true || user?.profile?.role === 'admin';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-neutral-200/50 dark:border-neutral-800/50">
+    <header
+      className={`fixed top-0 left-0 right-0 z-40 transition-transform duration-300 ${
+        hidden ? '-translate-y-full' : 'translate-y-0'
+      } ${
+        scrolled
+          ? 'bg-white/80 dark:bg-neutral-950/80 backdrop-blur-xl shadow-sm'
+          : 'bg-white dark:bg-neutral-950'
+      } border-b border-border/50`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
@@ -123,15 +133,17 @@ export function Header({
           <nav className="hidden md:flex items-center gap-6">
             <button
               onClick={onHomeClick}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="group relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-1"
             >
               {t('nav.home')}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground transition-all duration-300 group-hover:w-full" />
             </button>
             <button
               onClick={onCatalogClick}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="group relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-1"
             >
               {t('nav.catalog')}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground transition-all duration-300 group-hover:w-full" />
             </button>
           </nav>
 
@@ -174,7 +186,7 @@ export function Header({
               >
                 <Heart className="w-5 h-5" />
                 {wishlist.length > 0 && (
-                  <span className="absolute top-0.5 right-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                  <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center">
                     {wishlist.length > 99 ? '99+' : wishlist.length}
                   </span>
                 )}
@@ -189,8 +201,8 @@ export function Header({
             >
               <ShoppingBag className={`w-5 h-5 transition-transform duration-300 ${cartBounce ? 'scale-125' : ''}`} />
               {cartItemsCount > 0 && (
-                <span className={`absolute top-0.5 right-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none transition-all duration-300 ${
-                  cartBounce ? 'scale-150 shadow-lg shadow-blue-500/50' : ''
+                <span className={`absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center transition-all duration-300 ${
+                  cartBounce ? 'scale-150 shadow-lg shadow-primary/50' : ''
                 }`}>
                   {cartItemsCount > 99 ? '99+' : cartItemsCount}
                 </span>
@@ -204,8 +216,8 @@ export function Header({
                 aria-label="Mi cuenta"
                 className="p-1 text-muted-foreground hover:text-foreground transition-colors"
               >
-                <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">
+                <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center">
+                  <span className="text-primary-foreground text-xs font-medium">
                     {((user as any).username || user.name || user.email).charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -236,13 +248,13 @@ export function Header({
                   {/* Nav links */}
                   <button
                     onClick={() => { onHomeClick(); setIsMobileMenuOpen(false); }}
-                    className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-blue-600 transition-colors"
+                    className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-foreground transition-colors"
                   >
                     {t('nav.home')}
                   </button>
                   <button
                     onClick={() => { onCatalogClick?.(); setIsMobileMenuOpen(false); }}
-                    className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-blue-600 transition-colors"
+                    className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-foreground transition-colors"
                   >
                     {t('nav.catalog')}
                   </button>
@@ -274,7 +286,7 @@ export function Header({
                       {onSettingsClick && (
                         <button
                           onClick={() => { onSettingsClick(); setIsMobileMenuOpen(false); }}
-                          className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-blue-600 transition-colors"
+                          className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-foreground transition-colors"
                         >
                           {t('nav.settings') || 'Configuración'}
                         </button>
@@ -282,7 +294,7 @@ export function Header({
                       {onOrdersClick && (
                         <button
                           onClick={() => { onOrdersClick(); setIsMobileMenuOpen(false); }}
-                          className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-blue-600 transition-colors"
+                          className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-foreground transition-colors"
                         >
                           {t('nav.orders') || 'Pedidos'}
                         </button>
@@ -290,7 +302,7 @@ export function Header({
                       {isAdmin && onProductDatabaseClick && (
                         <button
                           onClick={() => { onProductDatabaseClick(); setIsMobileMenuOpen(false); }}
-                          className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-blue-600 transition-colors"
+                          className="text-left text-base font-medium py-2 border-b border-border text-foreground hover:text-foreground transition-colors"
                         >
                           Admin
                         </button>
@@ -305,7 +317,7 @@ export function Header({
                   ) : (
                     <button
                       onClick={() => { onLoginClick(); setIsMobileMenuOpen(false); }}
-                      className="text-left text-base font-medium py-2 text-blue-600 hover:text-blue-700 transition-colors mt-2"
+                      className="text-left text-base font-medium py-2 text-primary hover:opacity-80 transition-opacity mt-2"
                     >
                       {t('auth.login')}
                     </button>

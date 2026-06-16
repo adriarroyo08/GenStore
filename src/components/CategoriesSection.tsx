@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Heart, Activity, Package, Sparkles, Stethoscope, Zap } from "lucide-react";
@@ -116,17 +117,14 @@ export function CategoriesSection({
 
   if (isLoading) {
     return (
-      <section aria-labelledby="categories-heading" className="py-12 sm:py-16 bg-background">
+      <section aria-labelledby="categories-heading" className="py-16 md:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 id="categories-heading" className="text-2xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">
+          <div className="text-center mb-12">
+            <h2 id="categories-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-center mb-12">
               {t("categories.title")}
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground px-4">
-              {t("categories.subtitle")}
-            </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
                 <div className="bg-muted rounded-2xl h-[160px] sm:h-[180px]"></div>
@@ -139,76 +137,67 @@ export function CategoriesSection({
   }
 
   return (
-    <section aria-labelledby="categories-heading" className="py-12 sm:py-16 bg-background">
+    <section aria-labelledby="categories-heading" className="py-16 md:py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 id="categories-heading" className="text-2xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">
-            {t("categories.title")}
-          </h2>
-          <p className="text-base sm:text-lg text-muted-foreground px-4">
-            {t("categories.subtitle")}
-          </p>
-        </div>
+        <h2 id="categories-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-center mb-12">
+          {t("categories.title")}
+        </h2>
 
-        <div role="list" className={`grid gap-4 sm:gap-6 lg:gap-8 mx-auto ${
-          categories.length === 1 ? 'grid-cols-1 max-w-lg' :
-          categories.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-4xl' :
-          categories.length === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl' :
-          'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl'
-        }`}>
-          {categories.map((category) => {
+        <div role="list" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {categories.map((category, index) => {
             const config = getCategoryConfig(category);
             const IconComponent = getIconComponent(category.icon);
             const isSelected = selectedCategory === category.slug;
             const categoryName = getCategoryTranslationKey(category);
-            
+
             return (
-              <button
-                role="listitem"
+              <motion.div
                 key={category.id}
-                onClick={() => onCategoryClick(category.slug)}
-                className={`${config.bgColor} ${config.hoverColor} ${
-                  isSelected
-                    ? "ring-2 ring-offset-2 ring-primary dark:ring-offset-background shadow-xl scale-105"
-                    : ""
-                } relative overflow-hidden rounded-2xl text-center transition-all duration-300 transform hover:scale-105 hover:shadow-xl border border-border/50 group`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                {/* Background Image */}
-                <div className="absolute inset-0 opacity-15 group-hover:opacity-25 transition-opacity duration-300">
-                  <ImageWithFallback
-                    src={config.image}
-                    alt={categoryName}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-white/10 via-transparent to-white/5 dark:from-black/10 dark:via-transparent dark:to-black/5"></div>
-                
-                {/* Content */}
-                <div className="relative z-10 p-6 sm:p-8 flex flex-col items-center justify-center h-full min-h-[160px] sm:min-h-[180px]">
-                  <div
-                    className={`inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 ${config.iconColor} mb-4 sm:mb-6 bg-white/90 dark:bg-white/10 rounded-2xl shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <IconComponent className="w-8 h-8 sm:w-10 sm:h-10" strokeWidth={2} aria-hidden="true" />
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold text-foreground bg-white/90 dark:bg-white/10 px-4 sm:px-6 py-2 sm:py-3 rounded-xl backdrop-blur-sm text-center shadow-sm group-hover:bg-white/95 dark:group-hover:bg-white/15 transition-colors duration-300">
-                    {categoryName}
-                  </h3>
-                  
-                  {/* Product count badge */}
-                  {category.productCount && category.productCount > 0 && (
-                    <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-full shadow-sm">
-                      {category.productCount}
+                <button
+                  role="listitem"
+                  onClick={() => onCategoryClick(category.slug)}
+                  className={`${
+                    isSelected
+                      ? "ring-2 ring-offset-2 ring-primary dark:ring-offset-background shadow-xl"
+                      : ""
+                  } rounded-2xl overflow-hidden group cursor-pointer relative w-full border border-border/50`}
+                >
+                  {/* Background Image */}
+                  <div className="relative h-[160px] sm:h-[200px] overflow-hidden">
+                    <ImageWithFallback
+                      src={config.image}
+                      alt={categoryName}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+
+                    {/* Category name */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-white font-medium text-lg text-left">
+                        {categoryName}
+                      </h3>
                     </div>
-                  )}
-                  
-                  {/* Subtle indicator for selection */}
-                  {isSelected && (
-                    <div className="absolute top-4 left-4 w-3 h-3 bg-primary rounded-full shadow-lg animate-pulse"></div>
-                  )}
-                </div>
-              </button>
+
+                    {/* Product count badge */}
+                    {category.productCount && category.productCount > 0 && (
+                      <div className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-full shadow-sm">
+                        {category.productCount}
+                      </div>
+                    )}
+
+                    {/* Selection indicator */}
+                    {isSelected && (
+                      <div className="absolute top-4 left-4 w-3 h-3 bg-primary rounded-full shadow-lg animate-pulse"></div>
+                    )}
+                  </div>
+                </button>
+              </motion.div>
             );
           })}
         </div>
