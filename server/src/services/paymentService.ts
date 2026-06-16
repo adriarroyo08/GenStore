@@ -234,16 +234,23 @@ export async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent):
   // 2. Get order items for stock deduction
   const { data: items } = await supabaseAdmin
     .from('order_items')
-    .select('product_id, cantidad')
+    .select('product_id, variant_id, cantidad')
     .eq('order_id', orderId);
 
-  // 3. Deduct stock atomically + create inventory movements
+  // 3. Deduct stock atomically + create inventory movements (variant-aware)
   if (items) {
     for (const item of items) {
-      await supabaseAdmin.rpc('decrement_stock', {
-        p_product_id: item.product_id,
-        p_amount: item.cantidad,
-      });
+      if (item.variant_id) {
+        await supabaseAdmin.rpc('decrement_variant_stock', {
+          p_variant_id: item.variant_id,
+          p_amount: item.cantidad,
+        });
+      } else {
+        await supabaseAdmin.rpc('decrement_stock', {
+          p_product_id: item.product_id,
+          p_amount: item.cantidad,
+        });
+      }
 
       await supabaseAdmin.from('inventory_movements').insert({
         product_id: item.product_id,
