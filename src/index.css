@@ -5,10 +5,17 @@
 
 /* ---------- Brand custom properties ---------- */
 :root {
-  --gs-accent: #2563EB;
-  --gs-accent-hover: #1D4ED8;
-  --gs-accent-light: #3B82F6;
-  --gs-gradient: linear-gradient(135deg, #0A0A0A, #1a1a2e);
+  --gs-accent: #111111;
+  --gs-accent-hover: #333333;
+  --gs-accent-light: #555555;
+  --gs-gradient: linear-gradient(135deg, #FAFAFA, #F0F0F0);
+}
+
+.dark {
+  --gs-accent: #FFFFFF;
+  --gs-accent-hover: #E5E5E5;
+  --gs-accent-light: #CCCCCC;
+  --gs-gradient: linear-gradient(135deg, #0A0A0A, #141414);
 }
 
 /* ---------- Reset / Base ---------- */
@@ -49,18 +56,22 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(37, 99, 235, 0.25);
+  background: #D1D5DB;
   border-radius: 9999px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #4B5563;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(37, 99, 235, 0.45);
+  background: #9CA3AF;
 }
 
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(37, 99, 235, 0.25) transparent;
+  scrollbar-color: #D1D5DB transparent;
 }
 
 /* ---------- Hero floating animation ---------- */
