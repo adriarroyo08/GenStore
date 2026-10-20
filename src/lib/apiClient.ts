@@ -118,4 +118,34 @@ export const apiClient = {
       return await handleResponse<T>(res);
     } finally { clear(); }
   },
+
+  async upload<T = unknown>(path: string, file: File, fieldName = 'file'): Promise<T> {
+    const { signal, clear } = withTimeout(30_000); // 30s for uploads
+    try {
+      const formData = new FormData();
+      formData.append(fieldName, file);
+
+      const headers: HeadersInit = {};
+      if (_accessToken) {
+        headers['Authorization'] = `Bearer ${_accessToken}`;
+      } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+      }
+      // Do NOT set Content-Type — browser sets it with boundary for FormData
+
+      const response = await fetch(`${BASE_URL}${path}`, {
+        method: 'POST',
+        headers,
+        body: formData,
+        signal,
+      });
+
+      return handleResponse<T>(response);
+    } finally {
+      clear();
+    }
+  },
 };

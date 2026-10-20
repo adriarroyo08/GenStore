@@ -24,7 +24,13 @@ rewards.post('/redeem', async (c) => {
     return c.json({ error: 'El sistema de puntos está desactivado' }, 400);
   }
   const user = c.get('user');
-  const { rewardId } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { rewardId } = body;
 
   if (!rewardId) {
     return c.json({ error: 'rewardId requerido' }, 400);

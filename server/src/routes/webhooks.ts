@@ -23,7 +23,7 @@ webhooks.post('/stripe', async (c) => {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Webhook signature verification failed';
     console.error('Webhook signature error:', message);
-    return c.json({ error: message }, 400);
+    return c.json({ error: 'Webhook signature verification failed' }, 400);
   }
 
   try {

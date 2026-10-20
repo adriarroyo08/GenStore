@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import { Product, CartItem } from '../types/index';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCurrency } from '../contexts/CurrencyContext';
@@ -8,11 +9,13 @@ import { PriceDisplay } from './PriceDisplay';
 import { ImageZoom } from './ImageZoom';
 import { ImageLightbox } from './ImageLightbox';
 import { RecentlyViewed, trackRecentlyViewed } from './RecentlyViewed';
+import { VariantSelector } from './VariantSelector';
 import {
   ChevronLeft, ChevronRight, Heart, ShoppingCart, Zap,
   Star, Package, Truck, ShieldCheck, RotateCcw, Minus, Plus,
   Check, Loader2, Expand, Bell,
 } from 'lucide-react';
+import { useFlyingItem } from './FlyingItemAnimation';
 
 interface User {
   id: string;
@@ -29,7 +32,7 @@ interface ProductDetailPageProps {
   user: User | null;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  onAddToCart: (product: Product, selectedColor?: string, selectedColorName?: string) => void;
+  onAddToCart: (product: Product, variantId?: string, selectedColor?: string, selectedColorName?: string) => void;
   cartItemsCount: number;
   updateQuantity: (productId: string, quantity: number) => void;
   removeFromCart: (productId: string) => void;
@@ -62,6 +65,8 @@ export function ProductDetailPage({
 }: ProductDetailPageProps) {
   const { t, language } = useLanguage();
   const { formatPrice } = useCurrency();
+  const { triggerFly } = useFlyingItem();
+  const addToCartBtnRef = useRef<HTMLButtonElement>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -70,12 +75,23 @@ export function ProductDetailPage({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState('');
   const [notifyState, setNotifyState] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
+
+  // Variant-aware computed values
+  const displayPrecio = selectedVariant?.precio ?? product.precio ?? product.price;
+  const displayStock = selectedVariant?.stock ?? product.stock ?? 0;
+  const displayImages = (selectedVariant?.imagenes?.length > 0)
+    ? selectedVariant.imagenes
+    : (product.imagenes ?? []);
 
   // Images
   const images = useMemo(() => {
+    if (displayImages.length > 0) {
+      return (displayImages as string[]).filter((img: string) => img && (img.startsWith('http') || img.startsWith('data:')));
+    }
     const imgs = [product.image, ...(product.additionalImages ?? [])];
     return imgs.filter(img => img && (img.startsWith('http') || img.startsWith('data:')));
-  }, [product.image, product.additionalImages]);
+  }, [product.image, product.additionalImages, displayImages]);
 
   // Related products (same category)
   const relatedProducts = useMemo(() => {
@@ -98,10 +114,10 @@ export function ProductDetailPage({
       .slice(0, 4);
   }, [allProducts, product]);
 
-  // Stock
-  const stock = product.stock ?? 0;
-  const inStock = stock > 0;
-  const lowStock = stock > 0 && stock <= 10;
+  // Stock (variant-aware)
+  const stock = displayStock;
+  const inStock = displayStock > 0;
+  const lowStock = displayStock > 0 && displayStock <= 10;
   const isInWishlist = wishlist.includes(product.id);
 
   // Reset state and scroll to top when product changes
@@ -116,11 +132,22 @@ export function ProductDetailPage({
 
   const handleAddToCart = async () => {
     if (!inStock || cartState !== 'idle') return;
+    if ((product as any).has_variants && !selectedVariant) return;
+    if (addToCartBtnRef.current) {
+      const rect = addToCartBtnRef.current.getBoundingClientRect();
+      triggerFly(images[selectedImageIndex] || product.image || '', rect.left, rect.top);
+    }
     setCartState('loading');
     try {
-      const colorObj = product.colors?.find(c => c.name === selectedColor);
       for (let i = 0; i < quantity; i++) {
-        await Promise.resolve(onAddToCart(product, colorObj?.color, selectedColor ?? undefined));
+        await Promise.resolve(
+          onAddToCart(
+            product,
+            selectedVariant?.id,
+            selectedVariant ? undefined : (product.colors?.find(c => c.name === selectedColor)?.color),
+            selectedVariant ? Object.values(selectedVariant.attributes).join(' / ') : (selectedColor ?? undefined)
+          )
+        );
       }
       setCartState('done');
       setTimeout(() => setCartState('idle'), 2000);
@@ -139,7 +166,7 @@ export function ProductDetailPage({
       {/* Breadcrumb */}
       <nav className="border-b border-border bg-muted/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <button onClick={onBackToHome} className="hover:text-foreground transition-colors">Inicio</button>
             <ChevronRight className="w-3.5 h-3.5" />
             <button onClick={onBackToCatalog} className="hover:text-foreground transition-colors">Catalogo</button>
@@ -150,18 +177,22 @@ export function ProductDetailPage({
       </nav>
 
       {/* Main content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
 
           {/* ===== LEFT: Image gallery ===== */}
-          <div className="space-y-3">
+          <div className="lg:sticky lg:top-24 lg:self-start space-y-3">
             {/* Main image with zoom */}
-            <div className="relative aspect-square bg-muted/20 rounded-2xl border border-border overflow-hidden group">
+            <div className="relative aspect-[4/5] bg-muted/20 rounded-2xl border border-border overflow-hidden group">
               {images.length > 0 ? (
-                <ImageZoom
+                <motion.img
+                  key={images[selectedImageIndex]}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
                   src={images[selectedImageIndex]}
                   alt={`${product.name} - Imagen ${selectedImageIndex + 1}`}
-                  className="w-full h-full"
+                  className="w-full h-full object-cover rounded-2xl cursor-zoom-in"
                   onClick={() => setLightboxOpen(true)}
                 />
               ) : (
@@ -216,11 +247,11 @@ export function ProductDetailPage({
                   <button
                     key={i}
                     onClick={() => setSelectedImageIndex(i)}
-                    className={`w-16 h-16 sm:w-20 sm:h-20 min-w-[44px] min-h-[44px] rounded-lg border-2 overflow-hidden flex-shrink-0 transition-all ${
-                      i === selectedImageIndex ? 'border-primary ring-1 ring-primary/30' : 'border-border hover:border-primary/50'
+                    className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors cursor-pointer flex-shrink-0 ${
+                      i === selectedImageIndex ? 'border-foreground' : 'border-transparent hover:border-border'
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-contain p-1" />
+                    <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -242,7 +273,7 @@ export function ProductDetailPage({
             </div>
 
             {/* Name */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
+            <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground leading-tight">
               {product.name}
             </h1>
 
@@ -264,8 +295,22 @@ export function ProductDetailPage({
             )}
 
             {/* Price */}
-            <div className="flex items-baseline gap-3">
-              <PriceDisplay product={product} size="xl" />
+            <div className="flex items-center gap-3">
+              <span className="text-xl md:text-2xl font-bold text-foreground">
+                {formatPrice(displayPrecio ?? product.price)}
+              </span>
+              {product.onSale && product.originalPrice && (
+                <>
+                  <span className="text-base text-muted-foreground line-through">
+                    {formatPrice(product.originalPrice)}
+                  </span>
+                  {product.salePercentage && (
+                    <span className="rounded-full bg-destructive/10 text-destructive text-xs px-2 py-0.5 font-medium">
+                      -{product.salePercentage}%
+                    </span>
+                  )}
+                </>
+              )}
             </div>
 
             {/* Short description */}
@@ -277,8 +322,13 @@ export function ProductDetailPage({
 
             <hr className="border-border" />
 
-            {/* Color options */}
-            {product.colors && product.colors.length > 0 && (
+            {/* Color / Variant options */}
+            {(product as any).has_variants && (product as any).variants?.length > 0 ? (
+              <VariantSelector
+                variants={(product as any).variants}
+                onVariantSelect={setSelectedVariant}
+              />
+            ) : product.colors && product.colors.length > 0 ? (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Color: <span className="text-muted-foreground font-normal">{selectedColor}</span>
@@ -304,30 +354,30 @@ export function ProductDetailPage({
                   ))}
                 </div>
               </div>
-            )}
+            ) : null}
 
             {/* Quantity */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-foreground">Cantidad</label>
                 <span className={`text-sm ${lowStock ? 'text-orange-500 font-medium' : 'text-muted-foreground'}`}>
-                  {!inStock ? 'Agotado' : lowStock ? `Solo ${stock} disponibles` : `${stock} en stock`}
+                  {!inStock ? 'Agotado' : lowStock ? `Solo ${displayStock} disponibles` : `${displayStock} en stock`}
                 </span>
               </div>
-              <div className="inline-flex items-center border border-border rounded-lg bg-card">
+              <div className="flex items-center border border-border rounded-full">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={quantity <= 1 || !inStock}
-                  className="p-2.5 hover:bg-muted transition-colors disabled:opacity-40"
+                  className="px-4 py-2 hover:bg-muted transition-colors rounded-l-full disabled:opacity-40"
                   aria-label="Reducir cantidad"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="w-12 text-center text-sm font-medium tabular-nums">{quantity}</span>
+                <span className="px-4 py-2 text-sm font-medium tabular-nums">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(Math.min(stock, quantity + 1))}
-                  disabled={quantity >= stock || !inStock}
-                  className="p-2.5 hover:bg-muted transition-colors disabled:opacity-40"
+                  onClick={() => setQuantity(Math.min(displayStock, quantity + 1))}
+                  disabled={quantity >= displayStock || !inStock}
+                  className="px-4 py-2 hover:bg-muted transition-colors rounded-r-full disabled:opacity-40"
                   aria-label="Aumentar cantidad"
                 >
                   <Plus className="w-4 h-4" />
@@ -338,20 +388,23 @@ export function ProductDetailPage({
             {/* Action buttons */}
             <div className="flex flex-col gap-3 pt-2">
               <button
+                ref={addToCartBtnRef}
                 onClick={handleAddToCart}
-                disabled={!inStock || cartState === 'loading'}
-                className={`hidden sm:flex w-full items-center justify-center gap-2 h-12 rounded-xl font-semibold text-base transition-all duration-200 shadow-sm disabled:cursor-not-allowed ${
+                disabled={!inStock || cartState !== 'idle' || ((product as any).has_variants && !selectedVariant)}
+                className={`hidden sm:flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-medium transition-all duration-200 disabled:cursor-not-allowed ${
                   cartState === 'done'
-                    ? 'bg-green-500 text-white scale-[1.02]'
+                    ? 'bg-green-500 text-white'
                     : cartState === 'loading'
-                    ? 'bg-blue-600/80 text-white'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-[0.98] disabled:opacity-50'
+                    ? 'bg-primary/80 text-primary-foreground'
+                    : 'bg-primary hover:opacity-90 transition-opacity text-primary-foreground disabled:opacity-50'
                 }`}
               >
                 {cartState === 'loading' ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Agregando...</>
                 ) : cartState === 'done' ? (
                   <><Check className="w-5 h-5" /> Agregado al carrito</>
+                ) : (product as any).has_variants && !selectedVariant ? (
+                  <><ShoppingCart className="w-5 h-5" /> Selecciona una opcion</>
                 ) : (
                   <><ShoppingCart className="w-5 h-5" /> {t('product.addToCart')}</>
                 )}
@@ -359,7 +412,7 @@ export function ProductDetailPage({
               <button
                 onClick={handleBuyNow}
                 disabled={!inStock || cartState === 'loading'}
-                className="w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-foreground hover:opacity-90 text-background font-semibold text-base active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-full flex items-center justify-center gap-2 rounded-full py-4 bg-foreground hover:opacity-90 text-background text-base font-medium transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Zap className="w-5 h-5" />
                 {t('product.buyNow')}
@@ -419,7 +472,7 @@ export function ProductDetailPage({
             {/* Contextual shipping & trust info */}
             <div className="space-y-2 pt-2">
               {/* Dynamic shipping highlight */}
-              {product.price >= 50 ? (
+              {(displayPrecio ?? product.price) >= 50 ? (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30">
                   <Truck className="w-4 h-4 text-green-600" />
                   <span className="text-sm text-green-700 dark:text-green-400 font-medium">Envío gratis en este producto</span>
@@ -428,7 +481,7 @@ export function ProductDetailPage({
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/40">
                   <Truck className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">
-                    Envío gratis a partir de 50€ — te faltan {formatPrice(50 - product.price)}
+                    Envío gratis a partir de 50€ — te faltan {formatPrice(50 - (displayPrecio ?? product.price))}
                   </span>
                 </div>
               )}
@@ -436,22 +489,19 @@ export function ProductDetailPage({
               {lowStock && (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800/30">
                   <Package className="w-4 h-4 text-orange-600" />
-                  <span className="text-sm text-orange-700 dark:text-orange-400 font-medium">¡Solo quedan {stock} unidades!</span>
+                  <span className="text-sm text-orange-700 dark:text-orange-400 font-medium">¡Solo quedan {displayStock} unidades!</span>
                 </div>
               )}
               {/* Trust badges */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-1">
-                <div className="flex flex-col items-center gap-1 text-center p-3 rounded-lg bg-muted/40">
-                  <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                  <span className="text-xs leading-tight text-muted-foreground">Entrega 2-4 días</span>
+              <div className="flex justify-between mt-6 pt-6 border-t border-border/50">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Truck className="w-4 h-4" /> Envio 2-4 dias
                 </div>
-                <div className="flex flex-col items-center gap-1 text-center p-3 rounded-lg bg-muted/40">
-                  <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                  <span className="text-xs leading-tight text-muted-foreground">Garantía 1 año</span>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <ShieldCheck className="w-4 h-4" /> Garantia 1 año
                 </div>
-                <div className="flex flex-col items-center gap-1 text-center p-3 rounded-lg bg-muted/40">
-                  <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                  <span className="text-xs leading-tight text-muted-foreground">Devolución 14 días</span>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <RotateCcw className="w-4 h-4" /> Devolucion 14 dias
                 </div>
               </div>
             </div>
@@ -464,7 +514,7 @@ export function ProductDetailPage({
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
           {/* Tab navigation */}
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 mb-6">
-            <div className="flex gap-6 border-b border-border min-w-max sm:min-w-0">
+            <div className="relative flex gap-8 border-b border-border min-w-max sm:min-w-0">
               {(['description', 'specs', 'reviews'] as const).map((tab) => {
                 const labels = {
                   description: t('product.description'),
@@ -475,13 +525,19 @@ export function ProductDetailPage({
                   <button
                     key={tab}
                     onClick={() => setSelectedTab(tab)}
-                    className={`pb-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap min-h-[44px] ${
+                    className={`pb-3 text-sm font-medium transition-colors relative whitespace-nowrap min-h-[44px] ${
                       selectedTab === tab
-                        ? 'border-primary text-primary'
-                        : 'border-transparent text-muted-foreground hover:text-foreground'
+                        ? 'text-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {labels[tab]}
+                    {selectedTab === tab && (
+                      <motion.div
+                        layoutId="tab-underline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-foreground"
+                      />
+                    )}
                   </button>
                 );
               })}
@@ -532,7 +588,7 @@ export function ProductDetailPage({
                 <dl className="space-y-2 text-sm">
                   <div className="flex justify-between py-1.5 border-b border-border/50">
                     <dt className="text-muted-foreground">Stock</dt>
-                    <dd className={`font-medium ${inStock ? 'text-green-600' : 'text-red-500'}`}>{inStock ? `${stock} ${language === 'es' ? 'uds.' : 'units'}` : t('product.outOfStock')}</dd>
+                    <dd className={`font-medium ${inStock ? 'text-green-600' : 'text-red-500'}`}>{inStock ? `${displayStock} ${language === 'es' ? 'uds.' : 'units'}` : t('product.outOfStock')}</dd>
                   </div>
                   <div className="flex justify-between py-1.5 border-b border-border/50">
                     <dt className="text-muted-foreground">{t('product.shipping')}</dt>
@@ -601,17 +657,17 @@ export function ProductDetailPage({
       />
 
       {/* Sticky CTA en móvil */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-border p-3 sm:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-xl bg-background/80 border-t border-border/50 p-3 sm:hidden">
         <button
           onClick={handleAddToCart}
-          disabled={!inStock || cartState === 'loading'}
-          className={`w-full flex items-center justify-center gap-2 rounded-xl font-semibold min-h-[48px] transition-colors disabled:cursor-not-allowed ${
+          disabled={!inStock || cartState !== 'idle' || ((product as any).has_variants && !selectedVariant)}
+          className={`w-full flex items-center justify-center gap-2 rounded-full py-4 text-base font-medium transition-opacity disabled:cursor-not-allowed ${
             cartState === 'done'
               ? 'bg-green-500 text-white'
               : cartState === 'loading'
-              ? 'bg-blue-600/80 text-white'
+              ? 'bg-primary/80 text-primary-foreground'
               : inStock
-              ? 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
+              ? 'bg-primary hover:opacity-90 text-primary-foreground disabled:opacity-50'
               : 'bg-muted text-muted-foreground opacity-50'
           }`}
         >
@@ -619,8 +675,10 @@ export function ProductDetailPage({
             <><Loader2 className="w-5 h-5 animate-spin" /> Agregando...</>
           ) : cartState === 'done' ? (
             <><Check className="w-5 h-5" /> Agregado al carrito</>
+          ) : (product as any).has_variants && !selectedVariant ? (
+            'Selecciona una opcion'
           ) : inStock ? (
-            `Añadir al carrito — ${formatPrice(product.price)}`
+            `Añadir al carrito — ${formatPrice(displayPrecio ?? product.price)}`
           ) : (
             'Sin stock'
           )}

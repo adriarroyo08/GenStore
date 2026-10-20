@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { ShoppingBag } from 'lucide-react';
 import svgPaths from "../imports/svg-ipgddszaq9";
 import { Product, CartItem } from '../App';
 import { Header } from './Header';
@@ -130,36 +131,15 @@ export function ShoppingCartPage({
     return (
       <div className="min-h-screen w-full overflow-x-hidden">
         <div className="bg-muted min-h-[calc(100vh-80px)] flex items-center justify-center">
-          <div className="text-center">
-            <div className="relative w-24 h-24 mx-auto mb-6">
-              <svg className="block w-full h-full text-muted-foreground" fill="none" viewBox="0 0 96 96" stroke="currentColor">
-                <path
-                  d={svgPaths.p33c1b680}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="3"
-                />
-                <path
-                  d={svgPaths.pd438b00}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="3"
-                />
-                <path
-                  d={svgPaths.p2fb16300}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="3"
-                />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">{t('cart.emptyCart')}</h2>
-            <p className="text-muted-foreground mb-6">{t('cart.emptyCartSubtitle')}</p>
+          <div className="text-center py-24">
+            <ShoppingBag className="w-16 h-16 text-muted-foreground/20 mx-auto mb-6" />
+            <h2 className="text-xl font-semibold tracking-tight mb-2">Tu carrito esta vacio</h2>
+            <p className="text-muted-foreground mb-8">Anade productos para empezar</p>
             <button
               onClick={onContinueShopping}
-              className="bg-blue-600 text-white rounded-full px-8 py-3 font-semibold hover:bg-blue-700 transition-colors"
+              className="rounded-full bg-primary text-primary-foreground px-8 py-3 text-sm font-medium"
             >
-              {t('cart.continueShopping')}
+              Explorar productos
             </button>
           </div>
         </div>
@@ -177,7 +157,7 @@ export function ShoppingCartPage({
             
             {/* Cart Header */}
             <div className="box-border content-stretch flex flex-col gap-4 items-start justify-start p-0 relative shrink-0 w-full">
-              <h1 id="cart-heading" className="font-bold text-2xl sm:text-3xl text-foreground relative shrink-0 w-full">
+              <h1 id="cart-heading" className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground relative shrink-0 w-full">
                 {t('cart.title')}
               </h1>
               <div className="font-normal text-lg text-muted-foreground relative shrink-0 w-full">
@@ -186,10 +166,10 @@ export function ShoppingCartPage({
             </div>
 
             {/* Cart Main */}
-            <div className="box-border content-stretch flex flex-col lg:flex-row gap-6 lg:gap-10 items-start justify-start p-0 relative shrink-0 w-full">
-              
+            <div className="grid lg:grid-cols-3 gap-8 w-full">
+
               {/* Cart Items */}
-              <div className="basis-0 box-border content-stretch flex flex-col gap-6 grow items-start justify-start min-h-px min-w-px p-0 relative shrink-0">
+              <div className="lg:col-span-2 flex flex-col gap-6">
                 <ul className="flex flex-col gap-6 w-full list-none p-0 m-0">
                 {cart.map((item) => {
                   const itemKey = `${item.id}-${item.selectedColor || 'default'}`;
@@ -197,7 +177,7 @@ export function ShoppingCartPage({
                   return (
                   <li
                     key={itemKey}
-                    className={`bg-card relative rounded-2xl shadow-sm hover:shadow-md shrink-0 w-full transition-all duration-300 ease-out ${
+                    className={`bg-card border border-border/50 relative rounded-2xl shrink-0 w-full transition-all duration-300 ease-out ${
                       isRemoving ? 'opacity-0 -translate-x-8 scale-95 max-h-0 overflow-hidden border-transparent mb-0 p-0' : 'opacity-100 translate-x-0 scale-100'
                     }`}
                     style={{ transitionProperty: 'opacity, transform, max-height, margin, padding, border-color' }}
@@ -215,11 +195,11 @@ export function ShoppingCartPage({
                           </div>
                         </div>
                       )}
-                      <div className="box-border content-stretch flex flex-col gap-5 items-start justify-start p-6 relative w-full">
+                      <div className="box-border content-stretch flex flex-col gap-5 items-start justify-start p-4 relative w-full">
                         <div className="box-border content-stretch flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-start p-0 relative shrink-0 w-full">
 
                           {/* Item Image */}
-                          <div className="bg-muted box-border content-stretch flex flex-row items-center justify-center p-0 relative rounded-xl shrink-0 w-20 h-20 sm:w-28 sm:h-28 object-cover flex-shrink-0">
+                          <div className="bg-muted box-border content-stretch flex flex-row items-center justify-center p-0 relative rounded-xl shrink-0 w-20 h-24 overflow-hidden flex-shrink-0">
                             <div className="relative shrink-0 size-[60px]">
                               <svg className="block size-full" fill="none" viewBox="0 0 60 60" stroke={getProductIconColor(item.category)}>
                                 <path
@@ -245,9 +225,14 @@ export function ShoppingCartPage({
                             
                             {/* Item Info */}
                             <div className="box-border content-stretch flex flex-col gap-2 items-start justify-start p-0 relative shrink-0 w-full">
-                              <div className="font-bold text-lg sm:text-xl text-foreground relative shrink-0 w-full">
+                              <div className="text-sm font-medium text-foreground relative shrink-0 w-full">
                                 {item.name}
                               </div>
+                              {(item as any).variantAttributes && (
+                                <p className="text-xs text-muted-foreground">
+                                  {Object.entries((item as any).variantAttributes).map(([k, v]) => `${k}: ${v}`).join(' / ')}
+                                </p>
+                              )}
                               <div className="font-medium text-sm text-muted-foreground relative shrink-0 w-full">
                                 {item.brand} • {item.category}
                                 {item.selectedColorName && (
@@ -266,7 +251,7 @@ export function ShoppingCartPage({
                             <div className="box-border content-stretch flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-0 relative shrink-0 w-full">
                               
                               {/* Quantity Controls */}
-                              <div className="box-border content-stretch flex flex-row items-center gap-2 justify-start p-0 relative shrink-0">
+                              <div className="flex items-center border border-border rounded-full px-1">
                                 <button
                                   onClick={() => handleQuantityDecrease(item.id, item.quantity, item.selectedColor)}
                                   aria-label="Reducir cantidad"
@@ -340,50 +325,21 @@ export function ShoppingCartPage({
                                   onClick={() => handleRemoveWithAnimation(item.id, item.selectedColor)}
                                   disabled={isRemoving}
                                   aria-label={`Eliminar ${item.name} del carrito`}
-                                  className="p-2 min-w-[36px] min-h-[36px] box-border content-stretch flex flex-row gap-1 items-center justify-start relative shrink-0 text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
+                                  className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center relative shrink-0 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
                                 >
-                                  <div className="relative shrink-0 size-4">
-                                    <svg
-                                      className="block size-full text-red-500"
-                                      fill="none"
-                                      viewBox="0 0 16 16"
-                                      stroke="currentColor"
-                                    >
-                                      <path
-                                        d="M2 4H14"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="1.33333"
-                                      />
-                                      <path
-                                        d={svgPaths.p64eb800}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="1.33333"
-                                      />
-                                      <path
-                                        d={svgPaths.p56ef700}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="1.33333"
-                                      />
-                                      <path
-                                        d="M6.66667 7.33333V11.3333"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="1.33333"
-                                      />
-                                      <path
-                                        d="M9.33333 7.33333V11.3333"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="1.33333"
-                                      />
-                                    </svg>
-                                  </div>
-                                  <div className="font-medium text-sm text-red-500 text-nowrap">
-                                    {t('cart.remove')}
-                                  </div>
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 16 16"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      d="M4 4L12 12M12 4L4 12"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="1.5"
+                                    />
+                                  </svg>
                                 </button>
                               </div>
                             </div>
@@ -424,7 +380,7 @@ export function ShoppingCartPage({
               </div>
 
               {/* Order Summary */}
-              <div className="bg-card box-border content-stretch flex flex-col gap-4 sm:gap-6 items-start justify-start p-4 sm:p-6 lg:p-8 relative rounded-2xl shadow-sm shrink-0 w-full lg:w-[400px] lg:sticky lg:top-24">
+              <div className="lg:col-span-1 rounded-2xl border border-border/50 bg-card p-6 lg:sticky lg:top-24 flex flex-col gap-4 sm:gap-6 items-start justify-start h-fit">
                 <div className="font-bold text-xl sm:text-2xl text-foreground relative shrink-0 w-full">
                   {t('cart.orderSummary')}
                 </div>
@@ -468,11 +424,11 @@ export function ShoppingCartPage({
 
                   <div className="bg-border h-px shrink-0 w-full" />
 
-                  <div className="box-border content-stretch flex flex-row font-bold items-center justify-between p-0 relative shrink-0 text-foreground w-full" aria-live="polite">
-                    <div className="text-xl">
+                  <div className="box-border content-stretch flex flex-row items-center justify-between p-0 relative shrink-0 text-foreground w-full" aria-live="polite">
+                    <div className="text-lg font-bold">
                       {t('cart.total')}
                     </div>
-                    <div className="text-2xl text-nowrap">
+                    <div className="text-lg font-bold text-nowrap">
                       {formatPrice(convertedCartTotal)}
                     </div>
                   </div>
@@ -481,7 +437,7 @@ export function ShoppingCartPage({
                 {/* Checkout Button */}
                 <button
                   onClick={onProceedToCheckout}
-                  className="w-full bg-foreground text-background rounded-xl py-3.5 font-semibold hover:opacity-90 transition-all"
+                  className="rounded-full bg-primary text-primary-foreground py-4 w-full text-sm font-medium hover:opacity-90 transition-opacity"
                 >
                   {t('cart.proceedToCheckout')}
                 </button>

@@ -21,7 +21,12 @@ addresses.get('/', async (c) => {
 
 addresses.post('/', async (c) => {
   const user = c.get('user');
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { tipo, nombre, calle, ciudad, codigo_postal, provincia, pais, is_default } = body;
 
   const validTipos = ['shipping', 'billing'];
@@ -60,7 +65,12 @@ addresses.post('/', async (c) => {
 
 addresses.put('/:id', async (c) => {
   const user = c.get('user');
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
 
   if (body.is_default) {
     await supabaseAdmin

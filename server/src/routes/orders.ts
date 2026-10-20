@@ -12,7 +12,13 @@ orders.use('*', authMiddleware);
 
 orders.post('/', async (c) => {
   const user = c.get('user');
-  const { shippingAddressId, billingAddressId, paisImpuesto = 'ES', notas } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { shippingAddressId, billingAddressId, paisImpuesto = 'ES', notas } = body;
 
   if (!shippingAddressId) return c.json({ error: 'Dirección de envío requerida' }, 400);
   if (notas && typeof notas === 'string' && notas.length > 1000) {

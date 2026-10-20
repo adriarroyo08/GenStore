@@ -13,7 +13,7 @@ export function errorHandler(err: Error, c: Context) {
 
   // For client errors (4xx), always return the actual message so the frontend
   // can show actionable feedback.  Only hide details for server errors (5xx).
-  const message = status < 500 || env.NODE_ENV !== 'production'
+  const message = status < 500
     ? err.message
     : 'Error interno del servidor';
 

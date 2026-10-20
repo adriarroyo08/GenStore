@@ -22,7 +22,12 @@ adminCategories.get('/', async (c) => {
 });
 
 adminCategories.post('/', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, descripcion, parent_id, activo, orden, imagen } = body;
   if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
   const slug = body.slug ?? nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -45,7 +50,12 @@ adminCategories.post('/', async (c) => {
 });
 
 adminCategories.put('/:id', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, slug, descripcion, parent_id, activo, orden, imagen } = body;
   const updateData: Record<string, unknown> = {};
   if (nombre !== undefined) updateData.nombre = nombre;

@@ -8,7 +8,8 @@ const adminOrders = new Hono<AppEnv>();
 
 adminOrders.get('/', async (c) => {
   const estado = c.req.query('estado');
-  const page = Number(c.req.query('page') ?? 1);
+  const validStates = ['pendiente', 'confirmado', 'procesando', 'pagado', 'enviado', 'entregado', 'cancelado', 'devuelto', 'fallido'];
+  const page = Math.min(Math.max(1, Number(c.req.query('page') ?? 1) || 1), 1000);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
@@ -18,7 +19,7 @@ adminOrders.get('/', async (c) => {
     .order('created_at', { ascending: false })
     .range(from, from + pageSize - 1);
 
-  if (estado) query = query.eq('estado', estado);
+  if (estado && validStates.includes(estado)) query = query.eq('estado', estado);
 
   const { data, count, error } = await query;
   if (error) throw new Error(error.message);
@@ -48,7 +49,13 @@ adminOrders.get('/:id', async (c) => {
 });
 
 adminOrders.put('/:id/status', async (c) => {
-  const { estado } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { estado } = body;
   const validStates = ['pendiente', 'confirmado', 'procesando', 'pagado', 'enviado', 'entregado', 'cancelado', 'devuelto', 'fallido'];
   if (!validStates.includes(estado)) {
     return c.json({ error: `Estado inválido. Valores: ${validStates.join(', ')}` }, 400);
@@ -69,7 +76,13 @@ adminOrders.put('/:id/status', async (c) => {
 adminOrders.post('/:id/refund', async (c) => {
   const user = c.get('user');
   const orderId = c.req.param('id');
-  const { amount, motivo } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { amount, motivo } = body;
 
   if (!motivo || !motivo.trim()) {
     return c.json({ error: 'El motivo del reembolso es obligatorio' }, 400);

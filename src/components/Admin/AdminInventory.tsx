@@ -111,7 +111,10 @@ export function AdminInventory() {
       if (session?.access_token) {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
-      const res = await fetch('/api/v1/admin/inventory/export', { headers });
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 30000);
+      const res = await fetch('/api/v1/admin/inventory/export', { headers, signal: controller.signal });
+      clearTimeout(tid);
       if (!res.ok) throw new Error('Error al exportar');
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);

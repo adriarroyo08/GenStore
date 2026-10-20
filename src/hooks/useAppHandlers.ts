@@ -8,7 +8,7 @@ interface UseAppHandlersProps {
   setWishlist: (wishlist: string[]) => void;
   showNotification: (type: 'success' | 'error' | 'info', message: string) => void;
   t: (key: string) => string;
-  addToCart: (product: Product, selectedColor?: string, selectedColorName?: string) => void | Promise<void>;
+  addToCart: (product: Product, variantId?: string, selectedColor?: string, selectedColorName?: string) => void | Promise<void>;
   clearCart: () => void;
   setCurrentPage: (page: string) => void;
   setSelectedCategory: (category: string) => void;
@@ -52,9 +52,9 @@ export function useAppHandlers({
   signOut,
 }: UseAppHandlersProps) {
 
-  const handleAddToCart = async (product: Product, selectedColor?: string, selectedColorName?: string) => {
+  const handleAddToCart = async (product: Product, variantId?: string, selectedColor?: string, selectedColorName?: string) => {
     try {
-      await addToCart(product, selectedColor, selectedColorName);
+      await addToCart(product, variantId, selectedColor, selectedColorName);
       showNotification('success', t('product.addedToCart'));
     } catch (error: any) {
       console.error('[handleAddToCart] Error:', error);

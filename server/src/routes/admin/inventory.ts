@@ -37,7 +37,7 @@ adminInventory.post('/import', async (c) => {
 adminInventory.get('/export', async (c) => {
   const filter = c.req.query('filter') ?? 'all';
   const safeFilter = filter.replace(/[^a-z0-9_-]/gi, '');
-  const csv = await inventoryService.exportCsv(filter);
+  const csv = await inventoryService.exportCsv(safeFilter || 'all');
   return new Response(csv, {
     headers: { 'Content-Type': 'text/csv', 'Content-Disposition': `attachment; filename="productos-${safeFilter || 'all'}.csv"` },
   });
@@ -46,10 +46,24 @@ adminInventory.get('/export', async (c) => {
 // POST /admin/inventory/adjust — manual stock adjustment
 adminInventory.post('/adjust', async (c) => {
   const user = c.get('user');
-  const { productId, cantidad, motivo } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { productId, cantidad, motivo } = body;
 
   if (!productId || cantidad === undefined || !motivo) {
     return c.json({ error: 'productId, cantidad y motivo son requeridos' }, 400);
+  }
+
+  if (!isFinite(Number(cantidad)) || Math.abs(Number(cantidad)) > 100000) {
+    return c.json({ error: 'cantidad debe ser un número finito con valor absoluto <= 100000' }, 400);
+  }
+
+  if (typeof motivo === 'string' && motivo.length > 500) {
+    return c.json({ error: 'motivo no puede superar 500 caracteres' }, 400);
   }
 
   await inventoryService.adjustStock(productId, cantidad, motivo, user.id);
@@ -59,7 +73,7 @@ adminInventory.post('/adjust', async (c) => {
 // GET /admin/inventory/movements — inventory history
 adminInventory.get('/movements', async (c) => {
   const productId = c.req.query('productId');
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.max(1, Number(c.req.query('page') ?? 1) || 1);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
@@ -82,14 +96,14 @@ adminInventory.get('/dashboard', async (c) => {
   const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   const [salesResult, activeOrdersResult, lowStockAlerts, usersResult, recentOrdersResult] = await Promise.all([
-    supabaseAdmin.from('orders').select('total').gte('created_at', firstOfMonth).in('estado', ['pagado', 'enviado', 'entregado']).limit(10000),
-    supabaseAdmin.from('orders').select('id', { count: 'exact' }).in('estado', ['pendiente', 'pagado', 'enviado']).limit(1),
+    supabaseAdmin.from('orders').select('total.sum()').gte('created_at', firstOfMonth).in('estado', ['pagado', 'enviado', 'entregado']).single(),
+    supabaseAdmin.from('orders').select('id', { count: 'exact', head: true }).in('estado', ['pendiente', 'pagado', 'enviado']),
     inventoryService.getLowStockAlerts(),
-    supabaseAdmin.from('profiles').select('id', { count: 'exact' }),
+    supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }),
     supabaseAdmin.from('orders').select('id, numero_pedido, estado, total, created_at').order('created_at', { ascending: false }).limit(5),
   ]);
 
-  const ventasMes = (salesResult.data ?? []).reduce((sum: number, o: any) => sum + Number(o.total), 0);
+  const ventasMes = Number((salesResult.data as any)?.sum ?? 0);
 
   return c.json({
     ventasMes: Math.round(ventasMes * 100) / 100,

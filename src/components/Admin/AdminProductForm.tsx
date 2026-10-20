@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { X, Save, ChevronDown, ChevronUp } from 'lucide-react';
 import { apiClient } from '../../lib/apiClient';
 import type { AdminProduct, AdminCategory, ProductFormData, AdminSupplier } from './types';
+import { ImageUploader } from './ImageUploader';
+import { VariantManager } from './VariantManager';
 
 interface AdminProductFormProps {
   product: AdminProduct | null;
@@ -42,9 +44,10 @@ const emptyForm: ProductFormData = {
   features: '',
   colors: '[]',
   specs: '{}',
+  has_variants: false,
 };
 
-const SECTION_IDS = ['basica', 'proveedor', 'inventario', 'contenido', 'seo', 'notas'] as const;
+const SECTION_IDS = ['basica', 'proveedor', 'inventario', 'contenido', 'seo', 'notas', 'variantes'] as const;
 type SectionId = (typeof SECTION_IDS)[number];
 
 const sectionConfig: Record<SectionId, { label: string; borderColor: string }> = {
@@ -54,6 +57,7 @@ const sectionConfig: Record<SectionId, { label: string; borderColor: string }> =
   contenido: { label: 'Contenido', borderColor: 'border-l-purple-500' },
   seo: { label: 'SEO', borderColor: 'border-l-pink-500' },
   notas: { label: 'Notas Internas', borderColor: 'border-l-gray-500' },
+  variantes: { label: 'Variantes', borderColor: 'border-l-orange-500' },
 };
 
 export function AdminProductForm({ product, onClose, onSaved }: AdminProductFormProps) {
@@ -110,6 +114,7 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
         features: (product.features ?? []).join('\n'),
         colors: JSON.stringify(product.colors ?? [], null, 2),
         specs: JSON.stringify(product.specs ?? {}, null, 2),
+        has_variants: product.has_variants ?? false,
       });
     } else {
       setForm(emptyForm);
@@ -171,7 +176,7 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
       setError('El SKU es obligatorio');
       return;
     }
-    if (form.precio <= 0) {
+    if (!form.has_variants && form.precio <= 0) {
       setError('El precio debe ser mayor que 0');
       return;
     }
@@ -180,17 +185,6 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
     const featuresArr = form.features
       ? form.features.split('\n').map((s) => s.trim()).filter(Boolean)
       : [];
-
-    // Parse colors
-    let colorsArr: any[] = [];
-    if (form.colors.trim()) {
-      try {
-        colorsArr = JSON.parse(form.colors);
-      } catch {
-        setError('El campo Colors no contiene JSON valido');
-        return;
-      }
-    }
 
     // Parse specs
     let specsObj: Record<string, any> = {};
@@ -221,8 +215,8 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
         ? form.tags.split(',').map((s) => s.trim()).filter(Boolean)
         : [],
       features: featuresArr,
-      colors: colorsArr,
       specs: specsObj,
+      has_variants: form.has_variants,
       activo: form.activo,
       en_oferta: form.en_oferta,
       porcentaje_descuento: form.porcentaje_descuento || 0,
@@ -498,60 +492,71 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
                 />
               </div>
 
-              {/* Precio PVP */}
-              <div>
-                <label htmlFor="field-precio" className={labelCls}>
-                  Precio PVP ({'\u20AC'}) <span className="text-red-400">*</span>
-                </label>
-                <input
-                  id="field-precio"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={form.precio}
-                  onChange={(e) => handleChange('precio', parseFloat(e.target.value) || 0)}
-                  className={inputCls}
-                  required
-                  aria-required="true"
-                />
-              </div>
+              {/* Precio PVP, Precio original y Margen — ocultos cuando hay variantes */}
+              {!form.has_variants ? (
+                <>
+                  {/* Precio PVP */}
+                  <div>
+                    <label htmlFor="field-precio" className={labelCls}>
+                      Precio PVP ({'\u20AC'}) <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      id="field-precio"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={form.precio}
+                      onChange={(e) => handleChange('precio', parseFloat(e.target.value) || 0)}
+                      className={inputCls}
+                      required
+                      aria-required="true"
+                    />
+                  </div>
 
-              {/* Precio original */}
-              <div>
-                <label htmlFor="field-precio-original" className={labelCls}>
-                  Precio original ({'\u20AC'})
-                </label>
-                <input
-                  id="field-precio-original"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={form.precio_original}
-                  onChange={(e) => handleChange('precio_original', parseFloat(e.target.value) || 0)}
-                  className={inputCls}
-                />
-              </div>
+                  {/* Precio original */}
+                  <div>
+                    <label htmlFor="field-precio-original" className={labelCls}>
+                      Precio original ({'\u20AC'})
+                    </label>
+                    <input
+                      id="field-precio-original"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={form.precio_original}
+                      onChange={(e) => handleChange('precio_original', parseFloat(e.target.value) || 0)}
+                      className={inputCls}
+                    />
+                  </div>
 
-              {/* Margin display */}
-              <div className="flex items-end">
-                {margin !== null && (
-                  <div className="pb-2">
-                    <span className="text-sm text-gray-400">Margen: </span>
-                    <span
-                      className={`text-sm font-semibold ${
-                        margin < 15 ? 'text-red-400' : 'text-green-400'
-                      }`}
-                    >
-                      {margin.toFixed(1)}%
-                    </span>
-                    {selectedSupplier && (
-                      <span className="text-xs text-gray-500 ml-2">
-                        (defecto: {selectedSupplier.margen_defecto}%)
-                      </span>
+                  {/* Margin display */}
+                  <div className="flex items-end">
+                    {margin !== null && (
+                      <div className="pb-2">
+                        <span className="text-sm text-gray-400">Margen: </span>
+                        <span
+                          className={`text-sm font-semibold ${
+                            margin < 15 ? 'text-red-400' : 'text-green-400'
+                          }`}
+                        >
+                          {margin.toFixed(1)}%
+                        </span>
+                        {selectedSupplier && (
+                          <span className="text-xs text-gray-500 ml-2">
+                            (defecto: {selectedSupplier.margen_defecto}%)
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
+                </>
+              ) : (
+                <div className="sm:col-span-2">
+                  <p className="text-sm text-muted-foreground italic">
+                    Precio y stock se gestionan desde las variantes.
+                  </p>
+                </div>
+              )}
 
               {/* En oferta */}
               <div className="flex items-center gap-3 pt-4">
@@ -602,35 +607,46 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
           <SectionHeader id="inventario" />
           {openSections.has('inventario') && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-4">
-              {/* Stock */}
-              <div>
-                <label htmlFor="field-stock" className={labelCls}>
-                  Stock
-                </label>
-                <input
-                  id="field-stock"
-                  type="number"
-                  min="0"
-                  value={form.stock}
-                  onChange={(e) => handleChange('stock', parseInt(e.target.value) || 0)}
-                  className={inputCls}
-                />
-              </div>
+              {/* Stock y Stock minimo — ocultos cuando hay variantes */}
+              {!form.has_variants ? (
+                <>
+                  {/* Stock */}
+                  <div>
+                    <label htmlFor="field-stock" className={labelCls}>
+                      Stock
+                    </label>
+                    <input
+                      id="field-stock"
+                      type="number"
+                      min="0"
+                      value={form.stock}
+                      onChange={(e) => handleChange('stock', parseInt(e.target.value) || 0)}
+                      className={inputCls}
+                    />
+                  </div>
 
-              {/* Stock minimo */}
-              <div>
-                <label htmlFor="field-stock-minimo" className={labelCls}>
-                  Stock minimo
-                </label>
-                <input
-                  id="field-stock-minimo"
-                  type="number"
-                  min="0"
-                  value={form.stock_minimo}
-                  onChange={(e) => handleChange('stock_minimo', parseInt(e.target.value) || 0)}
-                  className={inputCls}
-                />
-              </div>
+                  {/* Stock minimo */}
+                  <div>
+                    <label htmlFor="field-stock-minimo" className={labelCls}>
+                      Stock minimo
+                    </label>
+                    <input
+                      id="field-stock-minimo"
+                      type="number"
+                      min="0"
+                      value={form.stock_minimo}
+                      onChange={(e) => handleChange('stock_minimo', parseInt(e.target.value) || 0)}
+                      className={inputCls}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="sm:col-span-2">
+                  <p className="text-sm text-muted-foreground italic">
+                    Stock se gestiona desde las variantes.
+                  </p>
+                </div>
+              )}
 
               {/* Peso */}
               <div>
@@ -792,17 +808,21 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
 
               {/* Imagenes */}
               <div>
-                <label htmlFor="field-imagenes" className={labelCls}>
-                  Imagenes (URLs separadas por coma)
-                </label>
-                <input
-                  id="field-imagenes"
-                  type="text"
-                  value={form.imagenes}
-                  onChange={(e) => handleChange('imagenes', e.target.value)}
-                  className={inputCls}
-                  placeholder="https://ejemplo.com/img1.jpg, https://ejemplo.com/img2.jpg"
-                />
+                <label className={labelCls}>Imagenes</label>
+                {product?.id ? (
+                  <ImageUploader
+                    images={product?.imagenes ?? []}
+                    uploadEndpoint={`/admin/products/${product.id}/images`}
+                    deleteEndpoint={`/admin/products/${product.id}/images`}
+                    reorderEndpoint={`/admin/products/${product.id}/images/reorder`}
+                    maxImages={5}
+                    onImagesChange={(imgs) => handleChange('imagenes', imgs.join(', '))}
+                  />
+                ) : (
+                  <p className="text-sm text-amber-400 p-3 border border-amber-600/30 rounded-lg">
+                    Guarda el producto primero para subir imagenes.
+                  </p>
+                )}
               </div>
 
               {/* Tags */}
@@ -820,20 +840,6 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
                 />
               </div>
 
-              {/* Colors */}
-              <div>
-                <label htmlFor="field-colors" className={labelCls}>
-                  Colores (JSON array)
-                </label>
-                <textarea
-                  id="field-colors"
-                  value={form.colors}
-                  onChange={(e) => handleChange('colors', e.target.value)}
-                  rows={4}
-                  className={`${inputCls} resize-none font-mono text-sm`}
-                  placeholder={'[\n  { "name": "Azul", "value": "blue", "hex": "#0000FF" }\n]'}
-                />
-              </div>
             </div>
           )}
 
@@ -898,6 +904,21 @@ export function AdminProductForm({ product, onClose, onSaved }: AdminProductForm
                   placeholder="Notas privadas sobre este producto..."
                 />
               </div>
+            </div>
+          )}
+
+          {/* ── Section 7: Variantes ── */}
+          <SectionHeader id="variantes" />
+          {openSections.has('variantes') && (
+            <div className="pl-4">
+              <VariantManager
+                productId={product?.id != null ? String(product.id) : null}
+                productSku={form.sku}
+                productPrecio={form.precio}
+                productPrecioCoste={form.precio_coste || null}
+                hasVariants={form.has_variants}
+                onHasVariantsChange={(val) => handleChange('has_variants', val)}
+              />
             </div>
           )}
 

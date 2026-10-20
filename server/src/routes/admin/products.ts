@@ -6,7 +6,7 @@ const adminProducts = new Hono();
 
 // GET /admin/products — all products including inactive
 adminProducts.get('/', async (c) => {
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.max(1, Number(c.req.query('page') ?? 1) || 1);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 200);
   const from = (page - 1) * pageSize;
 
@@ -22,8 +22,13 @@ adminProducts.get('/', async (c) => {
 
 // POST /admin/products — create product
 adminProducts.post('/', async (c) => {
-  const body = await c.req.json();
-  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku } = body;
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku, has_variants } = body;
   if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
   const slug = body.slug ?? nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
@@ -47,6 +52,7 @@ adminProducts.post('/', async (c) => {
   if (category_id !== undefined) insertData.category_id = category_id;
   if (supplier_id !== undefined) insertData.supplier_id = supplier_id;
   if (supplier_sku !== undefined) insertData.supplier_sku = supplier_sku;
+  if (has_variants !== undefined) insertData.has_variants = has_variants;
 
   const { data, error } = await supabaseAdmin
     .from('products')
@@ -60,7 +66,12 @@ adminProducts.post('/', async (c) => {
 
 // POST /admin/products/import — bulk import products from CSV data
 adminProducts.post('/import', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { supplier_id, products: rows } = body as {
     supplier_id: string;
     products: Array<{
@@ -148,7 +159,8 @@ adminProducts.post('/import', async (c) => {
         results.created++;
       }
     } catch (err: any) {
-      results.errors.push({ row: i + 1, message: err.message ?? 'Error desconocido' });
+      console.error(`[Import] Row ${i + 1} error:`, err.message);
+      results.errors.push({ row: i + 1, message: 'Error al procesar fila' });
     }
   }
 
@@ -157,8 +169,13 @@ adminProducts.post('/import', async (c) => {
 
 // PUT /admin/products/:id — update product
 adminProducts.put('/:id', async (c) => {
-  const body = await c.req.json();
-  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku } = body;
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { nombre, sku, precio, precio_coste, stock, stock_minimo, descripcion, descripcion_corta, marca, activo, en_oferta, porcentaje_descuento, precio_original, imagenes, specs, tags, peso, category_id, supplier_id, supplier_sku, has_variants } = body;
   const updateData: Record<string, unknown> = {};
   if (nombre !== undefined) updateData.nombre = nombre;
   if (sku !== undefined) updateData.sku = sku;
@@ -180,6 +197,7 @@ adminProducts.put('/:id', async (c) => {
   if (category_id !== undefined) updateData.category_id = category_id;
   if (supplier_id !== undefined) updateData.supplier_id = supplier_id;
   if (supplier_sku !== undefined) updateData.supplier_sku = supplier_sku;
+  if (has_variants !== undefined) updateData.has_variants = has_variants;
   updateData.updated_at = new Date().toISOString();
 
   const { data, error } = await supabaseAdmin

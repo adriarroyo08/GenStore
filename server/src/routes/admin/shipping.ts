@@ -13,7 +13,13 @@ adminShipping.get('/carriers', (c) => {
 // POST /admin/shipping/orders/:id/ship — create shipment
 adminShipping.post('/orders/:id/ship', async (c) => {
   const orderId = c.req.param('id');
-  const { carrier } = await c.req.json<{ carrier: string }>();
+  let body;
+  try {
+    body = await c.req.json<{ carrier: string }>();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { carrier } = body;
 
   if (!carrier) return c.json({ error: 'Carrier requerido' }, 400);
 

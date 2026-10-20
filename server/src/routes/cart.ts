@@ -14,19 +14,32 @@ cart.get('/', async (c) => {
 
 cart.post('/', async (c) => {
   const user = c.get('user');
-  const { productId, cantidad = 1, opciones = {} } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { productId, variantId, cantidad = 1, opciones = {} } = body;
   if (!productId) return c.json({ error: 'productId requerido' }, 400);
+  if (variantId && typeof variantId !== 'string') return c.json({ error: 'variantId debe ser un string' }, 400);
   if (cantidad < 1 || cantidad > 999) return c.json({ error: 'Cantidad debe ser entre 1 y 999' }, 400);
   if (typeof opciones === 'object' && JSON.stringify(opciones).length > 2000) {
     return c.json({ error: 'Opciones demasiado grandes' }, 400);
   }
-  const item = await cartService.addToCart(user.id, productId, cantidad, opciones);
+  const item = await cartService.addToCart(user.id, productId, cantidad, opciones, variantId);
   return c.json(item, 201);
 });
 
 cart.put('/:id', async (c) => {
   const user = c.get('user');
-  const { cantidad } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { cantidad } = body;
   if (!cantidad || cantidad < 1 || cantidad > 999) return c.json({ error: 'Cantidad debe ser entre 1 y 999' }, 400);
   const item = await cartService.updateCartItem(user.id, c.req.param('id'), cantidad);
   return c.json(item);

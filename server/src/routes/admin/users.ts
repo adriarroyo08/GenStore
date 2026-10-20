@@ -4,7 +4,7 @@ import { supabaseAdmin } from '../../config/supabase.js';
 const adminUsers = new Hono();
 
 adminUsers.get('/', async (c) => {
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.max(1, Number(c.req.query('page') ?? 1) || 1);
   const pageSize = Math.min(Number(c.req.query('pageSize') ?? 50), 100);
   const from = (page - 1) * pageSize;
 
@@ -16,16 +16,17 @@ adminUsers.get('/', async (c) => {
 
   if (error) throw new Error(error.message);
 
-  // Get emails from auth (paginated to avoid memory exhaustion)
-  const allUsers: Array<{ id: string; email?: string }> = [];
-  let authPage = 1;
-  while (true) {
-    const { data: { users: batch } } = await supabaseAdmin.auth.admin.listUsers({ page: authPage, perPage: 100 });
-    allUsers.push(...batch);
-    if (batch.length < 100) break;
-    authPage++;
+  // Get emails only for users on the current page
+  const profileIds = (data ?? []).map((p: any) => p.id as string);
+  const emailMap = new Map<string, string>();
+  for (const id of profileIds) {
+    try {
+      const { data: { user } } = await supabaseAdmin.auth.admin.getUserById(id);
+      if (user?.email) emailMap.set(id, user.email);
+    } catch {
+      // Skip if user not found in auth
+    }
   }
-  const emailMap = new Map(allUsers.map(u => [u.id, u.email]));
 
   const result = (data ?? []).map((profile: any) => ({
     ...profile,

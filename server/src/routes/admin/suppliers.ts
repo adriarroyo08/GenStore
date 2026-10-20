@@ -5,9 +5,9 @@ import * as supplierService from '../../services/supplierService.js';
 const suppliers = new Hono<AppEnv>();
 
 suppliers.get('/', async (c) => {
-  const page = Number(c.req.query('page') ?? 1);
+  const page = Math.min(Math.max(Number(c.req.query('page') ?? 1) || 1, 1), 1000);
   const limit = Math.min(Number(c.req.query('limit') ?? 15), 100);
-  const search = c.req.query('search') || undefined;
+  const search = c.req.query('search')?.slice(0, 200) || undefined;
   const activeParam = c.req.query('active');
   const active = activeParam !== undefined ? activeParam === 'true' : undefined;
 
@@ -23,7 +23,12 @@ suppliers.get('/:id', async (c) => {
 });
 
 suppliers.post('/', async (c) => {
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, email, telefono, web, pais, condiciones_pago, plazo_envio_estimado, margen_defecto, notas, activo } = body;
   if (!nombre) return c.json({ error: 'nombre es requerido' }, 400);
   const safeBody: Record<string, unknown> = { nombre };
@@ -42,7 +47,12 @@ suppliers.post('/', async (c) => {
 
 suppliers.put('/:id', async (c) => {
   const id = c.req.param('id');
-  const body = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
   const { nombre, email, telefono, web, pais, condiciones_pago, plazo_envio_estimado, margen_defecto, notas, activo } = body;
   const safeBody: Record<string, unknown> = {};
   if (nombre !== undefined) safeBody.nombre = nombre;

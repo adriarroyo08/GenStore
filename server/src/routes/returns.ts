@@ -31,7 +31,13 @@ returns.post('/', async (c) => {
     return c.json({ error: 'Ya existe una solicitud de devolución para este pedido' }, 400);
   }
 
-  const { motivo, descripcion, fotos } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { motivo, descripcion, fotos } = body;
   if (!motivo || typeof motivo !== 'string') return c.json({ error: 'Motivo requerido' }, 400);
   if (motivo.length > 500) return c.json({ error: 'Motivo no puede superar 500 caracteres' }, 400);
   if (descripcion && typeof descripcion === 'string' && descripcion.length > 2000) {

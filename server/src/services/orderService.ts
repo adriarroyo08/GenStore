@@ -20,10 +20,10 @@ const SHIPPING_COST = 9.99;
 export async function createOrder(input: CreateOrderInput): Promise<Order & { items: OrderItem[] }> {
   const { userId, shippingAddressId, billingAddressId, paisImpuesto, notas, metodoPago } = input;
 
-  // 1. Get cart items with product data
+  // 1. Get cart items with product and variant data
   const { data: cartItems, error: cartError } = await supabaseAdmin
     .from('cart_items')
-    .select('*, product:products(id, nombre, precio, stock)')
+    .select('*, product:products(id, nombre, precio, stock), variant:product_variants(id, precio, stock, attributes, activo)')
     .eq('user_id', userId);
 
   if (cartError) throw new Error(cartError.message);
@@ -31,20 +31,32 @@ export async function createOrder(input: CreateOrderInput): Promise<Order & { it
     throw Object.assign(new Error('El carrito está vacío'), { status: 400 });
   }
 
-  // 2. Verify stock for all items
+  // 2. Verify stock for all items (variant-aware)
   for (const item of cartItems) {
     const product = (item as any).product;
-    if (!product || product.stock < item.cantidad) {
+    const variant = (item as any).variant;
+    if (!product) {
+      throw Object.assign(new Error('Producto no encontrado en el carrito'), { status: 400 });
+    }
+    if (item.variant_id && variant) {
+      if (variant.stock < item.cantidad) {
+        throw Object.assign(
+          new Error(`Stock insuficiente para ${product.nombre}`),
+          { status: 400 }
+        );
+      }
+    } else if (product.stock < item.cantidad) {
       throw Object.assign(
-        new Error(`Stock insuficiente para ${product?.nombre ?? 'producto desconocido'}`),
+        new Error(`Stock insuficiente para ${product.nombre}`),
         { status: 400 }
       );
     }
   }
 
-  // 3. Calculate totals
+  // 3. Calculate totals (use variant price when applicable)
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = (item as any).product.precio;
+    const variant = (item as any).variant;
+    const price = (item.variant_id && variant) ? variant.precio : (item as any).product.precio;
     return sum + price * item.cantidad;
   }, 0);
 
@@ -74,15 +86,23 @@ export async function createOrder(input: CreateOrderInput): Promise<Order & { it
 
   if (orderError) throw new Error(orderError.message);
 
-  // 5. Create order items
-  const orderItems = cartItems.map((item) => ({
-    order_id: order.id,
-    product_id: item.product_id,
-    cantidad: item.cantidad,
-    precio_unitario: (item as any).product.precio,
-    subtotal: (item as any).product.precio * item.cantidad,
-    opciones: item.opciones,
-  }));
+  // 5. Create order items (variant-aware pricing and snapshot)
+  const orderItems = cartItems.map((item) => {
+    const variant = (item as any).variant;
+    const precio_unitario = (item.variant_id && variant) ? variant.precio : (item as any).product.precio;
+    const opcionesSnapshot = (item.variant_id && variant?.attributes)
+      ? { ...item.opciones, _variant_attributes: variant.attributes }
+      : item.opciones;
+    return {
+      order_id: order.id,
+      product_id: item.product_id,
+      variant_id: (item as any).variant_id ?? null,
+      cantidad: item.cantidad,
+      precio_unitario,
+      subtotal: precio_unitario * item.cantidad,
+      opciones: opcionesSnapshot,
+    };
+  });
 
   const { data: items, error: itemsError } = await supabaseAdmin
     .from('order_items')
@@ -129,7 +149,7 @@ const CANCELLABLE_STATES = ['pendiente', 'pagado', 'procesando'];
 export async function cancelOrder(userId: string, orderId: string): Promise<{ refunded: boolean; refundAmount?: number }> {
   const { data: order, error } = await supabaseAdmin
     .from('orders')
-    .select('*, order_items(*, product:products(nombre, stock))')
+    .select('*, order_items(*, product:products(nombre, stock), variant:product_variants(id, stock))')
     .eq('id', orderId)
     .eq('user_id', userId)
     .single();
@@ -152,10 +172,17 @@ export async function cancelOrder(userId: string, orderId: string): Promise<{ re
   }
 
   for (const item of order.order_items ?? []) {
-    await supabaseAdmin.rpc('increment_stock', {
-      p_product_id: item.product_id,
-      p_amount: item.cantidad,
-    });
+    if (item.variant_id) {
+      await supabaseAdmin.rpc('increment_variant_stock', {
+        p_variant_id: item.variant_id,
+        p_amount: item.cantidad,
+      });
+    } else {
+      await supabaseAdmin.rpc('increment_stock', {
+        p_product_id: item.product_id,
+        p_amount: item.cantidad,
+      });
+    }
   }
 
   await supabaseAdmin

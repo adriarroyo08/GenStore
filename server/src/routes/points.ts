@@ -24,7 +24,8 @@ points.get('/calculate', async (c) => {
   if (enabled === false) {
     return c.json({ amount: 0, points: 0, disabled: true });
   }
-  const amount = parseFloat(c.req.query('amount') ?? '0');
+  const raw = parseFloat(c.req.query('amount') ?? '0');
+  const amount = isFinite(raw) && raw >= 0 && raw <= 100000 ? raw : 0;
   const pointsEarned = pointsService.calculatePoints(amount);
   return c.json({ amount, points: pointsEarned });
 });

@@ -26,9 +26,9 @@ const badges = [
 
 export function TrustBadgesBar() {
   return (
-    <section className="bg-card border-y border-border">
-      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-5">
-        <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-around gap-4 sm:flex-wrap">
+    <section className="bg-muted/30 border-y border-border/50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap justify-center gap-8 md:gap-16">
           {badges.map((badge, index) => (
             <motion.div
               key={badge.title}
@@ -37,12 +37,13 @@ export function TrustBadgesBar() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
             >
-              <div className="bg-primary/10 p-2 rounded-full shrink-0">
-                <badge.icon className="h-5 w-5 text-primary" />
-              </div>
+              {index > 0 && (
+                <span className="hidden md:block border-l border-border h-8 -ml-4 mr-4" aria-hidden="true" />
+              )}
+              <badge.icon className="h-5 w-5 text-muted-foreground shrink-0" />
               <div>
-                <p className="text-sm font-medium text-foreground">{badge.title}</p>
-                <p className="text-xs text-muted-foreground">{badge.subtitle}</p>
+                <p className="text-sm text-muted-foreground font-medium">{badge.title}</p>
+                <p className="text-xs text-muted-foreground/70">{badge.subtitle}</p>
               </div>
             </motion.div>
           ))}

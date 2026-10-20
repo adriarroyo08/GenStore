@@ -56,7 +56,13 @@ reviews.get('/can-review/:productId', authMiddleware, async (c) => {
 reviews.post('/:productId', authMiddleware, async (c) => {
   const user = c.get('user');
   const productId = c.req.param('productId');
-  const { rating, titulo, comentario } = await c.req.json();
+  let body;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
+  const { rating, titulo, comentario } = body;
 
   if (!rating || !Number.isInteger(rating) || rating < 1 || rating > 5) {
     return c.json({ error: 'Rating debe ser un entero entre 1 y 5' }, 400);
